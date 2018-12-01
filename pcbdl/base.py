@@ -1,22 +1,19 @@
-#!/usr/bin/env python3
-
 import collections
 import enum
 import inspect
 
-def source_trace():
+def _get_defined_at():
 	stack_trace = inspect.stack()
-	stack_trace2 = inspect.stack()
 	while stack_trace.pop(0):
 		if stack_trace[0].filename == "<stdin>":
-			break
+			break # pragma: no cover, hard to test stdin
 
 		# Escape all the inheretances
 		if "super()" in stack_trace[0].code_context[0]:
 			continue
 
 		# Escape from this function
-		if "source_trace" in stack_trace[0].code_context[0]:
+		if "_get_defined_at" in stack_trace[0].code_context[0]:
 			continue
 
 		# Make sure it's not a pin implicit anonymous net
@@ -25,8 +22,8 @@ def source_trace():
 
 		break
 	interesting_frame = stack_trace[0]
-	source_trace = '%s:%d' % (interesting_frame.filename, interesting_frame.lineno)
-	return source_trace
+	defined_at = '%s:%d' % (interesting_frame.filename, interesting_frame.lineno)
+	return defined_at
 
 class ConnectDirection(enum.Enum):
 	UNKNOWN = 0
@@ -38,7 +35,7 @@ class PinType(enum.Enum):
 	SECONDARY = 1
 
 def _maybe_single(o):
-	if isinstance(o, collections.Iterable):
+	if isinstance(o, collections.abc.Iterable):
 		yield from o
 	else:
 		yield o
@@ -132,7 +129,7 @@ class Net(object):
 
 		context.new_net(self)
 
-		self.defined_at = source_trace()
+		self.defined_at = _get_defined_at()
 
 	def connect(self, others, direction=ConnectDirection.UNKNOWN, pin_type=PinType.PRIMARY):
 		for other in _maybe_single(others):
@@ -163,10 +160,10 @@ class Net(object):
 
 	MAX_REPR_CONNECTIONS = 10
 	def __repr__(self):
-		connected = tuple(self._connections.keys())
+		connected = self.connections
 		if len(connected) >= self.MAX_REPR_CONNECTIONS:
 			inside_str = "%d connections" % (len(connected))
-		if len(connected) == 0:
+		elif len(connected) == 0:
 			inside_str = "unconnected"
 		elif len(connected) == 1:
 			inside_str = "connected to " + repr(connected[0])
@@ -248,7 +245,7 @@ class Part(object):
 		if self.PIN_NAMES is not None:
 			self._generate_pin_instances(self.PIN_NAMES)
 
-		self.defined_at = source_trace()
+		self.defined_at = _get_defined_at()
 
 	def _generate_pin_instances(self, pin_names):
 		self.pins = _PinList(_Pin(self, name) for name in self.PIN_NAMES)
@@ -271,13 +268,9 @@ class Part(object):
 	def __str__(self):
 		return "%s - %s%s" % (self.refdes, self.value, " DNS" if not self.populated else "")
 
-	def get_pin_to_connect(self, pin_type):
+	def get_pin_to_connect(self, pin_type): # pragma: no cover
 		assert isinstance(pin_type, PinType)
 		raise NotImplementedError("Don't know how to get %s pin from %r" % (pin_type.name, self))
-
-	def __sub__(self, others):
-		others.connect(self, ConnectDirection.OUT, PinType.SECONDARY)
-		return self
 
 class JellyBean(Part):
 	"""2 pin Jelly Bean components.
