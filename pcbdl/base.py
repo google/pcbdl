@@ -15,7 +15,11 @@ def _get_defined_at():
 		if stack_trace[0].filename == "<stdin>":
 			break # pragma: no cover, hard to test stdin
 
-		# Escape all the inheretances
+		if stack_trace[0].filename == "<string>":
+			# probably in an eval/exec
+			continue # pragma: no cover
+
+		# Escape all the inheritances
 		if "super()" in stack_trace[0].code_context[0]:
 			continue
 
