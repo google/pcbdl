@@ -1,8 +1,9 @@
-COVERAGE = coverage3 run --branch
+COVERAGE = coverage3 run -a --branch
 
 .PHONY: test
 test:
 	$(COVERAGE) test/base.py -v
+	$(COVERAGE) test/small_parts.py -v
 
 .PHONY: show-coverage
 show-coverage:

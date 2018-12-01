@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import unittest
-
 from pcbdl import *
 
 class TestNet(unittest.TestCase):
@@ -50,15 +49,16 @@ class TestNet(unittest.TestCase):
 		# Adding by part, chaining
 		n << rs[0] << rs[1]
 
-		self.assertEqual({c.part for c in n.connections}, set(rs))
+		self.assertEqual({c.part for c in n.connections}, set(rs), "<< failed")
 
 		# Adding by specific pin
 		n << R().P1
+		self.assertEqual(len(n.connections), 3, "<< on a pin failed")
 
 		# Adding a whole list of things instead of chaining
 		n << (R() for i in range(10))
 
-		self.assertEqual(len(n.connections), 13, "did we miss any components so far?")
+		self.assertEqual(len(n.connections), 13, "<< on a list failed")
 
 		with self.assertRaises(TypeError, msg="this would be silly to work, connecting something of a random type to a net"):
 			n << 2
