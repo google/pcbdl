@@ -2,39 +2,19 @@ import collections
 import enum
 import inspect
 
-__all__ = [
-	"_get_defined_at", "_maybe_single",
-	"PinType", "ConnectDirection",
-	"Net", "Part", "Pin",
-	"Context", "global_context",
-]
+def plugin(plugin_cls):
+	"""Installs a plugin into the class, makes original class behave like the
+	   new it's the plugin inheriting the class."""
+	for original_cls in plugin_cls.__bases__:
+		#print("Installing %s into %s" % (plugin_cls, original_cls))
 
-def _get_defined_at():
-	stack_trace = inspect.stack()
-	while stack_trace.pop(0):
-		if stack_trace[0].filename == "<stdin>":
-			break # pragma: no cover, hard to test stdin
+		# install plugin methods in original class
+		for method_name, method in plugin_cls.__dict__.items():
+			if method_name in ("__module__", "__doc__", "__init__"):
+				continue
+			setattr(original_cls, method_name, method)
 
-		if stack_trace[0].filename == "<string>":
-			# probably in an eval/exec
-			continue # pragma: no cover
-
-		# Escape all the inheritances
-		if "super()" in stack_trace[0].code_context[0]:
-			continue
-
-		# Escape from this function
-		if "_get_defined_at" in stack_trace[0].code_context[0]:
-			continue
-
-		# Make sure it's not a pin implicit anonymous net
-		if "ParticularPin._create_anonymous_net" in stack_trace[0].code_context[0]:
-			continue
-
-		break
-	interesting_frame = stack_trace[0]
-	defined_at = '%s:%d' % (interesting_frame.filename, interesting_frame.lineno)
-	return defined_at
+		original_cls._plugins.append(plugin_cls)
 
 class ConnectDirection(enum.Enum):
 	UNKNOWN = 0
@@ -78,71 +58,17 @@ class _PinList(collections.OrderedDict):
 	def __repr__(self):
 		return repr(tuple(self.values()))
 
-class Context(object):
-	def __init__(self, name = ""):
-		self.name = name
-
-		self.net_list = []
-		self.named_nets = collections.OrderedDict()
-
-		self.refdes_counters = collections.defaultdict(lambda:1)
-
-	def new_net(self, net):
-		assert(net not in self.net_list)
-		self.net_list.append(net)
-
-		if net.name is not None:
-			# Add to the net list
-			self.named_nets[net.name] = net
-
-	@property
-	def parts_list(self):
-		parts_list = []
-		for net in self.net_list:
-			for pin in net.connections:
-				part = pin.part
-				if part not in parts_list:
-					parts_list.append(part)
-		return parts_list
-
-	def fill_refdes(self):
-		self.named_parts = {}
-		for part in self.parts_list:
-			original_name = part.refdes
-			prefix = part.REFDES_PREFIX
-			if original_name.startswith(prefix):
-				number = original_name[len(prefix):]
-
-				if number.startswith("?"):
-					while True:
-						part.refdes = "%s%d" % (prefix, self.refdes_counters[prefix])
-						self.refdes_counters[prefix] += 1
-						if part.refdes not in self.named_parts:
-							break
-					#print ("Renaming %s -> %s" % (original_name, part.refdes))
-				else:
-					try:
-						number=int(number)
-					except ValueError:
-						continue
-					self.refdes_counters[prefix] = number
-					#print ("Skipping ahead to %s%d+1" % (prefix, self.refdes_counters[prefix]))
-					self.refdes_counters[prefix] += 1
-				self.named_parts[part.refdes] = part
-
-global_context = Context()
-nets = global_context.named_nets
-
 class Net(object):
-	def __init__(self, name=None, context = global_context):
+	_plugins = []
+
+	def __init__(self, name=None):
 		if name is not None:
 			name = name.upper()
 		self.name = name
 		self._connections = collections.OrderedDict()
 
-		context.new_net(self)
-
-		self.defined_at = _get_defined_at()
+		for plugin in self._plugins:
+			plugin.init(self)
 
 	def connect(self, others, direction=ConnectDirection.UNKNOWN, pin_type=PinType.PRIMARY):
 		for other in _maybe_single(others):
@@ -194,9 +120,12 @@ class Net(object):
 		return tuple(self._connections.keys())
 
 class Pin(object):
-	well_name = None
 	"""Generic Pin instance of a Part class, but no particular Part instance.
 	   Contains general information about the pin (but it could be for any part of that type), nothing specific to a specific part."""
+
+	_plugins = []
+	well_name = None
+
 	def __init__(self, names, numbers=None, type=PinType.UNKNOWN, well=None):
 		if isinstance(names, str):
 			names = (names,)
@@ -205,7 +134,8 @@ class Pin(object):
 		self.type = type
 		self.well_name = well
 
-		self.defined_at = _get_defined_at()
+		for plugin in self._plugins:
+			plugin.init(self)
 
 	@property
 	def name(self):
@@ -221,6 +151,7 @@ class Pin(object):
 
 class ParticularPin(Pin):
 	"""A pin from an actual instance of a Part, might be connected to nets. Each Part instance has different ParticularPin instances."""
+	_plugins = []
 	_create_anonymous_net = Net
 	_net = None
 
@@ -281,6 +212,7 @@ class ParticularPin(Pin):
 	__repr__ = __str__
 
 class Part(object):
+	_plugins = []
 	PINS = []
 	REFDES_PREFIX = "UNK"
 	value = ""
@@ -297,7 +229,8 @@ class Part(object):
 
 		self._generate_pin_instances(self.PINS)
 
-		self.defined_at = _get_defined_at()
+		for plugin in self._plugins:
+			plugin.init(self)
 
 	def _generate_pin_instances(self, pin_names):
 		# syntactic sugar, .PIN list might have only names instead of the long form Pin instances

@@ -239,3 +239,5 @@ jtag_shifter_1.shift_AB(1, pp3300, None) # spare
 jtag_shifter_1.shift_BA(2, Net("SERVO_JTAG_TRST_L"), Net("DUT_JTAG_TRST_L"))
 jtag_shifter_1.shift_BA(3, Net("SERVO_JTAG_TMS"),    Net("DUT_JTAG_TMS"))
 jtag_shifter_1.shift_BA(4, Net("SERVO_JTAG_TDI"),    Net("DUT_JTAG_TDI"))
+
+global_context.fill_refdes()
