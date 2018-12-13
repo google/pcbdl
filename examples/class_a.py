@@ -7,16 +7,11 @@ https://www.electronics-tutorials.ws/amplifier/amp_5.html
 
 from pcbdl import *
 
-class Q(Part):
-	REFDES_PREFIX="Q"
-	PIN_NAMES = PIN_NAMES_BJT
-
-
 ac_coupling_value = "1000u"
 
 vcc, gnd = Net("vcc"), Net("gnd")
 
-q = Q("2n3904")
+q = BJT("2n3904")
 
 C = C_POL
 

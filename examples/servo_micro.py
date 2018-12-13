@@ -13,33 +13,33 @@ class Connector(Part):
 
 class Regulator(Part):
 	REFDES_PREFIX = "U"
-	PIN_NAMES = (
+	PINS = [
 		"IN",
 		"OUT",
 		"EN",
 		"GND",
 		"PAD",
-	)
+	]
 
 class UsbEsdDiode(Part):
 	REFDES_PREFIX = "D"
-	PIN_NAMES = (
+	PINS = [
 		"VCC",
 		"GND",
 		"P1",
 		"P2",
 		"NC",
-	)
+	]
 
 class DoubleDiode(Part):
 	REFDES_PREFIX = "D"
-	PIN_NAMES = ("A1", "A2", "K")
+	PINS = ["A1", "A2", "K"]
 
 class ServoConnector(Connector):
-	PIN_NAMES = () # TODO
+	PINS = [] # TODO
 
 class ProgrammingConnector(Connector):
-	PIN_NAMES = (
+	PINS = [
 		("P1", "GND"),
 		("P2", "UART_TX"),
 		("P3", "UART_RX"),
@@ -49,15 +49,15 @@ class ProgrammingConnector(Connector):
 		"P7",
 		("P8", "BOOT0"),
 		"G", # Mechanical
-	)
+	]
 
 class STM32F072(Part):
 	REFDES_PREFIX = "U"
 	value = "STM32F072CBU6TR"
-	PIN_NAMES = [
-		"VDD",
+	PINS = [
+		Pin("VDD", type=PinType.POWER_INPUT),
 		"VBAT",
-		"VDDA",
+		Pin("VDDA", type=PinType.POWER_INPUT),
 		"VDDIO2",
 
 		"VSS",
@@ -75,13 +75,13 @@ class STM32F072(Part):
 		("PF1", "OSC_OUT"),
 	]
 	for i in range(16):
-		PIN_NAMES.append("PA%d" % i)
+		PINS.append(Pin("PA%d" % i, well="VDD"))
 	for i in range(16):
-		PIN_NAMES.append("PB%d" % i)
+		PINS.append(Pin("PB%d" % i, well="VDDA"))
 
 class I2cIoExpander(Part):
 	REFDES_PREFIX = "U"
-	PIN_NAMES = [
+	PINS = [
 		"VCCI",
 		"VCCP",
 		"GND",
@@ -95,21 +95,21 @@ class I2cIoExpander(Part):
 		"A0",
 	]
 	for i in range(18):
-		PIN_NAMES.append("P%02d" % i)
+		PINS.append("P%02d" % i)
 
 class LevelShifter(Part):
 	REFDES_PREFIX = "U"
 	value = "SN74AVC4T774RSVR"
-	PIN_NAMES = [
+	PINS = [
 		"VCCA",
 		"VCCB",
 		"GND",
 		"OE_L",
 	]
 	for i in range(1, 5):
-		PIN_NAMES.append("A%d" % i)
-		PIN_NAMES.append("B%d" % i)
-		PIN_NAMES.append("DIR%d" % i)
+		PINS.append("A%d" % i)
+		PINS.append("B%d" % i)
+		PINS.append("DIR%d" % i)
 		# TODO, add these in some kind of bundles, or a list
 
 	def shift(self, i, A_net, B_net, direction_net):
@@ -134,14 +134,14 @@ stm32 = STM32F072()
 
 # usb stuff
 class UsbConnector(Connector):
-	PIN_NAMES = (
+	PINS = [
 		"VBUS",
 		("DM", "D-"),
 		("DP", "D+"),
 		"ID",
 		"GND",
 		"G", # Mechanical
-	)
+	]
 usb = UsbConnector()
 usb_esd = UsbEsdDiode()
 Net("USB_DP") << usb.DP << usb_esd.P1 << stm32.PA11
@@ -239,5 +239,3 @@ jtag_shifter_1.shift_AB(1, pp3300, None) # spare
 jtag_shifter_1.shift_BA(2, Net("SERVO_JTAG_TRST_L"), Net("DUT_JTAG_TRST_L"))
 jtag_shifter_1.shift_BA(3, Net("SERVO_JTAG_TMS"),    Net("DUT_JTAG_TMS"))
 jtag_shifter_1.shift_BA(4, Net("SERVO_JTAG_TDI"),    Net("DUT_JTAG_TDI"))
-
-global_context.fill_refdes()

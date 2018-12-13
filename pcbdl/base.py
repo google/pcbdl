@@ -5,7 +5,7 @@ import inspect
 __all__ = [
 	"_get_defined_at", "_maybe_single",
 	"PinType", "ConnectDirection",
-	"Net", "Part",
+	"Net", "Part", "Pin",
 	"Context", "global_context",
 ]
 
@@ -28,7 +28,7 @@ def _get_defined_at():
 			continue
 
 		# Make sure it's not a pin implicit anonymous net
-		if "_Pin._create_anonymous_net" in stack_trace[0].code_context[0]:
+		if "ParticularPin._create_anonymous_net" in stack_trace[0].code_context[0]:
 			continue
 
 		break
@@ -42,8 +42,14 @@ class ConnectDirection(enum.Enum):
 	OUT = 2
 
 class PinType(enum.Enum):
-	PRIMARY = 0
-	SECONDARY = 1
+	UNKNOWN = 0
+	PRIMARY = 1
+	SECONDARY = 2
+	POWER_INPUT = 3
+	POWER_OUTPUT = 4
+	GROUND = 5
+	INPUT = 6
+	OUTPUT = 7
 
 def _maybe_single(o):
 	if isinstance(o, collections.abc.Iterable):
@@ -52,10 +58,6 @@ def _maybe_single(o):
 		yield o
 
 class _PinList(collections.OrderedDict):
-	def __init__(self, pin_list):
-		for pin in pin_list:
-			self[pin.name] = pin
-
 	def __getitem__(self, pin_name):
 		if isinstance(pin_name, int):
 			return tuple(self.values())[pin_name]
@@ -149,7 +151,7 @@ class Net(object):
 			if isinstance(other, Part):
 				pin = other.get_pin_to_connect(pin_type)
 
-			if isinstance(other, _Pin):
+			if isinstance(other, ParticularPin):
 				pin = other
 
 			if isinstance(other, Net):
@@ -191,23 +193,63 @@ class Net(object):
 	def connections(self):
 		return tuple(self._connections.keys())
 
-class _Pin(object):
-	_create_anonymous_net = Net
-
-	def __init__(self, part, names):
-		self.part = part
-
+class Pin(object):
+	well_name = None
+	"""Generic Pin instance of a Part class, but no particular Part instance.
+	   Contains general information about the pin (but it could be for any part of that type), nothing specific to a specific part."""
+	def __init__(self, names, numbers=None, type=PinType.UNKNOWN, well=None):
 		if isinstance(names, str):
 			names = (names,)
 		self.names = tuple(name.upper() for name in names)
-		self.name = self.names[0]
+		self.numbers = numbers
+		self.type = type
+		self.well_name = well
 
-		self._net = None
+		self.defined_at = _get_defined_at()
+
+	@property
+	def name(self):
+		return self.names[0]
+
+	@property
+	def number(self):
+		return self.numbers[0]
+
+	def __str__(self):
+		return "Pin %s" % (self.name)
+	__repr__ = __str__
+
+class ParticularPin(Pin):
+	"""A pin from an actual instance of a Part, might be connected to nets. Each Part instance has different ParticularPin instances."""
+	_create_anonymous_net = Net
+	_net = None
+
+	def __init__(self, part_instance, part_pin_instance, number=None):
+		# copy state of the Pin to be inherited, then continue as if the parent class always existed that way
+		self.__dict__.update(part_pin_instance.__dict__.copy())
+		# no need to call Pin.__init__
+		self._part_pin_instance = part_pin_instance
+
+		# save arguments
+		self.part = part_instance
+
+		if number is not None:
+			self.numbers = (number,)
+		assert self.numbers is not None, "this Pin really should have had real pin numbers assigned by now"
+
+		well_name = self._part_pin_instance.well_name
+		if well_name is not None:
+			try:
+				self.well = self.part.pins[well_name]
+			except KeyError:
+				raise KeyError("Couldn't find voltage well pin %s on part %r" % (well_name, part_instance))
+			if self.well.type not in (PinType.POWER_INPUT, PinType.POWER_OUTPUT):
+				raise ValueError("The chosen well pin %s is not a power pin (but is %s)" % (self.well, self.well.type))
 
 	@property
 	def net(self):
 		if self._net is None:
-			fresh_net = _Pin._create_anonymous_net()
+			fresh_net = ParticularPin._create_anonymous_net()
 			fresh_net.connect(self, direction=ConnectDirection.UNKNOWN) # This indirectly sets self.net
 		return self._net
 	@net.setter
@@ -224,22 +266,22 @@ class _Pin(object):
 		if self._net is None:
 			# don't let the net property create a new one,
 			# we want to dictate the direction to that Net
-			_Pin._create_anonymous_net() >> self
+			ParticularPin._create_anonymous_net() >> self
 		return self.net << others
 
 	def __rshift__(self, others):
 		if self._net is None:
 			# don't let the net property create a new one,
 			# we want to dictate the direction to that Net
-			_Pin._create_anonymous_net() << self
+			ParticularPin._create_anonymous_net() << self
 		return self.net >> others
 
 	def __str__(self):
 		return "%r.%s" % (self.part, self.name)
-	__repr__=__str__
+	__repr__ = __str__
 
 class Part(object):
-	PIN_NAMES = None
+	PINS = []
 	REFDES_PREFIX = "UNK"
 	value = ""
 
@@ -253,14 +295,25 @@ class Part(object):
 			self.package = package
 		self.populated = populated
 
-		if self.PIN_NAMES is not None:
-			self._generate_pin_instances(self.PIN_NAMES)
+		self._generate_pin_instances(self.PINS)
 
 		self.defined_at = _get_defined_at()
 
 	def _generate_pin_instances(self, pin_names):
-		self.pins = _PinList(_Pin(self, name) for name in self.PIN_NAMES)
-		for pin in self.pins.values():
+		# syntactic sugar, .PIN list might have only names instead of the long form Pin instances
+		for i, maybenames in enumerate(self.PINS):
+			if not isinstance(maybenames, Pin):
+				self.PINS[i] = Pin(maybenames)
+
+		self.pins = _PinList()
+		for i, part_class_pin in enumerate(self.PINS):
+			# if we don't have an assigned pin number, generate one
+			pin_number = str(i) if part_class_pin.numbers is None else None
+
+			pin = ParticularPin(self, part_class_pin, pin_number)
+			self.pins[pin.name] = pin
+
+			# save the pin as an attr for this part too
 			for name in pin.names:
 				self.__dict__[name] = pin
 

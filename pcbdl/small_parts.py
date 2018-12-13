@@ -6,10 +6,10 @@ class JellyBean(Part):
 	The main attraction to subclass this is because of the to= argument, it's very easy to chain connections
 	with such a part because its pins are pretty flexible therefore easy tochoose automatically.
 	"""
-	PIN_NAMES = (
+	PINS = [
 		("P1", "1"),
 		("P2", "2"),
-	)
+	]
 
 	UNITS = ""
 
@@ -40,7 +40,7 @@ class JellyBean(Part):
 			raise ValueError("Don't know how to get %s pin from %r" % (pin_type.name, self))
 
 class OnePinPart(Part):
-	PIN_NAMES = (("PIN", "P"),)
+	PINS = [("PIN", "P")]
 
 	def __init__(self, value="", refdes=None, package="", populated=True, to=None):
 		super().__init__(value, refdes, package, populated)
@@ -65,22 +65,22 @@ class TP(OnePinPart):
 	"""Test Point"""
 	REFDES_PREFIX = "TP"
 
-PIN_NAMES_PLUS_MINUS = (
+PINS_PLUS_MINUS = [
 	("+", "P", "PLUS"),
 	("-", "M", "MINUS"),
-)
+]
 
-PIN_NAMES_BJT = (
+PINS_BJT = [
 	("B", "BASE"),
 	("E", "EMITTER"),
 	("C", "COLLECTOR"),
-)
+]
 
-PIN_NAMES_FET = (
+PINS_FET = [
 	("G", "GATE"),
 	("S", "SOURCE"),
 	("D", "DRAIN"),
-)
+]
 
 class R(JellyBean):
 	"""Resistor"""
@@ -94,7 +94,7 @@ class C(JellyBean):
 
 class C_POL(C):
 	"""Polarized Capacitor"""
-	PIN_NAMES = PIN_NAMES_PLUS_MINUS
+	PINS = PINS_PLUS_MINUS
 
 class L(JellyBean):
 	"""Inductor"""
@@ -104,10 +104,10 @@ class L(JellyBean):
 class D(JellyBean):
 	"""Diode"""
 	REFDES_PREFIX = "D"
-	PIN_NAMES = (
+	PINS = [
 		("A", "ANODE", "+"),
 		("K", "CATHODE", "KATHODE", "-"),
-	)
+	]
 
 class LED(D):
 	"""Light Emitting Diode"""
@@ -116,9 +116,9 @@ class LED(D):
 class BJT(Part):
 	"""BJT Transistor"""
 	REFDES_PREFIX = "Q"
-	PIN_NAMES = PIN_NAMES_BJT
+	PINS = PINS_BJT
 
 class FET(Part):
 	"""FET Transistor"""
 	REFDES_PREFIX = "Q"
-	PIN_NAMES = PIN_NAMES_FET
+	PINS = PINS_FET

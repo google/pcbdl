@@ -17,7 +17,7 @@ class JellyBeanTest(unittest.TestCase):
 
 	def test_connections(self):
 		class TestPart(JellyBean):
-			PIN_NAMES = ("PRIMARY", "SECONDARY")
+			PINS = ["PRIMARY", "SECONDARY"]
 
 		primary_net = Net("PRIMARY_NET")
 		secondary_net = Net("SECONDARY_NET")
