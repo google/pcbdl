@@ -11,8 +11,21 @@ from pcbdl import *
 class Connector(Part):
 	REFDES_PREFIX = "CN"
 
+class UsbConnector(Connector):
+	package = "USB_MICRO_FLUSH"
+	part_number = "USB_MICRO_9001"
+	PINS = [
+		"VBUS",
+		("DM", "D-"),
+		("DP", "D+"),
+		"ID",
+		"GND",
+		"G", # Mechanical
+	]
+
 class Regulator(Part):
 	REFDES_PREFIX = "U"
+	package = "SOTwhatever"
 	PINS = [
 		"IN",
 		"OUT",
@@ -23,6 +36,8 @@ class Regulator(Part):
 
 class UsbEsdDiode(Part):
 	REFDES_PREFIX = "D"
+	package = "SOTwhatever"
+	part_number = "esddiode9001"
 	PINS = [
 		"VCC",
 		"GND",
@@ -33,12 +48,16 @@ class UsbEsdDiode(Part):
 
 class DoubleDiode(Part):
 	REFDES_PREFIX = "D"
+	package = "SOTwhatever"
+	part_number = "240-800MV"
 	PINS = ["A1", "A2", "K"]
 
 class ServoConnector(Connector):
 	PINS = [] # TODO
 
 class ProgrammingConnector(Connector):
+	package = "flexwhatever"
+	part_number = "flexwhatever"
 	PINS = [
 		("P1", "GND"),
 		("P2", "UART_TX"),
@@ -53,7 +72,8 @@ class ProgrammingConnector(Connector):
 
 class STM32F072(Part):
 	REFDES_PREFIX = "U"
-	value = "STM32F072CBU6TR"
+	package = "QFNwhatever"
+	part_number = "STM32F072CBU6TR"
 	PINS = [
 		Pin("VDD", type=PinType.POWER_INPUT),
 		"VBAT",
@@ -81,6 +101,8 @@ class STM32F072(Part):
 
 class I2cIoExpander(Part):
 	REFDES_PREFIX = "U"
+	part_number = "TCA6416ARTWR"
+	package = "SSOPwhatever"
 	PINS = [
 		"VCCI",
 		"VCCP",
@@ -99,7 +121,8 @@ class I2cIoExpander(Part):
 
 class LevelShifter(Part):
 	REFDES_PREFIX = "U"
-	value = "SN74AVC4T774RSVR"
+	part_number = "SN74AVC4T774RSVR"
+	package = "SSOPwhatever"
 	PINS = [
 		"VCCA",
 		"VCCB",
@@ -128,20 +151,11 @@ class LevelShifter(Part):
 vbus_in = Net("VBUS_IN")
 gnd = Net("GND")
 def decoupling(value = "100n"):
-	return C(value, to=gnd)
+	return C(value, to=gnd, package="402", part_number="CY" + value)
 
 stm32 = STM32F072()
 
 # usb stuff
-class UsbConnector(Connector):
-	PINS = [
-		"VBUS",
-		("DM", "D-"),
-		("DP", "D+"),
-		"ID",
-		"GND",
-		"G", # Mechanical
-	]
 usb = UsbConnector()
 usb_esd = UsbEsdDiode()
 Net("USB_DP") << usb.DP << usb_esd.P1 << stm32.PA11
@@ -168,7 +182,7 @@ pp3300 << (
 # 1800 regulator
 pp1800 = Net("PP1800")
 reg1800 = Regulator("TLV70018DSER")
-drop_diode = DoubleDiode("240-800MV")
+drop_diode = DoubleDiode()
 pp3300 << drop_diode.A1 << drop_diode.A2
 Net("PP1800_VIN") << (
 	drop_diode.K,
@@ -186,7 +200,7 @@ pp3300 << (
 )
 Net("PP3300_PD_VDDA") << (
 	stm32.VDDA,
-	L("600@100MHz", to=pp3300),
+	L("600@100MHz", to=pp3300, package="603"),
 	decoupling("1u"),
 	decoupling("100p"),
 )
@@ -205,10 +219,10 @@ Net("PD_NRST_L") << (
 	decoupling(),
 )
 boot0 = Net("PD_BOOT0")
-boot0_q = FET("CSD13381F4")
+boot0_q = FET("CSD13381F4", package="sot23")
 # Use OTG + A-TO-A cable to go to bootloader mode
-Net("USB_ID") << usb.ID << boot0_q.G << R("51.1k", to=vbus_in)
-boot0 << boot0_q.D << R("51.1k", to=vbus_in)
+Net("USB_ID") << usb.ID << boot0_q.G << R("51.1k", to=vbus_in, package="402", part_number="R51.1k")
+boot0 << boot0_q.D << R("51.1k", to=vbus_in, package="402", part_number="R51.1k")
 gnd << boot0_q.S
 Net("EC_UART_TX") << stm32.PA9 << prog.UART_TX
 Net("EC_UART_RX") << stm32.PA10 << prog.UART_RX
@@ -216,12 +230,12 @@ Net("EC_UART_RX") << stm32.PA10 << prog.UART_RX
 # TODO: stm32 pins, probably some will be below though
 
 # io expander definition + power
-io = I2cIoExpander("TCA6416ARTWR")
+io = I2cIoExpander()
 pp3300 << io.VCCI << decoupling()
 gnd << io.GND << io.PAD
 gnd << io.A0 # i2c addr 7'H=0x20
-Net("Servo_SDA") << R("4.7k", to=pp3300) << stm32.PB9 << io.SDA
-Net("Servo_SCL") << R("4.7k", to=pp3300) << stm32.PB8 << io.SCL
+Net("Servo_SDA") << R("4.7k", to=pp3300, package="402", part_number="R4.7k") << stm32.PB9 << io.SDA
+Net("Servo_SCL") << R("4.7k", to=pp3300, package="402", part_number="R4.7k") << stm32.PB8 << io.SCL
 Net("Reset_L") << io.RESET_L << stm32.PC13
 pp1800 << io.VCCP << decoupling()
 io.P03 << TP()

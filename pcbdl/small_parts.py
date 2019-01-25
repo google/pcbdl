@@ -1,7 +1,4 @@
-from .base import (
-	PinType, ConnectDirection,
-	Part, Pin
-)
+from .base import *
 
 class JellyBean(Part):
 	"""2 pin Jelly Bean components.
@@ -16,12 +13,16 @@ class JellyBean(Part):
 
 	UNITS = ""
 
-	def __init__(self, value=None, refdes=None, package="", populated=True, reversed=False, to=None):
-		if value is None:
-			value = self.value
-		if not value.endswith(self.UNITS):
-			value = value + self.UNITS
-		super().__init__(value, refdes, package, populated)
+	def __init__(self, value=None, refdes=None, package=None, part_number=None, populated=True, reversed=False, to=None):
+		if value is not None:
+			self.value = value
+		try:
+			if not value.endswith(self.UNITS):
+				value += self.UNITS
+		except AttributeError:
+			pass # whatever, we don't even have a value
+
+		super().__init__(value, refdes, package, part_number, populated)
 
 		self._connect_pins_reversed = reversed
 
@@ -45,8 +46,8 @@ class JellyBean(Part):
 class OnePinPart(Part):
 	PINS = [("PIN", "P")]
 
-	def __init__(self, value="", refdes=None, package="", populated=True, to=None):
-		super().__init__(value, refdes, package, populated)
+	def __init__(self, value=None, refdes=None, package=None, part_number=None, populated=True, to=None):
+		super().__init__(value, refdes, package, part_number, populated)
 		if to is not None:
 			to.connect(self, ConnectDirection.OUT, pin_type=PinType.PRIMARY)
 
@@ -67,6 +68,8 @@ class OnePinPart(Part):
 class TP(OnePinPart):
 	"""Test Point"""
 	REFDES_PREFIX = "TP"
+	package = "TP"
+	part_number = "N/A"
 
 PINS_PLUS_MINUS = [
 	("+", "P", "PLUS", "P2"),

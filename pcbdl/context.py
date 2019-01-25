@@ -1,5 +1,5 @@
-from .base import *
-
+from .base import Net, Plugin
+import collections
 __all__ = [
 	"Context",
 	"global_context", "nets",
@@ -15,7 +15,7 @@ class Context(object):
 		self.refdes_counters = collections.defaultdict(lambda:1)
 
 	def new_net(self, net):
-		#assert(net not in self.net_list)
+		assert(net not in self.net_list)
 		self.net_list.append(net)
 
 		if net.name is not None:
@@ -57,10 +57,10 @@ class Context(object):
 					self.refdes_counters[prefix] += 1
 				self.named_parts[part.refdes] = part
 
-@plugin
-class NetContext(Net):
-	def init(self):
-		global_context.new_net(self)
-
+@Plugin.register(Net)
+class NetContext(Plugin):
+	def __init__(self, instance):
+		#traceback.print_stack()
+		global_context.new_net(instance)
 global_context = Context()
 nets = global_context.named_nets

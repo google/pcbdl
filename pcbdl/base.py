@@ -1,21 +1,42 @@
 import collections
 import enum
-import inspect
 import itertools
+__all__ = [
+	"PinType", "ConnectDirection",
+	"Part", "Pin"
+]
 
-def plugin(plugin_cls):
-	"""Installs a plugin into the class, makes original class behave like the
-	   new it's the plugin inheriting the class."""
-	for original_cls in plugin_cls.__bases__:
-		#print("Installing %s into %s" % (plugin_cls, original_cls))
+class Plugin(object):
+	def __new__(cls, instance):
+		self = super(Plugin,cls).__new__(cls)
+		self.instance = instance
+		return self
 
-		# install plugin methods in original class
-		for method_name, method in plugin_cls.__dict__.items():
-			if method_name in ("__module__", "__doc__", "__init__"):
-				continue
-			setattr(original_cls, method_name, method)
+	@staticmethod
+	def register(plugin_targets):
+		if not isinstance(plugin_targets, collections.abc.Iterable):
+			plugin_targets = (plugin_targets,)
 
-		original_cls._plugins.append(plugin_cls)
+		def wrapper(plugin):
+			for target_cls in plugin_targets:
+				try:
+					target_cls.plugins
+				except AttributeError:
+					target_cls.plugins = set()
+				target_cls.plugins.add(plugin)
+			return plugin
+
+		return wrapper
+
+	@staticmethod
+	def init(instance):
+		"""Init plugins associated with this instance"""
+		try:
+			factories = instance.plugins
+		except AttributeError:
+			return
+		assert type(instance.plugins) is not dict
+		instance.plugins = {plugin: plugin(instance) for plugin in factories}
 
 class ConnectDirection(enum.Enum):
 	UNKNOWN = 0
@@ -60,16 +81,13 @@ class _PinList(collections.OrderedDict):
 		return repr(tuple(self.values()))
 
 class Net(object):
-	_plugins = []
-
 	def __init__(self, name=None):
 		if name is not None:
 			name = name.upper()
 		self.name = name
 		self._connections = collections.OrderedDict()
 
-		for plugin in self._plugins:
-			plugin.init(self)
+		Plugin.init(self)
 
 	def connect(self, others, direction=ConnectDirection.UNKNOWN, pin_type=PinType.PRIMARY):
 		for other in _maybe_single(others):
@@ -122,7 +140,6 @@ class Net(object):
 
 class PinFragment(object):
 	"""Saves everything it's given, resolves later"""
-	_plugins = []
 	def __init__(self, names, *args, **kwargs):
 		if isinstance(names, str):
 			names = (names,)
@@ -131,8 +148,7 @@ class PinFragment(object):
 		self.args = args
 		self.kwargs = kwargs
 
-		for plugin in self._plugins:
-			plugin.init(self)
+		Plugin.init(self)
 
 	def __repr__(self):
 		def arguments():
@@ -194,7 +210,6 @@ Pin = PinFragment
 class PartClassPin(object):
 	"""Pin of a Part, but no particular Part instance.
 	   Contains general information about the pin (but it could be for any part of that type), nothing related to a specific part instance."""
-	_plugins = []
 	well_name = None
 
 	def __init__(self, names, numbers=None, type=PinType.UNKNOWN, well=None):
@@ -203,8 +218,7 @@ class PartClassPin(object):
 		self.type = type
 		self.well_name = well
 
-		for plugin in self._plugins:
-			plugin.init(self)
+		Plugin.init(self)
 
 	@property
 	def name(self):
@@ -220,7 +234,6 @@ class PartClassPin(object):
 
 class PartInstancePin(PartClassPin):
 	"""Particular pin of a particular part instance. Can connect to nets. Knows the refdes of its part."""
-	_plugins = []
 	_create_anonymous_net = Net
 	_net = None
 
@@ -247,8 +260,7 @@ class PartInstancePin(PartClassPin):
 			if self.well.type not in (PinType.POWER_INPUT, PinType.POWER_OUTPUT):
 				raise ValueError("The chosen well pin %s is not a power pin (but is %s)" % (self.well, self.well.type))
 
-		for plugin in self._plugins:
-			plugin.init(self)
+		Plugin.init(self)
 
 	@property
 	def net(self):
@@ -285,25 +297,33 @@ class PartInstancePin(PartClassPin):
 	__repr__ = __str__
 
 class Part(object):
-	_plugins = []
 	PINS = []
 	REFDES_PREFIX = "UNK"
-	value = ""
 
-	def __init__(self, value=None, refdes=None, package=None, populated=True):
-		if value is None:
-			value = self.value
-		self.value = value
+	def __init__(self, value=None, refdes=None, package=None, part_number=None, populated=True):
+		if part_number is not None:
+			self.part_number = part_number
+		if value is not None:
+			self.value = value
+
+		# if we don't have a value xor a package, use one of them for both
+		if not hasattr(self, "value") and hasattr(self, "part_number"):
+			self.value = self.part_number
+		if not hasattr(self, "part_number") and hasattr(self, "value"):
+			self.part_number = self.value
+		# if we don't have either, then there's not much we can do
+		if not hasattr(self, "value") and not hasattr(self, "part_number"):
+			self.value = ""
+			self.part_number = ""
+
 		self._refdes = refdes
-
 		if package is not None:
 			self.package = package
 		self.populated = populated
 
 		self._generate_pin_instances(self.PINS)
 
-		for plugin in self._plugins:
-			plugin.init(self)
+		Plugin.init(self)
 
 	def _generate_pin_instances(self, pin_names):
 		cls_list = list(PinFragment.part_superclasses(self))

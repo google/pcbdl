@@ -1,13 +1,18 @@
-from .base import *
+from .base import Net, Part, PinFragment, Plugin
 
+import inspect
 __all__ = []
 
-@plugin
-class DefinedAt(Net, Part, PinFragment):
-	def init(self):
+@Plugin.register((Net, Part, PinFragment))
+class DefinedAt(Plugin):
+	def __init__(self, instance):
 		stack_trace = inspect.stack()
 
 		# Escape from this function
+		stack_trace.pop(0)
+
+		# Escape the plugin architecture
+		stack_trace.pop(0)
 		stack_trace.pop(0)
 
 		# Escape the caller function (probably the __init__ of the class that has the plugin)
@@ -24,4 +29,4 @@ class DefinedAt(Net, Part, PinFragment):
 			stack_trace.pop(0)
 
 		defined_at_frame = stack_trace[0]
-		self.defined_at = '%s:%d' % (defined_at_frame.filename, defined_at_frame.lineno)
+		instance.defined_at = '%s:%d' % (defined_at_frame.filename, defined_at_frame.lineno)
