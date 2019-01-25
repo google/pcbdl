@@ -29,7 +29,7 @@ class Context(object):
 			for pin in net.connections:
 				part = pin.part
 				if part not in parts_list:
-						parts_list.append(part)
+					parts_list.append(part)
 		return parts_list
 
 	def fill_refdes(self):

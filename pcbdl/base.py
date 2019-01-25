@@ -1,6 +1,7 @@
 import collections
 import enum
 import inspect
+import itertools
 
 def plugin(plugin_cls):
 	"""Installs a plugin into the class, makes original class behave like the
@@ -77,7 +78,7 @@ class Net(object):
 			if isinstance(other, Part):
 				pin = other.get_pin_to_connect(pin_type)
 
-			if isinstance(other, ParticularPin):
+			if isinstance(other, PartInstancePin):
 				pin = other
 
 			if isinstance(other, Net):
@@ -119,17 +120,85 @@ class Net(object):
 	def connections(self):
 		return tuple(self._connections.keys())
 
-class Pin(object):
-	"""Generic Pin instance of a Part class, but no particular Part instance.
-	   Contains general information about the pin (but it could be for any part of that type), nothing specific to a specific part."""
+class PinFragment(object):
+	"""Saves everything it's given, resolves later"""
+	_plugins = []
+	def __init__(self, names, *args, **kwargs):
+		if isinstance(names, str):
+			names = (names,)
+		self.names = tuple(name.upper() for name in names)
 
+		self.args = args
+		self.kwargs = kwargs
+
+		for plugin in self._plugins:
+			plugin.init(self)
+
+	def __repr__(self):
+		def arguments():
+			yield repr(self.names)
+			for arg in self.args:
+				yield repr(arg)
+			for name, value in self.kwargs.items():
+				yield "%s=%r" % (name, value)
+		return "PinFragment(%s)" % (", ".join(arguments()))
+
+	def __eq__(self, other):
+		"""If any names match between two fragments, we're talking about the same pin. This is associative, so it chains through other fragments."""
+		for my_name in self.names:
+			if my_name in other.names:
+				return True
+		return False
+
+	@staticmethod
+	def part_superclasses(part):
+		for cls in type(part).__mro__:
+			if cls is Part:
+				return
+			yield cls
+
+	@staticmethod
+	def gather_fragments(cls_list):
+		all_fragments = [pin for cls in cls_list for pin in cls.PINS]
+		while len(all_fragments) > 0:
+			same_pin_fragments = []
+			same_pin_fragments.append(all_fragments.pop(0))
+			pin_index = 0
+			while True:
+				try:
+					i = all_fragments.index(same_pin_fragments[pin_index])
+					same_pin_fragments.append(all_fragments.pop(i))
+				except ValueError:
+					pin_index += 1 # try following the chain of names, maybe there's another one we need to search by
+				except IndexError:
+					break # probably no more fragments for this pin
+			yield same_pin_fragments
+
+	@staticmethod
+	def resolve(fragments):
+		# union the names, keep order
+		name_generator = (n for f in fragments for n in f.names)
+		seen_names = set()
+		deduplicated_names = [n for n in name_generator if not (n in seen_names or seen_names.add(n))]
+
+		# union the args and kwargs, stuff near the front has priority to override
+		args = []
+		kwargs = {}
+		for fragment in reversed(fragments):
+			args[:len(fragment.args)] = fragment.args
+			kwargs.update(fragment.kwargs)
+
+		return PartClassPin(deduplicated_names, *args, **kwargs)
+Pin = PinFragment
+
+class PartClassPin(object):
+	"""Pin of a Part, but no particular Part instance.
+	   Contains general information about the pin (but it could be for any part of that type), nothing related to a specific part instance."""
 	_plugins = []
 	well_name = None
 
 	def __init__(self, names, numbers=None, type=PinType.UNKNOWN, well=None):
-		if isinstance(names, str):
-			names = (names,)
-		self.names = tuple(name.upper() for name in names)
+		self.names = names
 		self.numbers = numbers
 		self.type = type
 		self.well_name = well
@@ -149,17 +218,18 @@ class Pin(object):
 		return "Pin %s" % (self.name)
 	__repr__ = __str__
 
-class ParticularPin(Pin):
-	"""A pin from an actual instance of a Part, might be connected to nets. Each Part instance has different ParticularPin instances."""
+class PartInstancePin(PartClassPin):
+	"""Particular pin of a particular part instance. Can connect to nets. Knows the refdes of its part."""
 	_plugins = []
 	_create_anonymous_net = Net
 	_net = None
 
-	def __init__(self, part_instance, part_pin_instance, number=None):
+	def __init__(self, part_instance, part_class_pin, number=None):
 		# copy state of the Pin to be inherited, then continue as if the parent class always existed that way
-		self.__dict__.update(part_pin_instance.__dict__.copy())
-		# no need to call Pin.__init__
-		self._part_pin_instance = part_pin_instance
+		self.__dict__.update(part_class_pin.__dict__.copy())
+		# no need to call PartClassPin.__init__
+
+		self._part_class_pin = part_class_pin
 
 		# save arguments
 		self.part = part_instance
@@ -168,7 +238,7 @@ class ParticularPin(Pin):
 			self.numbers = (number,)
 		assert self.numbers is not None, "this Pin really should have had real pin numbers assigned by now"
 
-		well_name = self._part_pin_instance.well_name
+		well_name = self.well_name
 		if well_name is not None:
 			try:
 				self.well = self.part.pins[well_name]
@@ -177,10 +247,13 @@ class ParticularPin(Pin):
 			if self.well.type not in (PinType.POWER_INPUT, PinType.POWER_OUTPUT):
 				raise ValueError("The chosen well pin %s is not a power pin (but is %s)" % (self.well, self.well.type))
 
+		for plugin in self._plugins:
+			plugin.init(self)
+
 	@property
 	def net(self):
 		if self._net is None:
-			fresh_net = ParticularPin._create_anonymous_net()
+			fresh_net = PartInstancePin._create_anonymous_net()
 			fresh_net.connect(self, direction=ConnectDirection.UNKNOWN) # This indirectly sets self.net
 		return self._net
 	@net.setter
@@ -197,14 +270,14 @@ class ParticularPin(Pin):
 		if self._net is None:
 			# don't let the net property create a new one,
 			# we want to dictate the direction to that Net
-			ParticularPin._create_anonymous_net() >> self
+			PartInstancePin._create_anonymous_net() >> self
 		return self.net << others
 
 	def __rshift__(self, others):
 		if self._net is None:
 			# don't let the net property create a new one,
 			# we want to dictate the direction to that Net
-			ParticularPin._create_anonymous_net() << self
+			PartInstancePin._create_anonymous_net() << self
 		return self.net >> others
 
 	def __str__(self):
@@ -233,17 +306,23 @@ class Part(object):
 			plugin.init(self)
 
 	def _generate_pin_instances(self, pin_names):
-		# syntactic sugar, .PIN list might have only names instead of the long form Pin instances
-		for i, maybenames in enumerate(self.PINS):
-			if not isinstance(maybenames, Pin):
-				self.PINS[i] = Pin(maybenames)
+		cls_list = list(PinFragment.part_superclasses(self))
+
+		for cls in cls_list:
+			# syntactic sugar, .PIN list might have only names instead of the long form Pin instances
+			for i, maybenames in enumerate(cls.PINS):
+				if not isinstance(maybenames, Pin):
+					cls.PINS[i] = PinFragment(maybenames)
+
+		self.__class__.pins = [PinFragment.resolve(f) for f in PinFragment.gather_fragments(cls_list)]
+
+		for i, part_class_pin in enumerate(self.__class__.pins):
+			# if we don't have an assigned pin number, generate one
+			pin_number = str(i + 1) if part_class_pin.numbers is None else None
 
 		self.pins = _PinList()
-		for i, part_class_pin in enumerate(self.PINS):
-			# if we don't have an assigned pin number, generate one
-			pin_number = str(i) if part_class_pin.numbers is None else None
-
-			pin = ParticularPin(self, part_class_pin, pin_number)
+		for part_class_pin in self.__class__.pins:
+			pin = PartInstancePin(self, part_class_pin, pin_number)
 			self.pins[pin.name] = pin
 
 			# save the pin as an attr for this part too

@@ -1,4 +1,7 @@
-from .base import *
+from .base import (
+	PinType, ConnectDirection,
+	Part, Pin
+)
 
 class JellyBean(Part):
 	"""2 pin Jelly Bean components.
@@ -66,8 +69,8 @@ class TP(OnePinPart):
 	REFDES_PREFIX = "TP"
 
 PINS_PLUS_MINUS = [
-	("+", "P", "PLUS"),
-	("-", "M", "MINUS"),
+	("+", "P", "PLUS", "P2"),
+	("-", "M", "MINUS", "P1"),
 ]
 
 PINS_BJT = [
@@ -105,13 +108,17 @@ class D(JellyBean):
 	"""Diode"""
 	REFDES_PREFIX = "D"
 	PINS = [
-		("A", "ANODE", "+"),
-		("K", "CATHODE", "KATHODE", "-"),
+		("A", "ANODE", "P1"),
+		("K", "CATHODE", "KATHODE", "P2"),
 	]
 
 class LED(D):
 	"""Light Emitting Diode"""
 	REFDES_PREFIX = "LED"
+	PINS = [
+		("A", "+"),
+		("K", "-"),
+	]
 
 class BJT(Part):
 	"""BJT Transistor"""

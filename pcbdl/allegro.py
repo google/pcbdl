@@ -47,7 +47,10 @@ class NetNetlist(Net):
 		)
 
 @plugin
-class NetlistPin(ParticularPin):
+class NetlistPin(PartInstancePin):
+	def init(self):
+		pass
+
 	@property
 	def netlist_name(self):
 		return repr(self)
