@@ -9,3 +9,4 @@ from .defined_at import *
 from .context import *
 
 from .allegro import *
+from .html import *
