@@ -28,5 +28,10 @@ class DefinedAt(Plugin):
 		       "super()" in stack_trace[0].code_context[0]):
 			stack_trace.pop(0)
 
-		defined_at_frame = stack_trace[0]
-		instance.defined_at = '%s:%d' % (defined_at_frame.filename, defined_at_frame.lineno)
+		# Skip #defined_at: not here code
+		if (stack_trace[0].code_context is not None and
+		    "#defined_at: not here" in stack_trace[0].code_context[0]):
+			stack_trace.pop(0)
+
+		self.frame = stack_trace[0]
+		instance.defined_at = '%s:%d' % (self.frame.filename, self.frame.lineno)

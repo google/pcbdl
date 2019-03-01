@@ -151,7 +151,7 @@ class LevelShifter(Part):
 vbus_in = Net("VBUS_IN")
 gnd = Net("GND")
 def decoupling(value = "100n"):
-	return C(value, to=gnd, package="402", part_number="CY" + value)
+	return C(value, to=gnd, package="402", part_number="CY" + value) #defined_at: not here
 
 stm32 = STM32F072()
 
