@@ -336,12 +336,11 @@ class Part(object):
 
 		self.__class__.pins = [PinFragment.resolve(f) for f in PinFragment.gather_fragments(cls_list)]
 
+		self.pins = _PinList()
 		for i, part_class_pin in enumerate(self.__class__.pins):
 			# if we don't have an assigned pin number, generate one
 			pin_number = str(i + 1) if part_class_pin.numbers is None else None
 
-		self.pins = _PinList()
-		for part_class_pin in self.__class__.pins:
 			pin = PartInstancePin(self, part_class_pin, pin_number)
 			self.pins[pin.name] = pin
 
