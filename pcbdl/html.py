@@ -1,14 +1,18 @@
 from .base import Part, PartInstancePin, Net, Plugin
 from .context import *
+
 import collections
 from datetime import datetime
 import itertools
 import html
 
+import pygments
+import pygments.lexers
+import pygments.formatters
+
 """HTML output format"""
 __all__ = ["generate_html"]
 
-files = set()
 @Plugin.register((Net, Part))
 class HTMLDefinedAt(Plugin):
 	@property
@@ -17,7 +21,7 @@ class HTMLDefinedAt(Plugin):
 
 		file, line = defined_at.split(":")
 		line = int(line)
-		files.add(file)
+		self.code_manager.instanced_here(self.instance, file, line)
 
 		return "<p>Defined at: %s<a href=\"#line-%d\">:%d</a></p>" % (file, line, line)
 
@@ -106,10 +110,136 @@ class HTMLPin(Plugin):
 		part_anchor = "<a href=\"#part-%s\">%s</a>." % (pin.part.refdes, pin.part.refdes)
 		return part_anchor + self.short_anchor
 
+class Code(object):
+	# {filename: {line: [instance]}}
+	_file_database = collections.defaultdict(lambda: collections.defaultdict(list))
+	_instances = set()
+
+	class CodeHtmlFormatter(pygments.formatters.HtmlFormatter):
+		def _wrap_linespans(self, inner):
+			s = self.linespans
+			line_no = self.linenostart - 1
+			for t, line in inner:
+				if t:
+					line_no += 1
+					variables = self.fill_variables_for_line(line_no)
+					line = line.rstrip("\n")
+					yield 1, '<span id="%s-%d">%s%s\n</span>' % (s, line_no, line, variables)
+				else:
+					yield 0, line
+
+	def __init__(self):
+		self.lexer = pygments.lexers.PythonLexer()
+		self.formatter = self.CodeHtmlFormatter(
+			linenos=True,
+			linespans="line",
+
+			anchorlinenos = True,
+			lineanchors="line",
+
+			cssclass="code",
+		)
+		self.formatter.fill_variables_for_line = self.fill_variables_for_line
+
+	def fill_variables_for_line(self, line_no):
+
+		file = tuple(self._file_database.values())[0] #TODO: fix this to work for multiple files
+		variables_on_this_line = file[line_no]
+
+		if not variables_on_this_line:
+			return ""
+
+		links = []
+		for variable in variables_on_this_line:
+			if isinstance(variable, Net):
+				net_name = variable.name
+				links.append("<a href=\"#net-%s\">%s</a>" % (net_name, net_name))
+				continue
+
+			if isinstance(variable, Part):
+				part = variable
+				links.append("<a href=\"#part-%s\">%s</a>" % (part.refdes, part.refdes))
+				continue
+
+			raise Exception("No idea how to make link for %r of type %r" % (variable, type(variable)))
+
+		return "<span class=\"uv\"># %s</span>" % ", ".join(links)
+
+	def instanced_here(self, instance, file, line):
+		self._file_database[file][line].append(instance)
+		self._instances.add(instance)
+
+	def css_generator(self):
+		yield self.formatter.get_style_defs()
+
+	def code_generator(self):
+		file_list = self._file_database.keys()
+		for file_name in file_list:
+			yield "<h2>%s</h2>" % file_name
+
+			with open(file_name) as file:
+				source_code = file.read()
+
+			result = pygments.highlight(source_code, self.lexer, self.formatter)
+
+			for instance in self._instances:
+				try:
+					variable_name = instance.variable_name
+				except AttributeError:
+					continue
+
+				if isinstance(instance, Net):
+					net = instance
+					href = "#net-%s" % net.name
+					title = "Net %s" % net
+
+				if isinstance(instance, Part):
+					part = instance
+					href = "#part-%s" % part.refdes
+					title = "Part %s" % part
+
+				original_span = "<span class=\"n\">%s</span>" % variable_name
+				modified_span = "<span class=\"n lv\"><a href=\"%s\" title=\"%s\"><span>%s</span></a></span>" % (href, title, variable_name)
+
+				if isinstance(instance, Part):
+					# Linkify all the pins too
+					for pin in part.pins:
+						for name in pin.names:
+							prepend = original_span + "<span class=\"o\">.</span>"
+							original_pin_span = prepend + "<span class=\"n\">%s</span>" % name
+
+							title = repr(pin)
+							href = "#pin-%s.%s" % (pin.part.refdes, pin.name)
+							modified_pin_span = prepend + "<span class=\"n lv\"><a href=\"%s\" title=\"%s\"><span>%s</span></a></span>" % (href, title, name)
+							result = result.replace(original_pin_span, modified_pin_span)
+
+				result = result.replace(original_span, modified_span)
+
+			yield result
+
+
 def html_generator(context):
+	code_manager = Code()
+	HTMLDefinedAt.code_manager = code_manager
+
 	yield "<html>"
 	yield "<style>"
-	yield ":target {background-color: yellow;}"
+	yield ":target {background-color: #ffff99;}"
+	yield from code_manager.css_generator()
+
+	# unnamed variables
+	yield ".code .uv { color: #b8e0b8; margin: 0 4em; font-style: italic; user-select: none; }"
+	yield ".code .uv a { color: #6bc76b; text-decoration: none; }"
+	yield ".code .uv a:hover { color: #1d631d; text-decoration: underline; }"
+
+	# linked variables
+	yield ".code .lv a { color: #aaaaaa }"
+	yield ".code .lv a:hover { color: #000000 }"
+	yield ".code .lv a span { color: #000000 }"
+
+	yield ".linenos a { color: #aaaaaa; text-decoration: none; user-select: none; }"
+	yield ".linenos a:hover { color: #0000ff; text-decoration: underline; }"
+
 	yield "</style>"
 	yield "<body>"
 
@@ -124,16 +254,7 @@ def html_generator(context):
 	yield "</ul>"
 
 	yield "<h1>Code</h1>"
-	for file_name in files:
-		yield "<h2>%s</h2>" % file_name
-
-		yield "<pre>"
-		with open(file_name) as file:
-			for line_no, line in enumerate(file):
-				line_no += 1 # they start at 1
-				line = line[:-1] # kill the end '\n'
-				yield "<a name=\"line-%d\">%s</a>" % (line_no, line)
-		yield "</pre>"
+	yield from code_manager.code_generator()
 
 	yield "</body>"
 	yield "</html>"
