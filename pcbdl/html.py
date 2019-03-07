@@ -33,28 +33,37 @@ class HTMLPart(Plugin):
 	@property
 	def part_li(self):
 		part = self.instance
-		yield "<li>"
-		yield "<h2 id=\"part-%s\">%s</h2>" % (part.refdes, part.refdes)
+		yield "<li><h2 id=\"part-%s\">%s</h2>" % (part.refdes, part.refdes)
+
 		yield part.plugins[HTMLDefinedAt].href_line
 		yield "<p>%s</p>" % html.escape(self.class_list)
+		try:
+			yield "<p>Variable Name: %s</p>" % part.variable_name
+		except AttributeError:
+			pass
+
 		yield "<p>Value: %s</p>" % part.value
 		yield "<p>Part Number: %s</p>" % part.part_number
 		try:
 			yield "<p>Package: %s</p>" % part.package
 		except AttributeError:
 			yield "Package not defined"
+
 		yield "<p>%d pins:</p><ul>" % len(part.pins)
 		for pin in part.pins:
 			yield "<li id=\"pin-%s.%s\">%s (%s)" % (pin.part.refdes, pin.name, " / ".join(pin.names), ', '.join(pin.numbers))
+
 			try:
 				net_name = pin._net.name
 				yield "net: <a href=\"#net-%s\">%s</a>" % (net_name, net_name)
 			except AttributeError:
 				pass
+
 			try:
 				yield "well: %s" % (pin.well.plugins[HTMLPin].short_anchor)
 			except AttributeError:
 				pass
+
 			yield "</li>"
 		yield "</ul>"
 		yield "</li>"
@@ -69,13 +78,19 @@ class HTMLNet(Plugin):
 			#TODO: figure out how to name nets automatically
 			name = "TODO_NAME_THIS_NET_BETTER_IN_CODE"
 
-		yield "<li>"
-		yield "<h2 id=\"net-%s\">%s</h2>" % (name,name)
+		yield "<li><h2 id=\"net-%s\">%s</h2>" % (name,name)
 		yield net.plugins[HTMLDefinedAt].href_line
+
+		try:
+			yield "<p>Variable Name: %s</p>" % net.variable_name
+		except AttributeError:
+			pass
+
 		yield "<p>%d connections:</p><ul>" % len(net.connections)
 		for pin in net.connections:
 			yield "<li>%s</li>" % (pin.plugins[HTMLPin].full_anchor)
 		yield "</ul>"
+
 		yield "</li>"
 
 @Plugin.register(PartInstancePin)

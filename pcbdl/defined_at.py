@@ -34,4 +34,17 @@ class DefinedAt(Plugin):
 			stack_trace.pop(0)
 
 		self.frame = stack_trace[0]
+
+		label_locals_with_variable_names(self.frame.frame.f_locals)
+
 		instance.defined_at = '%s:%d' % (self.frame.filename, self.frame.lineno)
+
+def label_locals_with_variable_names(locals_dict):
+	for variable_name, instance in locals_dict.items():
+		if not isinstance(instance, (Net, Part)):
+			continue
+
+		if hasattr(instance, variable_name):
+			continue
+
+		instance.variable_name = variable_name
