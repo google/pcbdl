@@ -29,7 +29,7 @@ class JellyBean(Part):
 		if to is not None:
 			to.connect(self, ConnectDirection.OUT, pin_type=PinType.SECONDARY)
 
-	def get_pin_to_connect(self, pin_type):
+	def get_pin_to_connect(self, pin_type, net=None):
 		assert isinstance(pin_type, PinType)
 
 		mapping = [0, 1]
@@ -51,7 +51,7 @@ class OnePinPart(Part):
 		if to is not None:
 			to.connect(self, ConnectDirection.OUT, pin_type=PinType.PRIMARY)
 
-	def get_pin_to_connect(self, pin_type):
+	def get_pin_to_connect(self, pin_type, net=None):
 		if pin_type == PinType.PRIMARY:
 			return self.PIN
 		else: # pragma: no cover

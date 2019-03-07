@@ -94,7 +94,7 @@ class Net(object):
 			pin = None
 
 			if isinstance(other, Part):
-				pin = other.get_pin_to_connect(pin_type)
+				pin = other.get_pin_to_connect(pin_type, self)
 
 			if isinstance(other, PartInstancePin):
 				pin = other
@@ -299,6 +299,8 @@ class PartInstancePin(PartClassPin):
 class Part(object):
 	PINS = []
 	REFDES_PREFIX = "UNK"
+	pin_names_match_nets = False
+	pin_names_match_nets_prefix = ""
 
 	def __init__(self, value=None, refdes=None, package=None, part_number=None, populated=True):
 		if part_number is not None:
@@ -363,6 +365,18 @@ class Part(object):
 	def __str__(self):
 		return "%s - %s%s" % (self.refdes, self.value, " DNS" if not self.populated else "")
 
-	def get_pin_to_connect(self, pin_type): # pragma: no cover
+	def get_pin_to_connect(self, pin_type, net=None): # pragma: no cover
 		assert isinstance(pin_type, PinType)
+
+		if self.pin_names_match_nets and net is not None:
+			prefix = self.pin_names_match_nets_prefix
+			net_name = net.name
+			for pin in self.pins:
+				for pin_name in pin.names:
+					if pin_name == net_name:
+						return pin
+					if prefix + pin_name == net_name:
+						return pin
+			raise ValueError("Couldn't find a matching named pin on %r to connect the net %s" % (self, net_name))
+
 		raise NotImplementedError("Don't know how to get %s pin from %r" % (pin_type.name, self))
