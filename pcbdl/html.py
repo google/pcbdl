@@ -3,6 +3,7 @@ from .context import *
 import collections
 from datetime import datetime
 import itertools
+import html
 
 """HTML output format"""
 __all__ = ["generate_html"]
@@ -23,16 +24,28 @@ class HTMLDefinedAt(Plugin):
 @Plugin.register(Part)
 class HTMLPart(Plugin):
 	@property
+	def class_list(self):
+		l = self.instance.__class__.__mro__
+		s = repr(l[:l.index(Part) + 1])
+		s = s.strip("(),")
+		return s
+
+	@property
 	def part_li(self):
 		part = self.instance
 		yield "<li>"
 		yield "<h2 id=\"part-%s\">%s</h2>" % (part.refdes, part.refdes)
 		yield part.plugins[HTMLDefinedAt].href_line
+		yield "<p>%s</p>" % html.escape(self.class_list)
 		yield "<p>Value: %s</p>" % part.value
 		yield "<p>Part Number: %s</p>" % part.part_number
+		try:
+			yield "<p>Package: %s</p>" % part.package
+		except AttributeError:
+			yield "Package not defined"
 		yield "<p>%d pins:</p><ul>" % len(part.pins)
 		for pin in part.pins:
-			yield "<li id=\"pin-%s.%s\">%s (%s)" % (pin.part.refdes, pin.name, "/".join(pin.names), ', '.join(pin.numbers))
+			yield "<li id=\"pin-%s.%s\">%s (%s)" % (pin.part.refdes, pin.name, " / ".join(pin.names), ', '.join(pin.numbers))
 			try:
 				net_name = pin._net.name
 				yield "net: <a href=\"#net-%s\">%s</a>" % (net_name, net_name)
