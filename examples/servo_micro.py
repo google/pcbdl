@@ -8,73 +8,87 @@ https://www.chromium.org/chromium-os/servo/servomicro
 
 from pcbdl import *
 
-class Connector(Part):
-	REFDES_PREFIX = "CN"
+def make_connector(pin_count):
+	class Connector(Part):
+		REFDES_PREFIX = "CN"
 
-class UsbConnector(Connector):
-	package = "USB_MICRO_FLUSH"
-	part_number = "USB_MICRO_9001"
+		PINS = []
+
+	for i in range(pin_count):
+		i += 1 # 1 indexed
+		pin = Pin(("P%d" % i), number=str(i))
+		Connector.PINS.append(pin)
+
+	return Connector
+
+class UsbConnector(Part):
+	REFDES_PREFIX = "CN"
+	part_number = "1981568-1"
+	package = "TE_1981568-1"
 	PINS = [
 		"VBUS",
 		("DM", "D-"),
 		("DP", "D+"),
 		"ID",
 		"GND",
-		"G", # Mechanical
+		Pin("G", numbers=("G1", "G2", "G3", "G4")),
 	]
 
 class Regulator(Part):
 	REFDES_PREFIX = "U"
-	package = "SOTwhatever"
 	PINS = [
-		"IN",
 		"OUT",
-		"EN",
 		"GND",
-		"PAD",
+		"IN",
+		"EN",
+		Pin("PAD", number="PAD"),
 	]
 
 class UsbEsdDiode(Part):
 	REFDES_PREFIX = "D"
-	package = "SOTwhatever"
-	part_number = "esddiode9001"
+	part_number = "TPD2E001DRLR"
+	package = "SOP50P170X60-5N"
 	PINS = [
 		"VCC",
-		"GND",
-		"P1",
-		"P2",
 		"NC",
+		"P1",
+		"GND",
+		"P2",
 	]
 
 class DoubleDiode(Part):
 	REFDES_PREFIX = "D"
-	package = "SOTwhatever"
 	part_number = "240-800MV"
+	package = "SOT95P247X115-3L"
 	PINS = ["A1", "A2", "K"]
-class ServoConnector(Connector):
+
+class ServoConnector(make_connector(pin_count=50)):
+	part_number = "AXK850145WG"
+	package = "AXK850145WG"
+
 	pin_names_match_nets = True
 	pin_names_match_nets_prefix = "DUT_"
 	PINS = [
-		("P1",  "GND1"),
+		("P1",  "GND"),
 		("P2",  "SPI2_CLK", "SPI2_SK"),
 		("P3",  "SPI2_CS"),
 		("P4",  "SPI2_MOSI", "SPI2_DI"),
 		("P5",  "SPI2_MISO", "SPI2_DO"),
 		("P6",  "SPI2_VREF"),
 		("P7",  "SPI2_HOLD_L"),
-		("P8",  "GND2"),
+		("P8",  "GND"),
 		("P9",  "SPI1_CLK", "SPI1_SK"),
 		("P10", "SPI1_CS"),
 		("P11", "SPI1_MOSI", "SPI1_DI"),
 		("P12", "SPI1_MISO", "SPI1_DO"),
 		("P13", "SPI1_VREF"),
 		("P14", "EC_RESET_L", "COLD_RESET_L"),
-		("P15", "GND3"),
+		("P15", "GND"),
 		("P16", "UART2_SERVO_DUT_TX", "UART2_RXD"),
 		("P17", "UART2_DUT_SERVO_TX", "UART2_TXD"),
 		("P18", "UART2_VREF"),
 		("P19", "SD_DETECT_L"),
-		("P20", "GND4"),
+		("P20", "GND"),
 		("P21", "JTAG_TCK"),
 		("P22", "PWR_BUTTON"),
 		("P23", "JTAG_TMS"),
@@ -84,22 +98,22 @@ class ServoConnector(Connector):
 		("P27", "JTAG_TRST_L"),
 		("P28", "JTAG_SRST_L", "WARM_RESET_L"),
 		("P29", "JTAG_VREF"),
-		("P30", "REC_MODE_L"),
-		("P31", "GND5"),
+		("P30", "REC_MODE_L", "GOOG_REC_MODE_L"),
+		("P31", "GND"),
 		("P32", "UART1_SERVO_DUT_TX", "UART1_RXD"),
 		("P33", "UART1_DUT_SERVO_TX", "UART1_TXD"),
 		("P34", "UART1_VREF"),
 		("P35", "I2C_3.3V"),
-		("P36", "GND6"),
+		("P36", "GND"),
 		("P37", "I2C_SDA"),
 		("P38", "I2C_SCL"),
 		("P39", "HPD"),
-		("P40", "FW_WP"),
-		("P41", "PROC_HOT_L", "FW_UPDATE_L"),
-		("P42", "GND7"),
+		("P40", "FW_WP", "MFG_MODE"),
+		("P41", "PROC_HOT_L", "FW_UPDATE_L", "FW_UP_L"),
+		("P42", "GND"),
 		("P43", "DEV_MODE"),
 		("P44", "LID_OPEN"),
-		("P45", "PCB_DISABLE_L", "CPU_NMI"),
+		("P45", "PCH_DISABLE_L", "CPU_NMI"),
 		("P46", "KBD_COL1"),
 		("P47", "KBD_COL2"),
 		("P48", "KBD_ROW1"),
@@ -110,41 +124,97 @@ class ServoConnector(Connector):
 	# swap the order of the names so the pretty names are first
 	PINS = [names[1:] + (names[0],) for names in PINS]
 
-class ProgrammingConnector(Connector):
-	package = "flexwhatever"
-	part_number = "flexwhatever"
+class ProgrammingConnector(make_connector(8)):
+	part_number = "FH34SRJ-8S-0.5SH(50)"
+	package = "HRS_FH34SRJ-8S-0-5SH"
+
 	PINS = [
 		("P1", "GND"),
 		("P2", "UART_TX"),
 		("P3", "UART_RX"),
-		"P4",
-		"P5",
 		("P6", "NRST"),
-		"P7",
 		("P8", "BOOT0"),
-		"G", # Mechanical
+		Pin("G", numbers=("G1", "G2")),
 	]
 
 class STM32F072(Part):
 	REFDES_PREFIX = "U"
-	package = "QFNwhatever"
+
 	part_number = "STM32F072CBU6TR"
+	package = "QFN05P_7-1X7-1_0-6_49N"
+
 	pin_names_match_nets = True
 	PINS = [
-		Pin("VDD", type=PinType.POWER_INPUT),
-		"VBAT",
-		Pin("VDDA", type=PinType.POWER_INPUT),
-		"VDDIO2",
+		Pin("VDD",    ("24", "48"), type=PinType.POWER_INPUT),
+		Pin("VBAT",   "1",          type=PinType.POWER_INPUT),
+		Pin("VDDA",   "9",          type=PinType.POWER_INPUT),
+		Pin("VDDIO2", "36",         type=PinType.POWER_INPUT),
 
-		"VSS",
-		"VSSA",
-		"PAD",
+		Pin("VSS",    ("23", "35", "47")),
+		Pin("VSSA",   "8"),
+		Pin("PAD",    "49"),
 
-		"BOOT0",
-		"NRST",
+		Pin("BOOT0",  "44"),
+		Pin("NRST",   "7"),
+	]
 
-		Pin(("PA0",  "UART3_TX"), well="VDD"),
-		Pin(("PA1",  "UART3_RX"), well="VDD"),
+	for i in range(8):
+		PINS.append(Pin("PA%d" % i, number=str(10 + i)))
+
+	PINS += [
+		Pin("PA8",  "29"),
+		Pin("PA9",  "30"),
+		Pin("PA10", "31"),
+		Pin("PA11", "32"),
+		Pin("PA12", "33"),
+		Pin("PA13", "34"),
+		Pin("PA14", "37"),
+		Pin("PA15", "38"),
+
+		Pin("PB0",  "18"),
+		Pin("PB1",  "19"),
+		Pin("PB2",  "20"),
+		Pin("PB3",  "39"),
+		Pin("PB4",  "40"),
+		Pin("PB5",  "41"),
+		Pin("PB6",  "42"),
+		Pin("PB7",  "43"),
+
+		Pin("PB8",  "45"),
+		Pin("PB9",  "46"),
+		Pin("PB10", "21"),
+		Pin("PB11", "22"),
+		Pin("PB12", "25"),
+		Pin("PB13", "26"),
+		Pin("PB14", "27"),
+		Pin("PB15", "28"),
+
+		Pin("PC13",                "2"),
+		Pin(("PC14", "OSC32_IN"),  "3"),
+		Pin(("PC15", "OSC32_OUT"), "4"),
+
+		Pin(("PF0", "OSC_IN"),     "5"),
+		Pin(("PF1", "OSC_OUT"),    "6"),
+	]
+
+	for pin in PINS:
+		if pin.names[0].startswith("PA"):
+			pin.well_name = "VDD"
+
+		if pin.names[0].startswith("PB"):
+			pin.well_name = "VDDA"
+
+		if pin.names[0].startswith("PC"):
+			pin.well_name = "VDDA"
+
+		if pin.names[0].startswith("PF"):
+			pin.well_name = "VDDA"
+
+class ServoEC(STM32F072):
+	pin_names_match_nets = True
+	PINS = [
+		Pin(("PA0",  "UART3_TX")),
+		Pin(("PA1",  "UART3_RX")),
 		Pin(("PA2",  "UART1_TX")),
 		Pin(("PA3",  "UART1_RX")),
 		Pin(("PA4",  "SERVO_JTAG_TMS")),
@@ -183,18 +253,13 @@ class STM32F072(Part):
 		Pin(("PC14", "SERVO_JTAG_TMS_DIR")),
 		Pin(("PC15", "SERVO_JTAG_TDO_SEL")),
 
-		Pin(("PF0", "JTAG_BUFOUT_EN_L", "OSC_IN")),
-		Pin(("PF1", "JTAG_BUFIN_EN_L", "OSC_OUT")),
+		Pin(("PF0", "JTAG_BUFOUT_EN_L")),
+		Pin(("PF1", "JTAG_BUFIN_EN_L")),
 	]
 
 	for pin in PINS:
 		if not isinstance(pin, Pin):
 			continue
-
-		if pin.names[0].startswith("PA"):
-			pin.well_name = "VDD"
-		if pin.names[0].startswith("PB"):
-			pin.well_name = "VDDA"
 
 		if pin.names[0].startswith("P"):
 			# swap the order of the names so the
@@ -203,31 +268,75 @@ class STM32F072(Part):
 
 class I2cIoExpander(Part):
 	REFDES_PREFIX = "U"
+
 	part_number = "TCA6416ARTWR"
-	package = "SSOPwhatever"
+	package = "QFN50P400X400X080-25N"
+
 	PINS = [
-		"VCCI",
-		"VCCP",
-		"GND",
-		"PAD",
+		Pin("VCCI",    "23"),
+		Pin("VCCP",    "21"),
+		Pin("GND",     "9"),
+		Pin("PAD",     "25"),
 
-		"SCL",
-		"SDA",
-		"INT_L",
-		"RESET_L",
+		Pin("SCL",     "19"),
+		Pin("SDA",     "20"),
+		Pin("INT_L",   "22"),
+		Pin("RESET_L", "24"),
 
-		"A0",
+		Pin("A0",      "18"),
 	]
-	for i in range(18):
-		PINS.append("P%02d" % i)
+
+	for i in range(8):
+		PINS.append(Pin("P0%d" % i, number=str(i + 1)))
+
+	for i in range(8):
+		PINS.append(Pin("P1%d" % i, number=str(i + 10)))
+
+class Mux(Part):
+	REFDES_PREFIX = "U"
+
+	part_number = "313-00929-00"
+	package = "SOT65P210X110-6L"
+
+	PINS = [
+		Pin("VCC",         "5"),
+		Pin("GND",         "2"),
+
+		Pin(("0", "IN0"),  "1"),
+		Pin(("1", "IN1"),  "3"),
+
+		Pin(("S0", "SEL"), "6"),
+		Pin(("Y", "OUT"),  "4"),
+	]
+
+class OutputBuffer(Part):
+	REFDES_PREFIX = "U"
+
+	part_number = "SN74LVC1G126YZPR"
+	package = "BGA5C50P3X2_141X91X50L"
+
+	PINS = [
+		Pin("VCC",         "A2"),
+		Pin("GND",         "C1"),
+
+		Pin(("A", "IN"),   "B1"),
+		Pin(("OE", "SEL"), "A1"),
+		Pin(("Y", "OUT"),  "C2"),
+	]
 
 class LevelShifter(Part):
+	"""
+		Bidirectional Level Shifter
+
+		DIR=0 : B->A
+		DIR=1 : A->B
+	"""
 	REFDES_PREFIX = "U"
+
 	PINS = [
 		"VCCA",
 		"VCCB",
 		"GND",
-		"OE_L",
 	]
 
 	@property
@@ -238,34 +347,104 @@ class LevelShifter(Part):
 	def direction_BA(self):
 		return self.GND.net
 
+class LevelShifter1(LevelShifter):
+	__doc__ = LevelShifter.__doc__
+	part_number = "SN74AVC1T45DRLR"
+	package = "SOP50P170X60-6N"
+
+	PINS = [
+		"VCCA",
+		"VCCB",
+		"A",
+		"B",
+		"DIR",
+		"GND",
+	]
+
 class LevelShifter2(LevelShifter):
+	__doc__ = LevelShifter.__doc__
 	part_number = "SN74AVC2T245RSWR"
-	package = "SSOP10?"
-	PINS = list(LevelShifter.PINS)
+	package = "QFN40P145X185X55-10N"
+
+	PINS = LevelShifter.PINS + ["OE_L"]
 	for i in range(1, 3):
 		PINS.append("A%d" % i)
 		PINS.append("B%d" % i)
 		PINS.append("DIR%d" % i)
 
 class LevelShifter4(LevelShifter):
+	__doc__ = LevelShifter.__doc__
 	part_number = "SN74AVC4T774RSVR"
-	package = "SSOP16?"
-	PINS = list(LevelShifter.PINS)
+	package = "QFN40P265X185X55-16N"
+
+	PINS = LevelShifter.PINS + ["OE_L"]
 	for i in range(1, 5):
 		PINS.append("A%d" % i)
 		PINS.append("B%d" % i)
 		PINS.append("DIR%d" % i)
 		# TODO, add these in some kind of bundles, or a list
 
+class AnalogSwitch(Part):
+	"""
+		Dual Analog Switch
+
+		IN   DIRECTION
+		L    NC -> COM
+		H    NO -> COM
+	"""
+	REFDES_PREFIX = "U"
+
+	part_number = "TS3A24159"
+	package = "BGA10C50P4X3_186X136X50L"
+
+	PINS = [
+		Pin(("V+", "VCC"),   "D2"),
+		Pin("GND",           "A2"),
+
+		Pin(("IN1", "SEL1"), "B1"),
+		Pin("COM1",          "C1"),
+		Pin("NC1",           "A1"),
+		Pin("NO1",           "D1"),
+
+		Pin(("IN2", "SEL2"), "B3"),
+		Pin("COM2",          "C3"),
+		Pin("NC2",           "A3"),
+		Pin("NO2",           "D3"),
+	]
+
+class PowerSwitch(Part):
+	REFDES_PREFIX = "U"
+
+	part_number = "ADP194ACBZ-R7"
+	package = "BGA4C40P2X2_80X80X56"
+
+	PINS = [
+		Pin(("IN", "IN1"),   "A1"),
+		Pin(("OUT", "OUT1"), "A2"),
+		Pin("EN",            "B1"),
+		Pin("GND",           "B2"),
+	]
+
 vbus_in = Net("VBUS_IN")
 gnd = Net("GND")
 def decoupling(value = "100n"):
-	return C(value, to=gnd, package="402", part_number="CY" + value) #defined_at: not here
+	package = "CAPC0603X33L"
 
-stm32 = STM32F072()
+	if "uF" in value:
+		package = "CAPC1005X71L"
+
+	if "0uF" in value:
+		package = "CAPC1608X80L"
+
+	return C(value, to=gnd, package=package, part_number="CY" + value) #defined_at: not here
+old_R = R
+def R(value, to):
+	return old_R(value, package="RESC0603X23L", part_number="R" + value, to=to) #defined_at: not here
+
+stm32 = ServoEC()
 
 dut = ServoConnector()
-gnd << (pin for pin in dut.pins if pin.name.startswith("GND"))
+gnd << dut.GND
 
 # usb stuff
 usb = UsbConnector()
@@ -278,7 +457,7 @@ gnd << usb.GND << usb.G << usb_esd.GND
 
 # 3300 regulator
 pp3300 = Net("PP3300")
-reg3300 = Regulator("MIC5504-3.3YMT")
+reg3300 = Regulator("MIC5504-3.3YMT", package="SON65P100X100X40-5T48X48N")
 vbus_in << (
 	reg3300.IN, decoupling("2.2u"),
 	reg3300.EN,
@@ -293,7 +472,7 @@ pp3300 << (
 
 # 1800 regulator
 pp1800 = Net("PP1800")
-reg1800 = Regulator("TLV70018DSER")
+reg1800 = Regulator("TLV70018DSER", package="SON50P150X150X80-6L")
 drop_diode = DoubleDiode()
 pp3300 << drop_diode.A1 << drop_diode.A2
 Net("PP1800_VIN") << (
@@ -312,7 +491,7 @@ pp3300 << (
 )
 Net("PP3300_PD_VDDA") << (
 	stm32.VDDA,
-	L("600@100MHz", to=pp3300, package="603"),
+	L("600@100MHz", to=pp3300, package="FBC1005X50N", part_number="FERRITEBEAD100MHz"),
 	decoupling("1u"),
 	decoupling("100p"),
 )
@@ -331,30 +510,56 @@ Net("PD_NRST_L") << (
 	decoupling(),
 )
 boot0 = Net("PD_BOOT0")
-boot0_q = FET("CSD13381F4", package="sot23")
+boot0_q = FET("CSD13381F4", package="DFN100X60X35-3L")
 # Use OTG + A-TO-A cable to go to bootloader mode
-Net("USB_ID") << usb.ID << boot0_q.G << R("51.1k", to=vbus_in, package="402", part_number="R51.1k")
-boot0 << boot0_q.D << R("51.1k", to=vbus_in, package="402", part_number="R51.1k")
+Net("USB_ID") << usb.ID << boot0_q.G << R("51.1k", to=vbus_in)
+boot0 << boot0_q.D << R("51.1k", to=vbus_in)
 gnd << boot0_q.S
 Net("EC_UART_TX") << stm32 << prog.UART_TX
 Net("EC_UART_RX") << stm32 << prog.UART_RX
 
-# TODO: stm32 pins, probably some will be below though
+ppdut_spi_vrefs = {
+	1: Net("PPDUT_SPI1_VREF"),
+	2: Net("PPDUT_SPI2_VREF"),
+}
 
-# io expander definition + power
+uart3_rx = Net("UART3_RX") >> stm32
+uart3_tx = Net("UART3_TX") << stm32
+
 io = I2cIoExpander()
 pp3300 << io.VCCI << decoupling()
 gnd << io.GND << io.PAD
 gnd << io.A0 # i2c addr 7'H=0x20
-Net("SERVO_SDA") << R("4.7k", to=pp3300, package="402", part_number="R4.7k") << stm32 << io.SDA
-Net("SERVO_SCL") << R("4.7k", to=pp3300, package="402", part_number="R4.7k") << stm32 << io.SCL
+Net("SERVO_SDA") << R("4.7k", to=pp3300) << stm32 << io.SDA
+Net("SERVO_SCL") << R("4.7k", to=pp3300) << stm32 << io.SCL
 Net("RESET_L") << io.RESET_L << stm32
 pp1800 << io.VCCP << decoupling()
-io.P03 << TP()
-io.P17 << TP()
 
-# TODO: pins for io expander
-# TODO: FTDI_MFG_MODE
+dut_mfg_mode = Net("DUT_MFG_MODE") << dut
+mfg_mode_shifter = LevelShifter1()
+gnd << mfg_mode_shifter.GND
+
+Net("FW_WP_EN") << mfg_mode_shifter.VCCA << io.P00 << decoupling() << R("4.7k", to=gnd)
+Net("FTDI_MFG_MODE") << io.P01 << mfg_mode_shifter.A
+dut_mfg_mode << io.P02
+io.P03 << TP(package="TP075") # spare
+Net("SPI_HOLD_L") << io.P04 >> dut.SPI2_HOLD_L
+Net("DUT_COLD_RESET_L") << io.P05 >> dut
+Net("DUT_PWR_BUTTON") << io.P06 >> dut
+Net("DUT_WARM_RESET_L") << io.P07 >> dut
+
+Net("DUT_GOOG_REC_MODE_L") << io.P10 >> dut
+dut_mfg_mode << io.P11
+Net("HPD") << io.P12 >> dut
+Net("FW_UP_L") << io.P13 >> dut
+Net("DUT_LID_OPEN") << io.P14 >> dut
+Net("DUT_DEV_MODE") << io.P15 >> dut
+Net("PCH_DISABLE_L") << io.P16 >> dut
+io.P17 << TP(package="TP075") # spare
+
+mfg_mode_shifter.direction_AB << mfg_mode_shifter.DIR
+ppdut_spi_vrefs[2] >> mfg_mode_shifter.VCCB << decoupling()
+Net("DUT_MFG_MODE_BUF") << R("0", to=dut_mfg_mode) >> mfg_mode_shifter.B
 
 # JTAG
 jtag_vref = Net("PPDUT_JTAG_VREF")
@@ -370,56 +575,74 @@ pp3300 >> shifter2.VCCA << decoupling()
 jtag_vref >> shifter2.VCCB << decoupling()
 gnd >> shifter2.GND
 
+jtag_mux = Mux()
+pp3300 >> jtag_mux.VCC << decoupling()
+gnd >> jtag_mux.GND
+Net("SERVO_JTAG_TDO_SEL") << stm32 >> jtag_mux.SEL
+
+jtag_output_buffer = OutputBuffer()
+pp3300 >> jtag_output_buffer.VCC << decoupling()
+gnd >> jtag_output_buffer.GND
+Net("SERVO_JTAG_TDO_BUFFER_EN") << stm32 >> jtag_output_buffer.OE
+Net("SERVO_JTAG_MUX_TDO") << jtag_mux.OUT >> jtag_output_buffer.IN
+uart3_rx << jtag_output_buffer.OUT # also Net("JTAG_BUFFER_TO_SERVO_TDO")
+
 Net("JTAG_BUFOUT_EN_L") << stm32 >> shifter1.OE_L
 Net("JTAG_BUFIN_EN_L")  << stm32  >> shifter2.OE_L
 
-# spare
-pp3300 >> shifter1.A1
-shifter1.direction_AB >> shifter1.DIR1
-shifter1.B1
-
+pp3300 >> shifter1.A1 # spare
 Net("SERVO_JTAG_TRST_L") << stm32 << shifter1.A2
-Net("SERVO_JTAG_TRST_DIR") << stm32 >> shifter1.DIR2
-Net("DUT_JTAG_TRST_L") << dut << shifter1.B2
-
 Net("SERVO_JTAG_TMS") << stm32 << shifter1.A3
-Net("SERVO_JTAG_TRST_DIR") >> shifter1.DIR3
-Net("DUT_JTAG_TMS") >> dut << shifter1.B3
-
 Net("SERVO_JTAG_TDI") << stm32 << shifter1.A4
+
+shifter1.direction_AB >> shifter1.DIR1 # spare
+Net("SERVO_JTAG_TRST_DIR") << stm32 >> shifter1.DIR2
+Net("SERVO_JTAG_TRST_DIR") >> shifter1.DIR3
 Net("SERVO_JTAG_TDI_DIR") << stm32 >> shifter1.DIR4
+
+shifter1.B1 # spare
+Net("DUT_JTAG_TRST_L") << dut << shifter1.B2
+Net("DUT_JTAG_TMS") >> dut << shifter1.B3
 Net("DUT_JTAG_TDI") << dut << shifter1.B4 >> shifter2.B3
-shifter2.direction_BA >> shifter2.DIR3
-Net("SERVO_JTAG_SWDIO") << shifter2.A3 # >> mux.IN1
 
 Net("DUT_JTAG_TDO") << dut >> shifter2.B1
-shifter2.direction_BA >> shifter2.DIR1
-Net("SERVO_JTAG_TDO") << shifter2.A1 # >> mux.IN0
-
 Net("DUT_JTAG_RTCK") << dut >> shifter2.B2
-shifter2.direction_BA >> shifter2.DIR2
-Net("SERVO_JTAG_RTCK") >> stm32 << shifter2.A2
-
 Net("DUT_JTAG_TCK") << dut >> shifter2.B4
-shifter2.direction_AB >> shifter2.DIR4
-Net("DUT_JTAG_TCK") >> stm32.UART3_TX << shifter2.A4
 
-# TODO SERVO_TO_SPI1_MUX_CLK
-# TODO jtag mux output buffer
+shifter2.direction_BA >> shifter2.DIR1
+shifter2.direction_BA >> shifter2.DIR2
+shifter2.direction_BA >> shifter2.DIR3
+shifter2.direction_AB >> shifter2.DIR4
+
+Net("SERVO_JTAG_TDO") << shifter2.A1 >> jtag_mux.IN0
+Net("SERVO_JTAG_RTCK") >> stm32 << shifter2.A2
+Net("SERVO_JTAG_SWDIO") << shifter2.A3 >> jtag_mux.IN1
+uart3_tx << shifter2.A4 # also Net("DUT_JTAG_TCK")
 
 # SPI1 & 2
+# TODO SERVO_TO_SPI1_MUX_CLK
 servo_spi_mosi = Net("SERVO_SPI_MOSI") << stm32
 servo_spi_cs = Net("SERVO_SPI_CS") << stm32
 
 # Since the circuits look so similar, we'll just have a loop
-spi_shifters = {i: LevelShifter4() for i in (1, 2)}
+spi_shifters = {
+	1: LevelShifter4(),
+	2: LevelShifter4(),
+}
 for i, s in spi_shifters.items():
 	# Power supply
-	# TODO add part
-	Net("SPI%d_VREF_33" % i) << stm32
-	Net("SPI%d_VREF_18" % i) << stm32
-	vref = Net("PPDUT_SPI%d_VREF" % i)
+	vref = ppdut_spi_vrefs[i]
 	vref << dut.pins["SPI%d_VREF" % i]
+
+	power_switches = [
+		("18", pp1800, PowerSwitch()),
+		("33", pp3300, PowerSwitch()),
+	]
+	for voltage, input_rail, power_switch in power_switches:
+		gnd << power_switch.GND
+		Net("SPI%d_VREF_%s" % (i, voltage)) << stm32 >> power_switch.EN << R("4.7k", to=gnd)
+		input_rail << power_switch.IN
+		vref << power_switch.OUT
 
 	# Level shifter setup
 	pp3300 >> s.VCCA << decoupling()
@@ -447,11 +670,25 @@ for i, s in spi_shifters.items():
 	s.direction_AB >> s.DIR4
 	Net("DUT_SPI%d_CLK" % i) << dut >> s.B4
 
-#Net("SPI_MUX_TO_DUT_SPI%d_MISO" % i) << shifter.A1 #>> com1
-#Net("SPI_MUX_TO_DUT_SPI%d_CLK" % i) >> shifter.A4 #<< com2
+spi1_mux = AnalogSwitch()
+pp3300 >> spi1_mux.VCC >> decoupling()
+gnd >> spi1_mux.GND
+Net("SPI1_MUX_SEL") << stm32 >> spi1_mux.SEL1 >> spi1_mux.SEL2
+
+Net("SPI_MUX_TO_DUT_SPI1_MISO") >> spi1_mux.COM1 << spi_shifters[1].A1
+Net("SPI_MUX_TO_DUT_SPI1_CLK")  << spi1_mux.COM2 >> spi_shifters[1].A4
+
+Net("SERVO_TO_SPI1_MUX_MISO")  << spi1_mux.NO1 << spi_shifters[2].A1 >> stm32
+Net("SERVO_TO_SPI1_MUX_CLK")   >> spi1_mux.NO2 >> spi_shifters[2].A4 << stm32
+
+uart3_rx << spi1_mux.NC1
+uart3_tx >> spi1_mux.NC2
 
 # UART 1 & 2
-uart_shifters = {i: LevelShifter2() for i in (1, 2)}
+uart_shifters = {
+	1: LevelShifter2(),
+	2: LevelShifter2(),
+}
 for i, s in uart_shifters.items():
 	vref = Net("PPDUT_UART%d_VREF" % i)
 	vref << dut.pins["UART%d_VREF" % i]
@@ -470,4 +707,4 @@ for i, s in uart_shifters.items():
 	s.direction_BA >> s.DIR2
 	Net("UART%d_RX" % i) >> stm32 << s.A2
 
-global_context.fill_refdes()
+global_context.fill_refdes("servo_micro.refdes_mapping")

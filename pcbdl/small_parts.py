@@ -69,7 +69,7 @@ class TP(OnePinPart):
 	"""Test Point"""
 	REFDES_PREFIX = "TP"
 	package = "TP"
-	part_number = "N/A"
+	part_number = "TP"
 
 PINS_PLUS_MINUS = [
 	("+", "P", "PLUS", "P2"),
