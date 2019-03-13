@@ -93,7 +93,7 @@ The main goal of this language is to aid in creating PCBs. The intermediate file
 
 For now we have a **minimum viable example** of an exporter for the Allegro Cadence netlists (found in `netlist.py`):
 
-	>>> print(generate_netlist())
+	>>> print(generate_netlist("/tmp/some_export_location"))
 
 ### Schematics / Graphical representation of the circuit
 

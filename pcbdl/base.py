@@ -140,10 +140,17 @@ class Net(object):
 
 class PinFragment(object):
 	"""Saves everything it's given, resolves later"""
-	def __init__(self, names, *args, **kwargs):
+	def __init__(self, names, number=None, numbers=(), *args, **kwargs):
 		if isinstance(names, str):
 			names = (names,)
 		self.names = tuple(name.upper() for name in names)
+
+		self.numbers = numbers
+		if number is not None:
+			if isinstance(number, str):
+				self.numbers = (number,) + self.numbers
+			else:
+				self.numbers = number + self.numbers
 
 		self.args = args
 		self.kwargs = kwargs
@@ -153,6 +160,8 @@ class PinFragment(object):
 	def __repr__(self):
 		def arguments():
 			yield repr(self.names)
+			if self.numbers:
+				yield "numbers=" + repr(self.numbers)
 			for arg in self.args:
 				yield repr(arg)
 			for name, value in self.kwargs.items():
@@ -197,6 +206,8 @@ class PinFragment(object):
 		seen_names = set()
 		deduplicated_names = [n for n in name_generator if not (n in seen_names or seen_names.add(n))]
 
+		pin_numbers = [number for fragment in fragments for number in fragment.numbers]
+
 		# union the args and kwargs, stuff near the front has priority to override
 		args = []
 		kwargs = {}
@@ -204,7 +215,7 @@ class PinFragment(object):
 			args[:len(fragment.args)] = fragment.args
 			kwargs.update(fragment.kwargs)
 
-		return PartClassPin(deduplicated_names, *args, **kwargs)
+		return PartClassPin(deduplicated_names, pin_numbers, *args, **kwargs)
 Pin = PinFragment
 
 class PartClassPin(object):
@@ -212,7 +223,7 @@ class PartClassPin(object):
 	   Contains general information about the pin (but it could be for any part of that type), nothing related to a specific part instance."""
 	well_name = None
 
-	def __init__(self, names, numbers=None, type=PinType.UNKNOWN, well=None):
+	def __init__(self, names, numbers, type=PinType.UNKNOWN, well=None):
 		self.names = names
 		self.numbers = numbers
 		self.type = type
@@ -237,7 +248,7 @@ class PartInstancePin(PartClassPin):
 	_create_anonymous_net = Net
 	_net = None
 
-	def __init__(self, part_instance, part_class_pin, number=None):
+	def __init__(self, part_instance, part_class_pin, inject_number=None):
 		# copy state of the Pin to be inherited, then continue as if the parent class always existed that way
 		self.__dict__.update(part_class_pin.__dict__.copy())
 		# no need to call PartClassPin.__init__
@@ -247,8 +258,8 @@ class PartInstancePin(PartClassPin):
 		# save arguments
 		self.part = part_instance
 
-		if number is not None:
-			self.numbers = (number,)
+		if inject_number is not None:
+			self.numbers = (inject_number,)
 		assert self.numbers is not None, "this Pin really should have had real pin numbers assigned by now"
 
 		well_name = self.well_name
@@ -341,9 +352,9 @@ class Part(object):
 		self.pins = _PinList()
 		for i, part_class_pin in enumerate(self.__class__.pins):
 			# if we don't have an assigned pin number, generate one
-			pin_number = str(i + 1) if part_class_pin.numbers is None else None
+			inject_pin_number = str(i + 1) if not part_class_pin.numbers else None
 
-			pin = PartInstancePin(self, part_class_pin, pin_number)
+			pin = PartInstancePin(self, part_class_pin, inject_pin_number)
 			self.pins[pin.name] = pin
 
 			# save the pin as an attr for this part too
