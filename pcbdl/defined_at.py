@@ -3,6 +3,19 @@ from .base import Net, Part, PinFragment, Plugin
 import inspect
 __all__ = []
 
+source_code = {}
+def grab_nearby_lines(defined_at, range_):
+	filename, lineno = defined_at.split(":")
+	lineno = int(lineno)
+
+	if filename not in source_code:
+		with open(filename) as file:
+			source_code[filename] = tuple(file.read().split("\n"))
+
+	range_ = slice(lineno - range_, lineno + range_ - 1)
+
+	return source_code[filename][range_]
+
 @Plugin.register((Net, Part, PinFragment))
 class DefinedAt(Plugin):
 	def __init__(self, instance):

@@ -361,11 +361,55 @@ class Part(object):
 			for name in pin.names:
 				self.__dict__[name] = pin
 
+	def _generate_refdes_from_context(self):
+		if not hasattr(self, "defined_at"):
+			self._context_ref_value = None
+			raise Exception("No defined_at")
+
+		if self.defined_at.startswith("<stdin>"):
+			self._context_ref_value = None
+			raise Exception("Can't get context from stdin")
+
+		from .defined_at import grab_nearby_lines
+		import hashlib
+
+		tohash = repr((
+			grab_nearby_lines(self.defined_at, 3), # nearby source lines
+			#tuple(pin.net.name for pin in self.pins), # net names connected to this part
+		))
+
+		h = hashlib.md5(tohash.encode("utf8")).hexdigest()
+
+		ret = "%s?h%s" % (self.REFDES_PREFIX, h[:7])
+		self._context_ref_value = ret
+		return ret
+
+	@property
+	def _refdes_from_context(self):
+		try:
+			return self._refdes_from_context_value
+		except AttributeError:
+			pass
+
+		self._refdes_from_context_value = None
+		self._refdes_from_context_value = self._generate_refdes_from_context()
+		return self._refdes_from_context_value
+
+	@property
+	def _refdes_from_memory_address(self):
+		return "%s?m%05x" % (self.REFDES_PREFIX, id(self) // 32 & 0xfffff)
+
 	@property
 	def refdes(self):
-		if self._refdes is None:
-			return "%s?%05x" % (self.REFDES_PREFIX, id(self) // 32 & 0xfffff)
-		return self._refdes
+		if self._refdes is not None:
+			return self._refdes
+
+		if self._refdes_from_context:
+			return self._refdes_from_context
+
+		# make up a refdes based on memory address
+		return self._refdes_from_memory_address
+
 	@refdes.setter
 	def refdes(self, new_value):
 		self._refdes = new_value.upper()
