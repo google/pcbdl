@@ -3,8 +3,9 @@ from .context import *
 
 import collections
 from datetime import datetime
-import itertools
 import html
+import textwrap
+import itertools
 
 import pygments
 import pygments.lexers
@@ -46,6 +47,9 @@ class HTMLPart(Plugin):
 		except AttributeError:
 			pass
 
+		if part.__doc__:
+			yield "<pre>%s</pre>" % textwrap.dedent(part.__doc__.rstrip())
+
 		yield "<p>Value: %s</p>" % part.value
 		yield "<p>Part Number: %s</p>" % part.part_number
 		try:
@@ -53,7 +57,8 @@ class HTMLPart(Plugin):
 		except AttributeError:
 			yield "Package not defined"
 
-		yield "<p>%d pins:</p><ul>" % len(part.pins)
+		real_pin_count = len({number for pin in part.pins for number in pin.numbers})
+		yield "<p>%d logical pins (%d real pins):</p><ul>" % (len(part.pins), real_pin_count)
 		for pin in part.pins:
 			yield "<li id=\"pin-%s.%s\">%s (%s)" % (pin.part.refdes, pin.name, " / ".join(pin.names), ', '.join(pin.numbers))
 
