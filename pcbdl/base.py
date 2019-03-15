@@ -1,4 +1,5 @@
 import collections
+import copy
 import enum
 import itertools
 __all__ = [
@@ -85,11 +86,15 @@ class Net(object):
 		if name is not None:
 			name = name.upper()
 		self.name = name
-		self._connections = collections.OrderedDict()
+		self._connections = []
 
 		Plugin.init(self)
 
-	def connect(self, others, direction=ConnectDirection.UNKNOWN, pin_type=PinType.PRIMARY):
+	def connect(self, others, direction=ConnectDirection.UNKNOWN, pin_type=PinType.PRIMARY, connection_group=None):
+		if connection_group is None:
+			connection_group = collections.OrderedDict()
+			self._connections.append(connection_group)
+
 		for other in _maybe_single(others):
 			pin = None
 
@@ -105,16 +110,30 @@ class Net(object):
 			if pin is None:
 				raise TypeError("Don't know how to get %s pin from %r." % (pin_type.name, other))
 
-			self._connections[pin] = direction
+			connection_group[pin] = direction
 			pin.net = self
 
-	def __lshift__(self, others):
-		self.connect(others, ConnectDirection.IN, PinType.PRIMARY)
+		self._last_connection_group = connection_group
+
+	def _shift(self, direction, others):
+		self.connect(others, direction, PinType.PRIMARY)
+
+		# Return a copy that acts just like us, but already knows the group
+		grouped_net = copy.copy(self)
+		grouped_net.parent = self
+		grouped_net.group = self._last_connection_group
+		grouped_net._shift = grouped_net._shift_already_grouped
+		return grouped_net
+
+	def _shift_already_grouped(self, direction, others):
+		self.connect(others, direction, PinType.PRIMARY, self.group)
 		return self
 
+	def __lshift__(self, others):
+		return self._shift(ConnectDirection.IN, others)
+
 	def __rshift__(self, others):
-		self.connect(others, ConnectDirection.OUT, PinType.PRIMARY)
-		return self
+		return self._shift(ConnectDirection.OUT, others)
 
 	MAX_REPR_CONNECTIONS = 10
 	def __repr__(self):
@@ -135,8 +154,12 @@ class Net(object):
 		return "%s" % self.name
 
 	@property
+	def grouped_connections(self):
+		return tuple(tuple(group.keys()) for group in self._connections)
+
+	@property
 	def connections(self):
-		return tuple(self._connections.keys())
+		return sum(self.grouped_connections, ())
 
 	def is_net_of_class(self, keywords):
 		if self.name is None:

@@ -17,14 +17,40 @@ class SVGNet(Plugin):
 		cls.current_node_number += 1
 		return cls.current_node_number
 
-	@property
-	def node_number(self):
-		try:
-			return self._node_number
-		except AttributeError:
-			node_number = self.get_next_node_number()
-			self._node_number = node_number
-			return node_number
+	def categorize_groups(self):
+		self.grouped_connections = []
+
+		for original_group in self.instance.grouped_connections:
+			group = list(original_group)
+			self.grouped_connections.append(group)
+
+			seen_big_part = False
+			for pin in group:
+				if len(pin.part.pins) > 6:
+					if seen_big_part == False:
+						seen_big_part = True
+					else:
+						# too many big parts here, move this one out
+						#print("Too many big parts in %r, moving %r out" % (group, pin.part))
+						group.remove(pin)
+						self.grouped_connections.append((pin,))
+
+
+		self.node_numbers = [self.get_next_node_number()
+			for group in self.grouped_connections]
+
+	def get_node_number(self, pin):
+		if not hasattr(self, "node_numbers"):
+			self.categorize_groups()
+
+		for i, group in enumerate(self.grouped_connections):
+			if pin in group:
+				group_idx = i
+				break
+		else:
+			raise ValueError("Can't find pin %s on %s" % (pin, self.instance))
+
+		return self.node_numbers[group_idx]
 
 @Plugin.register(Part)
 class SVGPart(Plugin):
@@ -41,7 +67,7 @@ class SVGPart(Plugin):
 
 		return net_node_number
 
-	def add_parts(self, parts_dict):
+	def add_parts(self, parts_dict, ports_dict):
 		# Every real part might yield multiple smaller parts (eg: airwires, gnd/vcc connections)
 		part = self.instance
 
@@ -55,11 +81,11 @@ class SVGPart(Plugin):
 				# we need to match pin names for the skin file in netlistsvg
 				name = "AB"[i]
 
-			net_node_number = pin.net.plugins[SVGNet].node_number
-			if pin.net.is_gnd:
-				net_node_number = self.create_power_symbol(parts_dict, pin.net, "gnd")
-			if pin.net.is_power:
-				net_node_number = self.create_power_symbol(parts_dict, pin.net, "vcc")
+			net_node_number = pin.net.plugins[SVGNet].get_node_number(pin)
+			#if pin.net.is_gnd:
+				#net_node_number = self.create_power_symbol(parts_dict, pin.net, "gnd")
+			#if pin.net.is_power:
+				#net_node_number = self.create_power_symbol(parts_dict, pin.net, "vcc")
 
 			connections[name] = [net_node_number]
 
@@ -109,12 +135,13 @@ class SVGPart(Plugin):
 
 def generate_netlistsvg_json(context=global_context):
 	parts_dict = {}
+	ports_dict = {}
 
 	for part in context.parts_list:
-		part.plugins[SVGPart].add_parts(parts_dict)
+		part.plugins[SVGPart].add_parts(parts_dict, ports_dict)
 
 	big_dict = {"modules": {"SVG Output": {
 		"cells": parts_dict,
-		"ports": {}
+		"ports": ports_dict,
 	}}}
 	return json.dumps(big_dict, indent="\t")
