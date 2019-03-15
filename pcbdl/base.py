@@ -138,6 +138,22 @@ class Net(object):
 	def connections(self):
 		return tuple(self._connections.keys())
 
+	def is_net_of_class(self, keywords):
+		if self.name is None:
+			return False
+
+		for keyword in keywords:
+			if keyword in self.name:
+				return True
+
+	@property
+	def is_power(self):
+		return self.is_net_of_class(("VCC", "PP", "VBUS"))
+
+	@property
+	def is_gnd(self):
+		return self.is_net_of_class(("GND",))
+
 class PinFragment(object):
 	"""Saves everything it's given, resolves later"""
 	def __init__(self, names, number=None, numbers=(), *args, **kwargs):

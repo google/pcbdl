@@ -8,3 +8,9 @@ venv
 
 htmlcov/
 .coverage
+
+# output files
+*.svg
+*.json
+*.html
+*allegro_third_party/

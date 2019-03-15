@@ -10,3 +10,5 @@ from .context import *
 
 from .allegro import *
 from .html import *
+
+from .netlistsvg import *

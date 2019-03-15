@@ -159,4 +159,5 @@ If everything passes the code coverage can be seen with:
 ## Credits / Thanks
 
 * [CBOLD](http://cbold.com/) for the idea
+* [netlistsvg](https://github.com/nturley/netlistsvg) for svg output support
 * Chrome OS Hardware Design Team for feedback
