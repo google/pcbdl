@@ -21,19 +21,24 @@ class SVGNet(Plugin):
 		self.grouped_connections = []
 
 		for original_group in self.instance.grouped_connections:
-			group = list(original_group)
+			group = list(original_group) # make a copy so we can fragment it
 			self.grouped_connections.append(group)
 
-			seen_big_part = False
-			for pin in group:
-				if len(pin.part.pins) > 6:
-					if seen_big_part == False:
-						seen_big_part = True
-					else:
-						# too many big parts here, move this one out
-						#print("Too many big parts in %r, moving %r out" % (group, pin.part))
-						group.remove(pin)
-						self.grouped_connections.append((pin,))
+			first_big_part = None
+			for pin in original_group:
+				if len(pin.part.pins) <= 4:
+					# part is too small, probably should stay here
+					continue
+
+				if first_big_part is None:
+					first_big_part = pin.part
+					continue
+
+				if pin.part is not first_big_part:
+					# too many big parts here, move this one out
+					#print("Too many big parts in %s group %r, moving %r out" % (self.instance.name, group, pin))
+					group.remove(pin)
+					self.grouped_connections.append((pin,))
 
 
 		self.node_numbers = [self.get_next_node_number()
@@ -55,17 +60,19 @@ class SVGNet(Plugin):
 @Plugin.register(Part)
 class SVGPart(Plugin):
 	@staticmethod
-	def create_power_symbol(parts_dict, net, type_name):
-		net_node_number = net.plugins[SVGNet].get_next_node_number()
+	def attach_power_symbol(parts_dict, net, net_node_number):
 		name = "%s%d" % (net.name, net_node_number)
 
-		parts_dict[name] = {
-			"connections": {"A": [ net_node_number ]},
+		power_symbol = {
+			"connections": {"A": [net_node_number]},
 			"port_directions": {"A": "input"},
-			"type": type_name
 		}
+		if net.is_gnd:
+			power_symbol["type"] = "gnd"
+		if net.is_power:
+			power_symbol["type"] = "vcc"
 
-		return net_node_number
+		parts_dict[name] = power_symbol
 
 	def add_parts(self, parts_dict, ports_dict):
 		# Every real part might yield multiple smaller parts (eg: airwires, gnd/vcc connections)
@@ -82,12 +89,10 @@ class SVGPart(Plugin):
 				name = "AB"[i]
 
 			net_node_number = pin.net.plugins[SVGNet].get_node_number(pin)
-			#if pin.net.is_gnd:
-				#net_node_number = self.create_power_symbol(parts_dict, pin.net, "gnd")
-			#if pin.net.is_power:
-				#net_node_number = self.create_power_symbol(parts_dict, pin.net, "vcc")
-
 			connections[name] = [net_node_number]
+
+			if pin.net.is_gnd or pin.net.is_power:
+				self.attach_power_symbol(parts_dict, pin.net, net_node_number)
 
 			DIRECTIONS = ["output", "input"] # aka right, left
 			port_directions[name] = DIRECTIONS[i < pin_count/2]

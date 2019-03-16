@@ -103,13 +103,16 @@ Suggestions include:
 
 1. Convert a pcbdl schematic back into a traditional schematic
 	* Laying out graphical elements in a schematic without it looking like a spaghetti mess is probably non trivial
-2. Block diagrams of the overall system
-	* Similar problems to the above point
-	* This depends on how the schematics is declared, if it's not hierarchical enough, it won't have many "blocks" to display
-3. Isolated schematics for how a particular thing is hooked up:
+2. Isolated schematics for how a particular thing is hooked up:
 	* An example of this would be how a reset signal moves though a board.
 	* The drawing engine for this would be similar to 1, but the limited scope of the signals might make it look more readable (even though the complete schematics are spaghetti).
 	* This might be enough for sharing reference designs?
+3. Block diagrams of the overall system
+	* Similar problems to the above point
+	* This depends on how the schematics is declared, if it's not hierarchical enough, it won't have many "blocks" to display
+	* This task is dependent on allowing hierarchies in pcbdl
+
+Points 1 and 2 are almost working, see `netlistsvg.py` file.
 
 ### BOM
 

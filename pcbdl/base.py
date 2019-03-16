@@ -316,7 +316,8 @@ class PartInstancePin(PartClassPin):
 	def net(self):
 		if self._net is None:
 			fresh_net = PartInstancePin._create_anonymous_net()
-			fresh_net.connect(self, direction=ConnectDirection.UNKNOWN) # This indirectly sets self.net
+			return fresh_net << self
+			#fresh_net.connect(self, direction=ConnectDirection.UNKNOWN) # This indirectly sets self.netf
 		return self._net
 	@net.setter
 	def net(self, new_net):
@@ -329,18 +330,20 @@ class PartInstancePin(PartClassPin):
 		self._net = new_net
 
 	def __lshift__(self, others):
-		if self._net is None:
+		net = self._net
+		if net is None:
 			# don't let the net property create a new one,
 			# we want to dictate the direction to that Net
-			PartInstancePin._create_anonymous_net() >> self
-		return self.net << others
+			net = PartInstancePin._create_anonymous_net() >> self
+		return net << others
 
-	def __rshift__(self, others):
-		if self._net is None:
+	def __lshift__(self, others):
+		net = self._net
+		if net is None:
 			# don't let the net property create a new one,
 			# we want to dictate the direction to that Net
-			PartInstancePin._create_anonymous_net() << self
-		return self.net >> others
+			net = PartInstancePin._create_anonymous_net() << self
+		return net >> others
 
 	def __str__(self):
 		return "%r.%s" % (self.part, self.name)
