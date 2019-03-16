@@ -513,7 +513,7 @@ boot0 = Net("PD_BOOT0")
 boot0_q = FET("CSD13381F4", package="DFN100X60X35-3L")
 # Use OTG + A-TO-A cable to go to bootloader mode
 Net("USB_ID") << usb.ID << boot0_q.G << R("51.1k", to=vbus_in)
-boot0 << boot0_q.D << R("51.1k", to=vbus_in)
+boot0 << boot0_q.D << R("51.1k", to=vbus_in) << stm32.BOOT0
 gnd << boot0_q.S
 Net("EC_UART_TX") << stm32 << prog.UART_TX
 Net("EC_UART_RX") << stm32 << prog.UART_RX
