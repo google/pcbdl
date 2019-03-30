@@ -12,20 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .base import Part, PartInstancePin, Net, Plugin
+from .base import Part, PartInstancePin, Net
 from .context import *
 from .small_parts import C, R, JellyBean
 import collections
 import json
+import os
+import re
+import subprocess
+import tempfile
 
-"""Outputs an input file for netlistsvg (a javascript project) which eventually
-   renders our circuit into svg."""
-__all__ = ["generate_netlistsvg_json"]
+"""Renders our circuit into svg with the help of netlistsvg."""
+__all__ = ["generate_svg"]
 
-@Plugin.register(Net)
-class SVGNet(Plugin):
+class SVGNet(object):
+	def __init__(self, instance, schematic_page):
+		self.instance = instance
+		self.schematic_page = schematic_page
+
 	current_node_number = -1
-
 	@classmethod
 	def get_next_node_number(cls):
 		cls.current_node_number += 1
@@ -37,6 +42,9 @@ class SVGNet(Plugin):
 		for original_group in self.instance.grouped_connections:
 			group = list(original_group) # make a copy so we can fragment it
 			self.grouped_connections.append(group)
+
+			if self.schematic_page.airwires < 2:
+				continue
 
 			first_big_part = None
 			for pin in original_group:
@@ -69,26 +77,42 @@ class SVGNet(Plugin):
 		else:
 			raise ValueError("Can't find pin %s on %s" % (pin, self.instance))
 
+		if self.schematic_page.airwires == 0:
+			return self.node_numbers[0]
 		return self.node_numbers[group_idx]
 
-@Plugin.register(Part)
-class SVGPart(Plugin):
-	@staticmethod
-	def attach_power_symbol(parts_dict, net, net_node_number):
+class SVGPart(object):
+	def __init__(self, instance, schematic_page):
+		self.instance = instance
+		self.schematic_page = schematic_page
+
+	def attach_airwire(self, net, net_node_number, direction):
+		self.schematic_page.ports_dict[net.name + str(net_node_number)] = {
+			"bits": [net_node_number],
+			"direction": direction
+		}
+
+	def attach_power_symbol(self, net, net_node_number):
 		name = "%s%d" % (net.name, net_node_number)
+
+		name_attribute = net.name
+		if len(name_attribute) > 10:
+			name_attribute = name_attribute.replace("PP","")
+			name_attribute = name_attribute.replace("_VREF","")
 
 		power_symbol = {
 			"connections": {"A": [net_node_number]},
 			"port_directions": {"A": "input"},
+			"attributes": {"value": name_attribute},
 		}
 		if net.is_gnd:
 			power_symbol["type"] = "gnd"
 		if net.is_power:
 			power_symbol["type"] = "vcc"
 
-		parts_dict[name] = power_symbol
+		self.schematic_page.parts_dict[name] = power_symbol
 
-	def add_parts(self, parts_dict, ports_dict):
+	def add_parts(self):
 		# Every real part might yield multiple smaller parts (eg: airwires, gnd/vcc connections)
 		part = self.instance
 
@@ -102,12 +126,6 @@ class SVGPart(Plugin):
 				# we need to match pin names for the skin file in netlistsvg
 				name = "AB"[i]
 
-			net_node_number = pin.net.plugins[SVGNet].get_node_number(pin)
-			connections[name] = [net_node_number]
-
-			if pin.net.is_gnd or pin.net.is_power:
-				self.attach_power_symbol(parts_dict, pin.net, net_node_number)
-
 			DIRECTIONS = ["output", "input"] # aka right, left
 			port_directions[name] = DIRECTIONS[i < pin_count/2]
 
@@ -120,6 +138,42 @@ class SVGPart(Plugin):
 				else:
 					port_directions[name] = DIRECTIONS[pin_number % 2]
 
+			pin_net = pin._net
+			if pin_net:
+				if hasattr(pin_net, "parent"):
+					pin_net = pin_net.parent
+
+				pin_net_helper = self.schematic_page.net_helpers[pin_net]
+
+				net_node_number = pin_net_helper.get_node_number(pin)
+				connections[name] = [net_node_number]
+
+				#if len(pin_net_helper.grouped_connections) > 1 and not (pin.net.is_gnd or pin.net.is_power):
+					#self.attach_airwire(pin.net, net_node_number, port_directions[name])
+			else:
+				# Make up a new disposable connection
+				connections[name] = [SVGNet.get_next_node_number()]
+
+
+			skip_drawing_pin = False
+			if not self.schematic_page.net_regex.match(str(pin.net.name)):
+				skip_drawing_pin = True
+
+			if pin in self.schematic_page.pins_to_skip:
+				skip_drawing_pin = True
+
+			if skip_drawing_pin:
+				del connections[name]
+				continue
+
+			self.schematic_page.pins_drawn.append(pin)
+			self.schematic_page.pin_count += 1
+
+			if pin.net.is_gnd or pin.net.is_power:
+				self.attach_power_symbol(pin.net, net_node_number)
+
+		if not connections:
+			return
 
 		svg_type = "%s (%s)" % (part.refdes, part.value)
 		# apply particular skins
@@ -129,6 +183,10 @@ class SVGPart(Plugin):
 			svg_type = "r_"
 		if isinstance(part, (R, C)):
 			suffix = "h"
+
+			#for pin in port_directions.keys():
+				#port_directions[pin] = "input"
+
 			swap_pins = False
 			for i, pin in enumerate(part.pins):
 				if pin.net.is_power:
@@ -140,27 +198,102 @@ class SVGPart(Plugin):
 					if i != 1:
 						swap_pins = True
 			if swap_pins:
-				connections = {
-					"A": connections["B"],
-					"B": connections["A"],
-				}
+				mapping = {"A": "B", "B": "A"}
+				connections = {mapping[name]:v
+					for name, v in connections.items()}
+				port_directions = {mapping[name]:v
+					for name, v in port_directions.items()}
+
 			svg_type += suffix
 
-		parts_dict[part.refdes] = {
+		self.schematic_page.parts_dict["%s(%s)" % (part.refdes, part.value)] = {
 			"connections": connections,
 			"port_directions": port_directions,
 			"type": svg_type
 		}
 
-def generate_netlistsvg_json(context=global_context):
-	parts_dict = {}
-	ports_dict = {}
+class NetlistSVG(object):
+	"""Represents single .svg file"""
 
-	for part in context.parts_list:
-		part.plugins[SVGPart].add_parts(parts_dict, ports_dict)
+	NETLISTSVG_LOCATION = os.path.expanduser("~/netlistsvg")
 
-	big_dict = {"modules": {"SVG Output": {
-		"cells": parts_dict,
-		"ports": ports_dict,
-	}}}
-	return json.dumps(big_dict, indent="\t")
+	def __init__(self, net_regex=".*", airwires=2, pins_to_skip=[], max_pin_count=None, context=global_context):
+		self.net_regex = re.compile(net_regex)
+		self.airwires = airwires
+		self.context = context
+
+		self.max_pin_count = max_pin_count
+		self.pin_count = 0
+
+		self.pins_to_skip = pins_to_skip
+		self.pins_drawn = []
+
+	@property
+	def json(self):
+		self.parts_dict = {}
+		self.ports_dict = {}
+
+		# start helper classes
+		self.net_helpers = {}
+		for net in self.context.net_list:
+			self.net_helpers[net] = SVGNet(net, self)
+
+		self.part_helpers = {}
+		for part in self.context.parts_list:
+			if self.max_pin_count and self.pin_count > self.max_pin_count:
+				# stop drawing, this page is too cluttered
+				self.net_regex = re.compile(".^")
+
+			part_helper = SVGPart(part, self)
+			self.part_helpers[part] = part_helper
+			part_helper.add_parts()
+
+		big_dict = {"modules": {"SVG Output": {
+			"cells": self.parts_dict,
+			"ports": self.ports_dict,
+		}}}
+
+		return json.dumps(big_dict, indent="\t")
+
+	@property
+	def svg(self):
+		with tempfile.NamedTemporaryFile("r") as f:
+			json = self.json
+			with open("out.json", "w") as f2:
+				f2.write(json)
+			subprocess.check_output([
+				"nodejs",
+				os.path.join(self.NETLISTSVG_LOCATION, "bin", "netlistsvg.js"),
+
+				"--skin",
+				os.path.join(self.NETLISTSVG_LOCATION, "lib", "analog.svg"),
+
+				"/dev/stdin", # input
+
+				"-o",
+				f.name
+			], input=json.encode("utf-8"))
+
+			return f.read()
+
+
+def generate_svg(filename, pins_to_skip=[], *args, **kwargs):
+	i = 0
+	while True:
+		for attempt in range(10):
+			print(i)
+			n = NetlistSVG(*args, **kwargs, pins_to_skip=pins_to_skip)
+			svg_contents = n.svg
+			if svg_contents != "undefined":
+				break
+
+			kwargs["max_pin_count"] -= 1
+		if len(svg_contents)>700:
+			with open("%s%d.svg" % (filename, i), "w") as f:
+				f.write(svg_contents)
+		pins_to_skip += n.pins_drawn
+
+		i+=1
+		if not n.pins_drawn:
+			break
+
