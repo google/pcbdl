@@ -545,10 +545,12 @@ io = I2cIoExpander()
 pp3300 << io.VCCI << decoupling()
 gnd << io.GND << io.PAD
 gnd << io.A0 # i2c addr 7'H=0x20
-Net("SERVO_SDA") << R("4.7k", to=pp3300) << stm32 << io.SDA
-Net("SERVO_SCL") << R("4.7k", to=pp3300) << stm32 << io.SCL
+Net("SERVO_SDA") << R("4.7k", to=pp3300) << stm32 << io.SDA << dut.I2C_SDA
+Net("SERVO_SCL") << R("4.7k", to=pp3300) << stm32 << io.SCL << dut.I2C_SCL
 Net("RESET_L") << io.RESET_L << stm32
 pp1800 << io.VCCP << decoupling()
+
+pp3300 >> dut.pins["I2C_3.3V"]
 
 dut_mfg_mode = Net("DUT_MFG_MODE") << dut
 mfg_mode_shifter = LevelShifter1()
@@ -612,7 +614,7 @@ Net("SERVO_JTAG_TDI") << stm32 << shifter1.A4
 
 shifter1.direction_AB >> shifter1.DIR1 # spare
 Net("SERVO_JTAG_TRST_DIR") << stm32 >> shifter1.DIR2
-Net("SERVO_JTAG_TRST_DIR") >> shifter1.DIR3
+Net("SERVO_JTAG_TMS_DIR") << stm32 >> shifter1.DIR3
 Net("SERVO_JTAG_TDI_DIR") << stm32 >> shifter1.DIR4
 
 shifter1.B1 # spare
