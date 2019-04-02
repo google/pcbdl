@@ -1,12 +1,6 @@
 # PCB Design Language
 A programming way to design schematics.
 
-# Developing
-
-This command will install the current folder globally and it can easily be imported.
-
-	$ sudo pip3 install -e .
-
 ## Interactive terminal
 
 A good way to try various features without having to write a file separately.
@@ -140,7 +134,7 @@ The way one would use it would be to import a kicad schematic, annotate it with 
 
 A kicad importer should be pretty trivial to implement. **TODO**
 
-# Examples
+## Examples
 
 Found in the `examples/` folder. Another way to make sure the enviroment is sane.
 One can just "run" any example schematic with python, add -i to do more analysis operations on the schematic.
@@ -149,15 +143,9 @@ One can just "run" any example schematic with python, add -i to do more analysis
 * `class_a.py`: Class A transistor amplifier, a good example to how a complicatedish analog circuit would look like.
 * `servo_micro.py`: Servo micro schematics, reimplementation in pcbdl, [originally an 8 page pdf schematic](https://www.chromium.org/chromium-os/servo/servomicro).
 
-## Tests
+## Support
 
-To test pcbdl framework functionality (not the schematics themselves), one can run:
-
-	$ make test
-
-If everything passes the code coverage can be seen with:
-
-	$ make show-coverage
+This is not an officially supported Google product.
 
 ## Credits / Thanks
 
