@@ -1,11 +1,17 @@
 # PCB Design Language
 A programming way to design schematics.
 
+## Installing
+
+[![PyPI version](https://badge.fury.io/py/pcbdl.svg)](https://pypi.org/project/pcbdl/)
+
+	sudo pip3 install pcbdl
+
 ## Interactive terminal
 
 A good way to try various features without having to write a file separately.
 
-	$ python3 -i -c "from pcbdl import *"
+	python3 -i -c "from pcbdl import *"
 
 ## Language
 
