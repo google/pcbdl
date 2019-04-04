@@ -79,6 +79,15 @@ Then one can explore the circuit:
 	>>> nets["GND"]
 	GND(connected to R3.P2, Rc.P2, C10.-)
 
+## Examples
+
+Found in the `examples/` folder. Another way to make sure the enviroment is sane.
+One can just "run" any example schematic with python, add -i to do more analysis operations on the schematic.
+
+* `voltage_divider.py`: Very simple voltage divider
+* `class_a.py`: Class A transistor amplifier, a good example to how a complicatedish analog circuit would look like.
+* `servo_micro.py`: **Servo micro schematics**, reimplementation in pcbdl, [originally an 8 page pdf schematic](https://www.chromium.org/chromium-os/servo/servomicro).
+
 ## Exporting
 
 ### Netlists
@@ -87,26 +96,40 @@ The main goal of this language is to aid in creating PCBs. The intermediate file
 
 For now we have a **minimum viable example** of an exporter for the Allegro Cadence netlists (found in `netlist.py`):
 
-	>>> print(generate_netlist("/tmp/some_export_location"))
+	>>> generate_netlist("/tmp/some_export_location")
+
+### HTML
+
+This produces a standalone html page with everything crosslinked:
+
+* List of nets with links to the parts and pins on each
+* List of parts with the part properties and a list of pins linking to the nets connected
+* Highlighted source code, with every variable and object linked to the previous 2 lists
+
+Here's an example of such a [html output for servo micro](https://google.github.io/pcbdl/examples/servo_micro.html).
 
 ### Schematics / Graphical representation of the circuit
 
-In order for schematics to be more easily parsable, we should research ways to graphically display them. Huge **TODO**, probably infeasible.
-
-Suggestions include:
+In order for schematics to be more easily parsable, we want to graphically display them. The [netlistsvg](https://github.com/nturley/netlistsvg) project has been proven to be an excellent tool to solve the hard problems of this. See `pcbdl/netlistsvg.py` for the implementation.
 
 1. Convert a pcbdl schematic back into a traditional schematic
-	* Laying out graphical elements in a schematic without it looking like a spaghetti mess is probably non trivial
+
+	`generate_svg('svg_filename')`
+
+	Here's the [svg output for the servo_micro example](https://google.github.io/pcbdl/examples/servo_micro.svg).
+
 2. Isolated schematics for how a particular thing is hooked up:
-	* An example of this would be how a reset signal moves though a board.
-	* The drawing engine for this would be similar to 1, but the limited scope of the signals might make it look more readable (even though the complete schematics are spaghetti).
-	* This might be enough for sharing reference designs?
+	* I2C map, ([servo_micro's](https://google.github.io/pcbdl/examples/servo_micro.i2c.svg))
+
+	`generate_svg('svg_filename', net_regex='.*(SDA|SCL).*', airwires=0)`
+
+	* Power connections ([servo_micro's](https://google.github.io/pcbdl/examples/servo_micro.power.svg))
+
+	`generate_svg('svg_filename', net_regex='.*(PP|GND|VIN|VBUS).*')`
+
 3. Block diagrams of the overall system
-	* Similar problems to the above point
 	* This depends on how the schematics is declared, if it's not hierarchical enough, it won't have many "blocks" to display
 	* This task is dependent on allowing hierarchies in pcbdl
-
-Points 1 and 2 are almost working, see `netlistsvg.py` file.
 
 ### BOM
 
@@ -133,15 +156,6 @@ Given that graphical exporting might be impossible, and in lieu of the language 
 The way one would use it would be to import a kicad schematic, annotate it with a few more classes (for BOM and ERC purposes, unless we can find a way to put all metadata in the kicad schematics). Then all exporting and analysis features of pcbdl can still be used.
 
 A kicad importer should be pretty trivial to implement. **TODO**
-
-## Examples
-
-Found in the `examples/` folder. Another way to make sure the enviroment is sane.
-One can just "run" any example schematic with python, add -i to do more analysis operations on the schematic.
-
-* `voltage_divider.py`: Very simple voltage divider
-* `class_a.py`: Class A transistor amplifier, a good example to how a complicatedish analog circuit would look like.
-* `servo_micro.py`: Servo micro schematics, reimplementation in pcbdl, [originally an 8 page pdf schematic](https://www.chromium.org/chromium-os/servo/servomicro).
 
 ## Support
 
