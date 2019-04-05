@@ -102,13 +102,10 @@ class SVGPart(object):
 
 		power_symbol = {
 			"connections": {"A": [net_node_number]},
-			"port_directions": {"A": "input"},
+			"port_directions": {"A" : "input" if net.is_gnd else "output"},
 			"attributes": {"value": name_attribute},
+			"type": "gnd" if net.is_gnd else "vcc",
 		}
-		if net.is_gnd:
-			power_symbol["type"] = "gnd"
-		if net.is_power:
-			power_symbol["type"] = "vcc"
 
 		self.schematic_page.parts_dict[name] = power_symbol
 
@@ -197,12 +194,11 @@ class SVGPart(object):
 					suffix = "v"
 					if i != 1:
 						swap_pins = True
+
 			if swap_pins:
 				mapping = {"A": "B", "B": "A"}
 				connections = {mapping[name]:v
 					for name, v in connections.items()}
-				port_directions = {mapping[name]:v
-					for name, v in port_directions.items()}
 
 			svg_type += suffix
 
