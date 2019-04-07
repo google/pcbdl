@@ -22,10 +22,10 @@ class TestNet(unittest.TestCase):
 		"""Net creation test"""
 		n = Net("test_create")
 
-	#def test_duplicate(self):
-		#Net("create_duplicate")
-		#with self.assertRaises(Exception):
-			#Net("create_duplicate")
+	def test_duplicate(self):
+		Net("create_duplicate")
+		with self.assertRaises(Exception):
+			Net("create_duplicate")
 
 	def test_str(self):
 		"""Net naming, both uppercasing and anonymous nets"""

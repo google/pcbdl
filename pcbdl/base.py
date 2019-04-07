@@ -460,8 +460,8 @@ class Part(object):
 		if self._refdes is not None:
 			return self._refdes
 
-		if self._refdes_from_context:
-			return self._refdes_from_context
+		#if self._refdes_from_context: # TODO: clean this up, it currently breaks tests
+			#return self._refdes_from_context
 
 		# make up a refdes based on memory address
 		return self._refdes_from_memory_address

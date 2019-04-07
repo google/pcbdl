@@ -30,6 +30,7 @@ class Context(object):
 		self.refdes_counters = collections.defaultdict(lambda:1)
 
 	def new_part(self, part):
+		assert(part not in self.parts_list)
 		self.parts_list.append(part)
 
 	def new_net(self, net):
@@ -37,6 +38,9 @@ class Context(object):
 		self.net_list.append(net)
 
 		if net.name is not None:
+			if net.name in self.named_nets:
+				raise Exception("Cannot have more than one net called %s in %s" % (net.name, self))
+
 			# Add to the net list
 			self.named_nets[net.name] = net
 
