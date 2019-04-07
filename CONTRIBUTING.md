@@ -2,17 +2,17 @@
 
 This command will install the current folder globally and it can easily be imported.
 
-	$ sudo pip3 install -e .
+	sudo pip3 install -e .
 
 ## Tests
 
 To test pcbdl framework functionality (not the schematics themselves), one can run:
 
-	$ make test
+	make test
 
 If everything passes the code coverage can be seen with:
 
-	$ make show-coverage
+	make show-coverage
 
 ## Contributor License Agreement
 

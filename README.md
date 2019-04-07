@@ -5,6 +5,8 @@ A programming way to design schematics.
 
 [![PyPI version](https://badge.fury.io/py/pcbdl.svg)](https://pypi.org/project/pcbdl/)
 
+	sudo apt-get install python3 python3-pip python3-pygments
+
 	sudo pip3 install pcbdl
 
 ## Interactive terminal
@@ -25,7 +27,7 @@ To start one should define a couple of nets:
 
 We then can connect varios components between those nets with the `<<` operator and the `to=` argument (for the other side):
 
-	>>> base << C("1000u", to=Net("vin"))
+	>>> base << C("1000u", to=vin)
 	>>> base << (
 		R("1k", to=vcc),
 		R("1k", to=gnd),
@@ -58,7 +60,7 @@ Let's finish our class A amplifier (note how we created the "vout" net in place,
 
 Note: One can find a completed version of this amplifier in `examples/class_a.py`:
 
-	$ python3 -i examples/class_a.py
+	python3 -i examples/class_a.py
 
 
 One can now give automatic consecutive reference designators to components that haven't been named manually already:
