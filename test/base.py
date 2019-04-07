@@ -33,7 +33,7 @@ class TestNet(unittest.TestCase):
 		self.assertEqual(str(n), "TEST_STR")
 
 		n = Net()
-		self.assertIn("anonymous", str(n).lower())
+		self.assertIn("anon", str(n).lower())
 
 	def test_repr(self):
 		"""Net representations should pretty and contain some info about what's connected"""

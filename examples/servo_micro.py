@@ -724,4 +724,4 @@ for i, s in uart_shifters.items():
 	s.direction_BA >> s.DIR2
 	Net("UART%d_RX" % i) >> stm32 << s.A2
 
-global_context.fill_refdes("servo_micro.refdes_mapping")
+global_context.autoname("servo_micro.refdes_mapping")

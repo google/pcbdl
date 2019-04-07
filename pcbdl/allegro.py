@@ -39,9 +39,6 @@ class NetlistNet(Plugin):
 	def line(self):
 		net = self.instance
 		name = net.name
-		if name is None:
-			#TODO: figure out how to name nets automatically
-			name = "TODO_NAME_THIS_NET_BETTER_IN_CODE"
 		return "%s ; %s" % (
 			name,
 			join_across_lines(pin.plugins[NetlistPin].name for pin in net.connections)

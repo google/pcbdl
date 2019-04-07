@@ -96,10 +96,12 @@ class _PinList(collections.OrderedDict):
 		return repr(tuple(self.values()))
 
 class Net(object):
+	_name = None
+	has_name = False
+
 	def __init__(self, name=None):
 		if name is not None:
-			name = name.upper()
-		self.name = name
+			self.name = name.upper()
 		self._connections = []
 
 		Plugin.init(self)
@@ -163,9 +165,23 @@ class Net(object):
 		return "%s(%s)" % (self, inside_str)
 
 	def __str__(self):
-		if self.name is None:
-			return "AnonymousNet"
-		return "%s" % self.name
+		return self.name
+
+	@property
+	def name(self):
+		if hasattr(self, "parent"):
+			return self.parent.name
+
+		if not self.has_name:
+			# This path should be rare, only if the user really wants trouble
+			return "ANON_NET?m%05x" % (id(self) // 32 & 0xfffff)
+
+		return self._name
+
+	@name.setter
+	def name(self, new_name):
+		self._name = new_name.upper()
+		self.has_name = True
 
 	@property
 	def grouped_connections(self):
@@ -176,9 +192,6 @@ class Net(object):
 		return sum(self.grouped_connections, ())
 
 	def is_net_of_class(self, keywords):
-		if self.name is None:
-			return False
-
 		for keyword in keywords:
 			if keyword in self.name:
 				return True

@@ -97,11 +97,8 @@ class HTMLNet(Plugin):
 	def net_li(self):
 		net = self.instance
 		name = net.name
-		if name is None:
-			#TODO: figure out how to name nets automatically
-			name = "TODO_NAME_THIS_NET_BETTER_IN_CODE"
 
-		yield "<li><h2 id=\"net-%s\">%s</h2>" % (name,name)
+		yield "<li><h2 id=\"net-%s\">%s</h2>" % (name, name)
 		yield net.plugins[HTMLDefinedAt].href_line
 
 		try:

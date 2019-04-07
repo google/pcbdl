@@ -37,12 +37,11 @@ class Context(object):
 		assert(net not in self.net_list)
 		self.net_list.append(net)
 
-		if net.name is not None:
-			if net.name in self.named_nets:
-				raise Exception("Cannot have more than one net called %s in %s" % (net.name, self))
+		if net.name in self.named_nets:
+			raise Exception("Cannot have more than one net called %s in %s" % (net.name, self))
 
-			# Add to the net list
-			self.named_nets[net.name] = net
+		# Add to the net list
+		self.named_nets[net.name] = net
 
 	def name_part_with_mapping(self, part, mapping):
 		try:
@@ -62,7 +61,7 @@ class Context(object):
 		# remove from mapping in case there's other parts at the same line that need to be named differently
 		mapping.pop(i)
 
-	def fill_refdes(self, mapping_file):
+	def autoname(self, mapping_file):
 		try:
 			with open(mapping_file, "r") as file:
 				mapping = [line.strip().split(" ") for line in file.readlines()]
@@ -104,6 +103,22 @@ class Context(object):
 		with open(mapping_file, "w") as file:
 			for final_name, part in self.named_parts.items():
 				file.write("%s %s\n" % (final_name, part._refdes_from_context))
+
+		for net in self.net_list:
+			# Look only for unnamed nets
+			if net.has_name:
+				continue
+
+			old_name = net.name
+			new_name = "ANON_NET_%s" % str(net.connections[0]).replace(".","_")
+			net.name = new_name
+
+			# Update named_nets list with the new name
+			if new_name in self.named_nets:
+				raise Exception("Cannot have more than one net called %s in %s" % (net.name, self))
+			self.named_nets[new_name] = net
+			del self.named_nets[old_name]
+
 
 @Plugin.register(Net)
 class NetContext(Plugin):
