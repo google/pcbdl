@@ -45,9 +45,9 @@ class DefinedAt(Plugin):
 		# Escape the caller function (probably the __init__ of the class that has the plugin)
 		stack_trace.pop(0)
 
-		# Make sure it's not a pin implicit anonymous net
-		if (stack_trace[0].code_context is not None and
-		    "PartInstancePin._create_anonymous_net" in stack_trace[0].code_context[0]):
+		# Skip #defined_at: not here code
+		while (stack_trace[0].code_context is not None and
+		    "#defined_at: not here" in stack_trace[0].code_context[0]):
 			stack_trace.pop(0)
 
 		# Escape all the inheritances of that class
@@ -55,8 +55,8 @@ class DefinedAt(Plugin):
 		       "super()" in stack_trace[0].code_context[0]):
 			stack_trace.pop(0)
 
-		# Skip #defined_at: not here code
-		if (stack_trace[0].code_context is not None and
+		# Skip #defined_at: not here code again
+		while (stack_trace[0].code_context is not None and
 		    "#defined_at: not here" in stack_trace[0].code_context[0]):
 			stack_trace.pop(0)
 

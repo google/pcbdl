@@ -74,10 +74,10 @@ class OnePinPart(Part):
 
 	@property
 	def net(self):
-		return self.PIN.net
+		return self.PIN.net #defined_at: not here
 	@net.setter
-	def net(self, value):
-		self.PIN.net = value
+	def net(self, new_net):
+		self.PIN.net = new_net
 
 class TP(OnePinPart):
 	"""Test Point"""

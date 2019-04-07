@@ -298,7 +298,6 @@ class PartClassPin(object):
 
 class PartInstancePin(PartClassPin):
 	"""Particular pin of a particular part instance. Can connect to nets. Knows the refdes of its part."""
-	_create_anonymous_net = Net
 	_net = None
 
 	def __init__(self, part_instance, part_class_pin, inject_number=None):
@@ -329,7 +328,7 @@ class PartInstancePin(PartClassPin):
 	@property
 	def net(self):
 		if self._net is None:
-			fresh_net = PartInstancePin._create_anonymous_net()
+			fresh_net = Net() #defined_at: not here
 			return fresh_net << self
 			#fresh_net.connect(self, direction=ConnectDirection.UNKNOWN) # This indirectly sets self.netf
 		return self._net
@@ -348,7 +347,8 @@ class PartInstancePin(PartClassPin):
 		if net is None:
 			# don't let the net property create a new one,
 			# we want to dictate the direction to that Net
-			net = PartInstancePin._create_anonymous_net() >> self
+			net = Net() #defined_at: not here
+			net >>= self
 		return net << others
 
 	def __lshift__(self, others):
@@ -356,7 +356,8 @@ class PartInstancePin(PartClassPin):
 		if net is None:
 			# don't let the net property create a new one,
 			# we want to dictate the direction to that Net
-			net = PartInstancePin._create_anonymous_net() << self
+			net = Net() #defined_at: not here
+			net <<= self
 		return net >> others
 
 	def __str__(self):

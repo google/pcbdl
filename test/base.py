@@ -91,9 +91,13 @@ class DefinedAtTest(unittest.TestCase):
 		p = Part()
 		self.check_defined_at(p)
 
-	def test_pin_implicit_net(self):
+	def test_implicit_net(self):
 		r = R()
 		n = r.P1.net
+		self.check_defined_at(n)
+
+		tp = TP()
+		n = tp.net
 		self.check_defined_at(n)
 
 class PartTest(unittest.TestCase):
