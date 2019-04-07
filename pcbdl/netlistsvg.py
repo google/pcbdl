@@ -25,6 +25,9 @@ import tempfile
 """Renders our circuit into svg with the help of netlistsvg."""
 __all__ = ["generate_svg"]
 
+NETLISTSVG_LOCATION = os.path.expanduser(
+	os.environ.get("NETLISTSVG_LOCATION", "~/netlistsvg"))
+
 class SVGNet(object):
 	def __init__(self, instance, schematic_page):
 		self.instance = instance
@@ -211,8 +214,6 @@ class SVGPart(object):
 class NetlistSVG(object):
 	"""Represents single .svg file"""
 
-	NETLISTSVG_LOCATION = os.path.expanduser("~/netlistsvg")
-
 	def __init__(self, net_regex=".*", airwires=2, pins_to_skip=[], max_pin_count=None, context=global_context):
 		self.net_regex = re.compile(net_regex)
 		self.airwires = airwires
@@ -258,11 +259,11 @@ class NetlistSVG(object):
 			with open("out.json", "w") as f2:
 				f2.write(json)
 			subprocess.check_output([
-				"nodejs",
-				os.path.join(self.NETLISTSVG_LOCATION, "bin", "netlistsvg.js"),
+				"/usr/bin/env", "node",
+				os.path.join(NETLISTSVG_LOCATION, "bin", "netlistsvg.js"),
 
 				"--skin",
-				os.path.join(self.NETLISTSVG_LOCATION, "lib", "analog.svg"),
+				os.path.join(NETLISTSVG_LOCATION, "lib", "analog.svg"),
 
 				"/dev/stdin", # input
 
