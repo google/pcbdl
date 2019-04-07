@@ -67,6 +67,11 @@ class OnePinPart(Part):
 
 	def get_pin_to_connect(self, pin_type, net=None):
 		if pin_type == PinType.PRIMARY:
+			# Perhaps we can name ourselves too after the net
+			if net is not None and net._name is not None:
+				if self.value == self.part_number:
+					self.value = net.name
+
 			return self.PIN
 		else: # pragma: no cover
 			assert isinstance(pin_type, PinType)
