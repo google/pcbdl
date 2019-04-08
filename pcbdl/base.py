@@ -106,8 +106,10 @@ class Net(object):
 
 		Plugin.init(self)
 
-	def connect(self, others, direction=ConnectDirection.UNKNOWN, pin_type=PinType.PRIMARY, connection_group=None):
-		if connection_group is None:
+	def connect(self, others, direction=ConnectDirection.UNKNOWN, pin_type=PinType.PRIMARY):
+		try:
+			connection_group = self.group
+		except AttributeError:
 			connection_group = collections.OrderedDict()
 			self._connections.append(connection_group)
 
@@ -134,16 +136,14 @@ class Net(object):
 	def _shift(self, direction, others):
 		self.connect(others, direction, PinType.PRIMARY)
 
+		if hasattr(self, "group"):
+			return self
+
 		# Return a copy that acts just like us, but already knows the group
 		grouped_net = copy.copy(self)
 		grouped_net.parent = self
 		grouped_net.group = self._last_connection_group
-		grouped_net._shift = grouped_net._shift_already_grouped
 		return grouped_net
-
-	def _shift_already_grouped(self, direction, others):
-		self.connect(others, direction, PinType.PRIMARY, self.group)
-		return self
 
 	def __lshift__(self, others):
 		return self._shift(ConnectDirection.IN, others)
