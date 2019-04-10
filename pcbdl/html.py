@@ -14,6 +14,7 @@
 
 from .base import Part, PartInstancePin, Net, Plugin
 from .context import *
+from .netlistsvg import NetlistSVG
 
 import collections
 from datetime import datetime
@@ -68,6 +69,9 @@ class HTMLPart(Plugin):
 
 		if part.__doc__:
 			yield "<pre>%s</pre>" % textwrap.dedent(part.__doc__.rstrip())
+
+		if hasattr(self, "netlistsvg"):
+			yield "<p><a href=\"#cell_%s\">See in SVG</a></p>" % self.netlistsvg.part_helpers[self.instance].cell_name
 
 		yield "<p>Value: %s</p>" % part.value
 		yield "<p>Part Number: %s</p>" % part.part_number
@@ -135,7 +139,7 @@ class HTMLPin(Plugin):
 
 class Code(object):
 	# {filename: {line: [instance]}}
-	_file_database = collections.defaultdict(lambda: collections.defaultdict(list))
+	file_database = collections.defaultdict(lambda: collections.defaultdict(set))
 	_instances = set()
 
 	class CodeHtmlFormatter(pygments.formatters.HtmlFormatter):
@@ -166,7 +170,7 @@ class Code(object):
 
 	def fill_variables_for_line(self, line_no):
 
-		file = tuple(self._file_database.values())[0] #TODO: fix this to work for multiple files
+		file = tuple(self.file_database.values())[0] #TODO: fix this to work for multiple files
 		variables_on_this_line = file[line_no]
 
 		if not variables_on_this_line:
@@ -189,14 +193,14 @@ class Code(object):
 		return "<span class=\"uv\"># %s</span>" % ", ".join(links)
 
 	def instanced_here(self, instance, file, line):
-		self._file_database[file][line].append(instance)
+		self.file_database[file][line].add(instance)
 		self._instances.add(instance)
 
 	def css_generator(self):
 		yield self.formatter.get_style_defs()
 
 	def code_generator(self):
-		file_list = self._file_database.keys()
+		file_list = self.file_database.keys()
 		for file_name in file_list:
 			yield "<h2>%s</h2>" % file_name
 
@@ -241,15 +245,33 @@ class Code(object):
 			yield result
 
 
-def html_generator(context):
+def html_generator(context=global_context, include_svg=False):
 	code_manager = Code()
+
+	if include_svg:
+		svg = NetlistSVG(context=context)
+		HTMLPart.netlistsvg = svg
+		HTMLNet.netlistsvg = svg
+
 	HTMLDefinedAt.code_manager = code_manager
 
+	# Make sure the code_manager knows about everything already
+	_ = [instance.plugins[HTMLDefinedAt].href_line for instance in context.parts_list + context.net_list]
+
+	yield "<!DOCTYPE html>"
 	yield "<html>"
+	yield "<head>"
+	yield "<title>PCBDL %s</title>" % (list(code_manager.file_database.keys())[0])
+	yield "<meta charset=\"UTF-8\">"
+
 	yield "<style>"
 	yield ":target { background-color: #ffff99; }"
 	yield ".not-populated { color: #777777; }"
 	yield from code_manager.css_generator()
+	yield "svg text {font-weight: normal; font-family: monospace; }"
+
+	yield "svg :target text {font-weight: bold; text-shadow: 0 0 10px #ffff00}"
+	yield "svg :target :not(text) { fill: #ffff99; stroke: #000; stroke-width: 3; }"
 
 	# unnamed variables
 	yield ".code .uv { color: #b8e0b8; margin: 0 4em; font-style: italic; user-select: none; }"
@@ -265,23 +287,41 @@ def html_generator(context):
 	yield ".linenos a:hover { color: #0000ff; text-decoration: underline; }"
 
 	yield "</style>"
+	yield "</head>"
 	yield "<body>"
 
-	yield "<h1>Parts</h1><ul>"
+	yield "<h1>PCBDL HTML Output</h1>"
+	yield "<h2>Contents</h2><ul>"
+	yield "<li><a href=\"#parts\">Parts</a></li>"
+	yield "<li><a href=\"#nets\">Nets</a></li>"
+	yield "<li><a href=\"#code\">Code</a></li>"
+	if include_svg:
+		yield "<li><a href=\"#svg\">SVG</a></li>"
+	yield "</ul>"
+	yield "<p>Generated from:</p><ul>"
+	for filename in code_manager.file_database.keys():
+		yield "<li>%s</li>" % (filename)
+	yield "</ul>"
+
+	yield "<h1 id=\"parts\">Parts</h1><ul>"
 	for part in context.parts_list:
 		yield from part.plugins[HTMLPart].part_li
 	yield "</ul>"
 
-	yield "<h1>Nets</h1><ul>"
+	yield "<h1 id=\"nets\">Nets</h1><ul>"
 	for net in context.net_list:
 		yield from net.plugins[HTMLNet].net_li
 	yield "</ul>"
 
-	yield "<h1>Code</h1>"
+	yield "<h1 id=\"code\">Code</h1>"
 	yield from code_manager.code_generator()
+
+	if include_svg:
+		yield "<h1 id=\"svg\">SVG</h1>"
+		yield svg.svg
 
 	yield "</body>"
 	yield "</html>"
 
-def generate_html(context=global_context):
-	return "\n".join(html_generator(context))
+def generate_html(*args, **kwargs):
+	return "\n".join(html_generator(*args, **kwargs))

@@ -20,27 +20,25 @@ usage:
 
 
 EXECUTE_SCHEMATIC = cd $(dir $<); python3 $2 -c "from $(basename $(notdir $<)) import *; $1"
+EXECUTE_SCHEMATIC_TO_FILE = $(call EXECUTE_SCHEMATIC, output=open('$(@F)', 'w'); output.write($1); output.close(), $2)
 
 # we shouldn't care if refdes mapping files are missing, so here's a dummy rule:
 %.refdes_mapping: %.py ;
 
-%.html: %.py %.refdes_mapping
-	$(call EXECUTE_SCHEMATIC, print(generate_html())) > $(@F)
-
 %.allegro_third_party/: %.py %.refdes_mapping
-	$(call EXECUTE_SCHEMATIC, generate_netlist('$(basename $(<F))'))
+	$(call EXECUTE_SCHEMATIC,generate_netlist('$(basename $(<F))'))
+
+%.html: %.py %.refdes_mapping
+	$(call EXECUTE_SCHEMATIC_TO_FILE,generate_html(include_svg=True))
 
 %.svg: %.py %.refdes_mapping # Big schematic all in one page
-	$(call EXECUTE_SCHEMATIC, generate_svg('$(basename $(<F))'))
-	mv $(basename $(<))0.svg $@
+	$(call EXECUTE_SCHEMATIC_TO_FILE,list(generate_svg())[0])
 
 %.i2c.svg: %.py %.refdes_mapping
-	$(call EXECUTE_SCHEMATIC, generate_svg('$(basename $(<F))', net_regex='.*(SDA|SCL).*', airwires=0))
-	mv $(basename $(<))0.svg $@
+	$(call EXECUTE_SCHEMATIC_TO_FILE,list(generate_svg(net_regex='.*(SDA|SCL).*', airwires=0))[0])
 
 %.power.svg: %.py %.refdes_mapping
-	$(call EXECUTE_SCHEMATIC, generate_svg('$(basename $(<F))', net_regex='.*(PP|GND|VIN|VBUS).*'))
-	mv $(basename $(<))0.svg $@
+	$(call EXECUTE_SCHEMATIC_TO_FILE,list(generate_svg(net_regex='.*(PP|GND|VIN|VBUS).*'))[0])
 
 .PHONY: %.shell
 %.shell: %.py %.refdes_mapping

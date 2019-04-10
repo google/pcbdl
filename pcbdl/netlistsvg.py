@@ -95,8 +95,8 @@ class SVGNet(object):
 		return self.node_numbers[group_idx]
 
 class SVGPart(object):
-	def __init__(self, instance, schematic_page):
-		self.instance = instance
+	def __init__(self, part, schematic_page):
+		self.part = part
 		self.schematic_page = schematic_page
 
 	def attach_net_name_port(self, net, net_node_number, direction):
@@ -106,24 +106,31 @@ class SVGPart(object):
 		}
 
 	def attach_power_symbol(self, net, net_node_number):
-		name = "%s%d" % (net.name, net_node_number)
-
-		name_attribute = net.name
-		if len(name_attribute) > 10:
-			name_attribute = name_attribute.replace("PP","")
-			name_attribute = name_attribute.replace("_VREF","")
+		name = net.name
+		if len(name) > 10:
+			name = name.replace("PP","")
+			name = name.replace("_VREF","")
 
 		power_symbol = {
 			"connections": {"A": [net_node_number]},
-			"attributes": {"value": name_attribute},
+			"attributes": {"name": name},
 			"type": "gnd" if net.is_gnd else "vcc",
 		}
 
-		self.schematic_page.parts_dict[name] = power_symbol
+		if name == "GND":
+			# redundant
+			del power_symbol["attributes"]["name"]
+
+		cell_name = "power_symbol_%d" % (net_node_number)
+		self.schematic_page.cells_dict[cell_name] = power_symbol
+
+	@property
+	def cell_name(self):
+		return "%s" % (self.part.refdes)
 
 	def add_parts(self, indent_depth=""):
 		# Every real part might yield multiple smaller parts (eg: airwires, gnd/vcc connections)
-		part = self.instance
+		part = self.part
 		self.schematic_page.parts_to_draw.remove(part)
 
 		connections = {}
@@ -207,7 +214,7 @@ class SVGPart(object):
 		if not connections:
 			return
 
-		svg_type = "%s (%s)" % (part.refdes, part.value)
+		svg_type = "%s" % (part.refdes)
 		# apply particular skins
 		if isinstance(part, C):
 			svg_type = "c_"
@@ -234,9 +241,10 @@ class SVGPart(object):
 
 			svg_type += suffix
 
-		self.schematic_page.parts_dict["%s(%s)" % (part.refdes, part.value)] = {
+		self.schematic_page.cells_dict[self.cell_name] = {
 			"connections": connections,
 			"port_directions": port_directions,
+			"attributes": {"value": part.value},
 			"type": svg_type
 		}
 
@@ -264,9 +272,7 @@ class NetlistSVG(object):
 		self.pins_to_skip = pins_to_skip
 		self.pins_drawn = []
 
-	@property
-	def json(self):
-		self.parts_dict = {}
+		self.cells_dict = {}
 		self.ports_dict = {}
 
 		# start helper classes
@@ -278,6 +284,8 @@ class NetlistSVG(object):
 		for part in self.context.parts_list:
 			self.part_helpers[part] = SVGPart(part, self)
 
+	@property
+	def json(self):
 		self.parts_to_draw = collections.deque(self.context.parts_list)
 		while self.parts_to_draw:
 			part = self.parts_to_draw[0]
@@ -288,7 +296,7 @@ class NetlistSVG(object):
 			self.part_helpers[part].add_parts()
 
 		big_dict = {"modules": {"SVG Output": {
-			"cells": self.parts_dict,
+			"cells": self.cells_dict,
 			"ports": self.ports_dict,
 		}}}
 
@@ -318,21 +326,13 @@ class NetlistSVG(object):
 		return ret
 
 
-def generate_svg(filename, pins_to_skip=[], *args, **kwargs):
-	i = 0
+def generate_svg(pins_to_skip=[], *args, **kwargs):
 	while True:
-		page_filename = "%s%d.svg" % (filename, i)
-
 		n = NetlistSVG(*args, **kwargs, pins_to_skip=pins_to_skip)
 		svg_contents = n.svg
 		pins_to_skip += n.pins_drawn
 
 		if not n.pins_drawn:
-			break
+			return
 
-		with open(page_filename, "w") as f:
-			f.write(svg_contents)
-		print("Finished writing %s\n" % page_filename)
-
-		i+=1
-
+		yield svg_contents
