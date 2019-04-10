@@ -23,6 +23,8 @@ https://www.chromium.org/chromium-os/servo/servomicro
 
 from pcbdl import *
 
+# Start of things that should really be in a generic library
+# It's a TODO to make a library. Until then, 300 lines to start a new schematic from scratch with no library is probably not bad.
 def make_connector(pin_count):
 	class Connector(Part):
 		REFDES_PREFIX = "CN"
@@ -77,88 +79,12 @@ class DoubleDiode(Part):
 	package = "SOT95P247X115-3L"
 	PINS = ["A1", "A2", "K"]
 
-class ServoConnector(make_connector(pin_count=50)):
-	part_number = "AXK850145WG"
-	package = "AXK850145WG"
-
-	pin_names_match_nets = True
-	pin_names_match_nets_prefix = "DUT_"
-	PINS = [
-		("P1",  "GND"),
-		("P2",  "SPI2_CLK", "SPI2_SK"),
-		("P3",  "SPI2_CS"),
-		("P4",  "SPI2_MOSI", "SPI2_DI"),
-		("P5",  "SPI2_MISO", "SPI2_DO"),
-		("P6",  "SPI2_VREF"),
-		("P7",  "SPI2_HOLD_L"),
-		("P8",  "GND"),
-		("P9",  "SPI1_CLK", "SPI1_SK"),
-		("P10", "SPI1_CS"),
-		("P11", "SPI1_MOSI", "SPI1_DI"),
-		("P12", "SPI1_MISO", "SPI1_DO"),
-		("P13", "SPI1_VREF"),
-		("P14", "EC_RESET_L", "COLD_RESET_L"),
-		("P15", "GND"),
-		("P16", "UART2_SERVO_DUT_TX", "UART2_RXD"),
-		("P17", "UART2_DUT_SERVO_TX", "UART2_TXD"),
-		("P18", "UART2_VREF"),
-		("P19", "SD_DETECT_L"),
-		("P20", "GND"),
-		("P21", "JTAG_TCK"),
-		("P22", "PWR_BUTTON"),
-		("P23", "JTAG_TMS"),
-		("P24", "JTAG_TDI"),
-		("P25", "JTAG_TDO"),
-		("P26", "JTAG_RTCK"),
-		("P27", "JTAG_TRST_L"),
-		("P28", "JTAG_SRST_L", "WARM_RESET_L"),
-		("P29", "JTAG_VREF"),
-		("P30", "REC_MODE_L", "GOOG_REC_MODE_L"),
-		("P31", "GND"),
-		("P32", "UART1_SERVO_DUT_TX", "UART1_RXD"),
-		("P33", "UART1_DUT_SERVO_TX", "UART1_TXD"),
-		("P34", "UART1_VREF"),
-		("P35", "I2C_3.3V"),
-		("P36", "GND"),
-		("P37", "I2C_SDA"),
-		("P38", "I2C_SCL"),
-		("P39", "HPD"),
-		("P40", "FW_WP", "MFG_MODE"),
-		("P41", "PROC_HOT_L", "FW_UPDATE_L", "FW_UP_L"),
-		("P42", "GND"),
-		("P43", "DEV_MODE"),
-		("P44", "LID_OPEN"),
-		("P45", "PCH_DISABLE_L", "CPU_NMI"),
-		("P46", "KBD_COL1"),
-		("P47", "KBD_COL2"),
-		("P48", "KBD_ROW1"),
-		("P49", "KBD_ROW2"),
-		("P50", "KBD_ROW3"),
-	]
-
-	# swap the order of the names so the pretty names are first
-	PINS = [names[1:] + (names[0],) for names in PINS]
-
-class ProgrammingConnector(make_connector(8)):
-	part_number = "FH34SRJ-8S-0.5SH(50)"
-	package = "HRS_FH34SRJ-8S-0-5SH"
-
-	PINS = [
-		("P1", "GND"),
-		("P2", "UART_TX"),
-		("P3", "UART_RX"),
-		("P6", "NRST"),
-		("P8", "BOOT0"),
-		Pin("G", numbers=("G1", "G2")),
-	]
-
 class STM32F072(Part):
 	REFDES_PREFIX = "U"
 
 	part_number = "STM32F072CBU6TR"
 	package = "QFN05P_7-1X7-1_0-6_49N"
 
-	pin_names_match_nets = True
 	PINS = [
 		Pin("VDD",    ("24", "48"), type=PinType.POWER_INPUT),
 		Pin("VBAT",   "1",          type=PinType.POWER_INPUT),
@@ -224,62 +150,6 @@ class STM32F072(Part):
 
 		if pin.names[0].startswith("PF"):
 			pin.well_name = "VDDA"
-
-class ServoEC(STM32F072):
-	pin_names_match_nets = True
-	PINS = [
-		Pin(("PA0",  "UART3_TX")),
-		Pin(("PA1",  "UART3_RX")),
-		Pin(("PA2",  "UART1_TX")),
-		Pin(("PA3",  "UART1_RX")),
-		Pin(("PA4",  "SERVO_JTAG_TMS")),
-		Pin(("PA5",  "SPI1_MUX_SEL")),
-		Pin(("PA6",  "SERVO_JTAG_TDO_BUFFER_EN")),
-		Pin(("PA7",  "SERVO_JTAG_TDI")),
-
-		Pin(("PA8",  "UART1_EN_L")),
-		Pin(("PA9",  "EC_UART_TX")),
-		Pin(("PA10", "EC_UART_RX")),
-		Pin(("PA11", "USB_DM")),
-		Pin(("PA12", "USB_DP")),
-		Pin(("PA13", "SERVO_JTAG_TRST_L")),
-		Pin(("PA14", "SPI1_BUF_EN_L")),
-		Pin(("PA15", "SPI2_BUF_EN_L")),
-
-		Pin(("PB0",  "UART2_EN_L")),
-		Pin(("PB1",  "SERVO_JTAG_RTCK")),
-		Pin(("PB2",  "SPI1_VREF_33")),
-		Pin(("PB3",  "SPI1_VREF_18")),
-		Pin(("PB4",  "SPI2_VREF_33")),
-		Pin(("PB5",  "SPI2_VREF_18")),
-		Pin(("PB6",  "SERVO_JTAG_TRST_DIR")),
-		Pin(("PB7",  "SERVO_JTAG_TDI_DIR")),
-
-		Pin(("PB8",  "SERVO_SCL")),
-		Pin(("PB9",  "SERVO_SDA")),
-		Pin(("PB10", "UART2_TX")),
-		Pin(("PB11", "UART2_RX")),
-		Pin(("PB12", "SERVO_SPI_CS")),
-		Pin(("PB13", "SERVO_TO_SPI1_MUX_CLK")),
-		Pin(("PB14", "SERVO_TO_SPI1_MUX_MISO")),
-		Pin(("PB15", "SERVO_SPI_MOSI")),
-
-		Pin(("PC13", "RESET_L")),
-		Pin(("PC14", "SERVO_JTAG_TMS_DIR")),
-		Pin(("PC15", "SERVO_JTAG_TDO_SEL")),
-
-		Pin(("PF0", "JTAG_BUFOUT_EN_L")),
-		Pin(("PF1", "JTAG_BUFIN_EN_L")),
-	]
-
-	for pin in PINS:
-		if not isinstance(pin, Pin):
-			continue
-
-		if pin.names[0].startswith("P"):
-			# swap the order of the names so the
-			# functional names are first
-			pin.names = pin.names[1:] + (pin.names[0],)
 
 class I2cIoExpander(Part):
 	REFDES_PREFIX = "U"
@@ -439,7 +309,142 @@ class PowerSwitch(Part):
 		Pin("EN",            "B1"),
 		Pin("GND",           "B2"),
 	]
+# End of things that should be in a generic library
 
+# Maybe this connector could be in a library too, since it's not too specific to this servo schematic
+class ServoConnector(make_connector(pin_count=50)):
+	part_number = "AXK850145WG"
+	package = "AXK850145WG"
+
+	pin_names_match_nets = True
+	pin_names_match_nets_prefix = "DUT_"
+	PINS = [
+		("P1",  "GND"),
+		("P2",  "SPI2_CLK", "SPI2_SK"),
+		("P3",  "SPI2_CS"),
+		("P4",  "SPI2_MOSI", "SPI2_DI"),
+		("P5",  "SPI2_MISO", "SPI2_DO"),
+		("P6",  "SPI2_VREF"),
+		("P7",  "SPI2_HOLD_L"),
+		("P8",  "GND"),
+		("P9",  "SPI1_CLK", "SPI1_SK"),
+		("P10", "SPI1_CS"),
+		("P11", "SPI1_MOSI", "SPI1_DI"),
+		("P12", "SPI1_MISO", "SPI1_DO"),
+		("P13", "SPI1_VREF"),
+		("P14", "EC_RESET_L", "COLD_RESET_L"),
+		("P15", "GND"),
+		("P16", "UART2_SERVO_DUT_TX", "UART2_RXD"),
+		("P17", "UART2_DUT_SERVO_TX", "UART2_TXD"),
+		("P18", "UART2_VREF"),
+		("P19", "SD_DETECT_L"),
+		("P20", "GND"),
+		("P21", "JTAG_TCK"),
+		("P22", "PWR_BUTTON"),
+		("P23", "JTAG_TMS"),
+		("P24", "JTAG_TDI"),
+		("P25", "JTAG_TDO"),
+		("P26", "JTAG_RTCK"),
+		("P27", "JTAG_TRST_L"),
+		("P28", "JTAG_SRST_L", "WARM_RESET_L"),
+		("P29", "JTAG_VREF"),
+		("P30", "REC_MODE_L", "GOOG_REC_MODE_L"),
+		("P31", "GND"),
+		("P32", "UART1_SERVO_DUT_TX", "UART1_RXD"),
+		("P33", "UART1_DUT_SERVO_TX", "UART1_TXD"),
+		("P34", "UART1_VREF"),
+		("P35", "I2C_3.3V"),
+		("P36", "GND"),
+		("P37", "I2C_SDA"),
+		("P38", "I2C_SCL"),
+		("P39", "HPD"),
+		("P40", "FW_WP", "MFG_MODE"),
+		("P41", "PROC_HOT_L", "FW_UPDATE_L", "FW_UP_L"),
+		("P42", "GND"),
+		("P43", "DEV_MODE"),
+		("P44", "LID_OPEN"),
+		("P45", "PCH_DISABLE_L", "CPU_NMI"),
+		("P46", "KBD_COL1"),
+		("P47", "KBD_COL2"),
+		("P48", "KBD_ROW1"),
+		("P49", "KBD_ROW2"),
+		("P50", "KBD_ROW3"),
+	]
+
+	# swap the order of the names so the pretty names are first
+	PINS = [names[1:] + (names[0],) for names in PINS]
+
+# The following part definitions are only related to this circuit
+class ProgrammingConnector(make_connector(8)):
+	part_number = "FH34SRJ-8S-0.5SH(50)"
+	package = "HRS_FH34SRJ-8S-0-5SH"
+
+	PINS = [
+		("P1", "GND"),
+		("P2", "UART_TX"),
+		("P3", "UART_RX"),
+		("P6", "NRST"),
+		("P8", "BOOT0"),
+		Pin("G", numbers=("G1", "G2")),
+	]
+
+class ServoEC(STM32F072):
+	pin_names_match_nets = True
+	PINS = [
+		Pin(("PA0",  "UART3_TX")),
+		Pin(("PA1",  "UART3_RX")),
+		Pin(("PA2",  "UART1_TX")),
+		Pin(("PA3",  "UART1_RX")),
+		Pin(("PA4",  "SERVO_JTAG_TMS")),
+		Pin(("PA5",  "SPI1_MUX_SEL")),
+		Pin(("PA6",  "SERVO_JTAG_TDO_BUFFER_EN")),
+		Pin(("PA7",  "SERVO_JTAG_TDI")),
+
+		Pin(("PA8",  "UART1_EN_L")),
+		Pin(("PA9",  "EC_UART_TX")),
+		Pin(("PA10", "EC_UART_RX")),
+		Pin(("PA11", "USB_DM")),
+		Pin(("PA12", "USB_DP")),
+		Pin(("PA13", "SERVO_JTAG_TRST_L")),
+		Pin(("PA14", "SPI1_BUF_EN_L")),
+		Pin(("PA15", "SPI2_BUF_EN_L")),
+
+		Pin(("PB0",  "UART2_EN_L")),
+		Pin(("PB1",  "SERVO_JTAG_RTCK")),
+		Pin(("PB2",  "SPI1_VREF_33")),
+		Pin(("PB3",  "SPI1_VREF_18")),
+		Pin(("PB4",  "SPI2_VREF_33")),
+		Pin(("PB5",  "SPI2_VREF_18")),
+		Pin(("PB6",  "SERVO_JTAG_TRST_DIR")),
+		Pin(("PB7",  "SERVO_JTAG_TDI_DIR")),
+
+		Pin(("PB8",  "SERVO_SCL")),
+		Pin(("PB9",  "SERVO_SDA")),
+		Pin(("PB10", "UART2_TX")),
+		Pin(("PB11", "UART2_RX")),
+		Pin(("PB12", "SERVO_SPI_CS")),
+		Pin(("PB13", "SERVO_TO_SPI1_MUX_CLK")),
+		Pin(("PB14", "SERVO_TO_SPI1_MUX_MISO")),
+		Pin(("PB15", "SERVO_SPI_MOSI")),
+
+		Pin(("PC13", "RESET_L")),
+		Pin(("PC14", "SERVO_JTAG_TMS_DIR")),
+		Pin(("PC15", "SERVO_JTAG_TDO_SEL")),
+
+		Pin(("PF0", "JTAG_BUFOUT_EN_L")),
+		Pin(("PF1", "JTAG_BUFIN_EN_L")),
+	]
+
+	for pin in PINS:
+		if not isinstance(pin, Pin):
+			continue
+
+		if pin.names[0].startswith("P"):
+			# swap the order of the names so the
+			# functional names are first
+			pin.names = pin.names[1:] + (pin.names[0],)
+
+# Start of actual schematic
 vbus_in = Net("VBUS_IN")
 gnd = Net("GND")
 def decoupling(value="100n"):
