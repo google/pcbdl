@@ -442,7 +442,7 @@ class PowerSwitch(Part):
 
 vbus_in = Net("VBUS_IN")
 gnd = Net("GND")
-def decoupling(value = "100n"):
+def decoupling(value="100n"):
 	package = "CAPC0603X33L"
 
 	if "uF" in value:
@@ -456,16 +456,11 @@ old_R = R
 def R(value, to):
 	return old_R(value, package="RESC0603X23L", part_number="R" + value, to=to) #defined_at: not here
 
-stm32 = ServoEC()
-
-dut = ServoConnector()
-gnd << dut.GND
-
 # usb stuff
 usb = UsbConnector()
 usb_esd = UsbEsdDiode()
-Net("USB_DP") << usb.DP << usb_esd.P1 << stm32
-Net("USB_DM") << usb.DM << usb_esd.P2 << stm32
+Net("USB_DP") << usb.DP << usb_esd.P1
+Net("USB_DM") << usb.DM << usb_esd.P2
 vbus_in << usb.VBUS << usb_esd.VCC
 gnd << usb.GND << usb.G << usb_esd.GND
 # We could make this type-c instead!
@@ -498,6 +493,10 @@ Net("PP1800_VIN") << (
 gnd << reg1800.GND
 pp1800 << reg1800.OUT << decoupling("1u")
 
+stm32 = ServoEC()
+usb.DP << stm32
+usb.DM << stm32
+
 # stm32 power
 pp3300 << (
 	stm32.VBAT, decoupling(),
@@ -527,7 +526,7 @@ Net("PD_NRST_L") << (
 boot0 = Net("PD_BOOT0")
 boot0_q = FET("CSD13381F4", package="DFN100X60X35-3L")
 # Use OTG + A-TO-A cable to go to bootloader mode
-Net("USB_ID") << usb.ID << boot0_q.G << R("51.1k", to=vbus_in)
+Net("USB_ID") << boot0_q.G << R("51.1k", to=vbus_in)
 boot0 << boot0_q.D << R("51.1k", to=vbus_in) << stm32.BOOT0
 gnd << boot0_q.S
 Net("EC_UART_TX") << stm32 << prog.UART_TX
@@ -541,6 +540,10 @@ ppdut_spi_vrefs = {
 uart3_rx = Net("UART3_RX") >> stm32
 uart3_tx = Net("UART3_TX") << stm32
 
+dut = ServoConnector()
+gnd << dut.GND
+pp3300 >> dut.pins["I2C_3.3V"]
+
 io = I2cIoExpander()
 pp3300 << io.VCCI << decoupling()
 gnd << io.GND << io.PAD
@@ -549,8 +552,6 @@ Net("SERVO_SDA") << R("4.7k", to=pp3300) << stm32 << io.SDA << dut.I2C_SDA
 Net("SERVO_SCL") << R("4.7k", to=pp3300) << stm32 << io.SCL << dut.I2C_SCL
 Net("RESET_L") << io.RESET_L << stm32
 pp1800 << io.VCCP << decoupling()
-
-pp3300 >> dut.pins["I2C_3.3V"]
 
 dut_mfg_mode = Net("DUT_MFG_MODE") << dut
 mfg_mode_shifter = LevelShifter1()
