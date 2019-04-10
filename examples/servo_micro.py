@@ -493,33 +493,33 @@ Net("PP1800_VIN") << (
 gnd << reg1800.GND
 pp1800 << reg1800.OUT << decoupling("1u")
 
-stm32 = ServoEC()
-usb.DP << stm32
-usb.DM << stm32
+ec = ServoEC()
+usb.DP << ec
+usb.DM << ec
 
-# stm32 power
+# ec power
 pp3300 << (
-	stm32.VBAT, decoupling(),
-	stm32.VDD, decoupling(),
+	ec.VBAT, decoupling(),
+	ec.VDD, decoupling(),
 	decoupling("4.7u"),
 )
 Net("PP3300_PD_VDDA") << (
-	stm32.VDDA,
+	ec.VDDA,
 	L("600@100MHz", to=pp3300, package="FBC1005X50N", part_number="FERRITEBEAD100MHz"),
 	decoupling("1u"),
 	decoupling("100p"),
 )
 pp3300 << (
-	stm32.VDDIO2, decoupling(),
+	ec.VDDIO2, decoupling(),
 	decoupling("4.7u"),
 )
-gnd << stm32.VSS << stm32.VSSA << stm32.PAD
+gnd << ec.VSS << ec.VSSA << ec.PAD
 
-# stm32 programming/debug
+# ec programming/debug
 prog = ProgrammingConnector()
 gnd << prog.GND << prog.G
 Net("PD_NRST_L") << (
-	stm32.NRST,
+	ec.NRST,
 	prog.NRST,
 	decoupling(),
 )
@@ -527,18 +527,18 @@ boot0 = Net("PD_BOOT0")
 boot0_q = FET("CSD13381F4", package="DFN100X60X35-3L")
 # Use OTG + A-TO-A cable to go to bootloader mode
 Net("USB_ID") << boot0_q.G << R("51.1k", to=vbus_in)
-boot0 << boot0_q.D << R("51.1k", to=vbus_in) << stm32.BOOT0
+boot0 << boot0_q.D << R("51.1k", to=vbus_in) << ec.BOOT0
 gnd << boot0_q.S
-Net("EC_UART_TX") << stm32 << prog.UART_TX
-Net("EC_UART_RX") << stm32 << prog.UART_RX
+Net("EC_UART_TX") << ec << prog.UART_TX
+Net("EC_UART_RX") << ec << prog.UART_RX
 
 ppdut_spi_vrefs = {
 	1: Net("PPDUT_SPI1_VREF"),
 	2: Net("PPDUT_SPI2_VREF"),
 }
 
-uart3_rx = Net("UART3_RX") >> stm32
-uart3_tx = Net("UART3_TX") << stm32
+uart3_rx = Net("UART3_RX") >> ec
+uart3_tx = Net("UART3_TX") << ec
 
 dut = ServoConnector()
 gnd << dut.GND
@@ -548,9 +548,9 @@ io = I2cIoExpander()
 pp3300 << io.VCCI << decoupling()
 gnd << io.GND << io.PAD
 gnd << io.A0 # i2c addr 7'H=0x20
-Net("SERVO_SDA") << R("4.7k", to=pp3300) << stm32 << io.SDA << dut.I2C_SDA
-Net("SERVO_SCL") << R("4.7k", to=pp3300) << stm32 << io.SCL << dut.I2C_SCL
-Net("RESET_L") << io.RESET_L << stm32
+Net("SERVO_SDA") << R("4.7k", to=pp3300) << ec << io.SDA << dut.I2C_SDA
+Net("SERVO_SCL") << R("4.7k", to=pp3300) << ec << io.SCL << dut.I2C_SCL
+Net("RESET_L") << io.RESET_L << ec
 pp1800 << io.VCCP << decoupling()
 
 dut_mfg_mode = Net("DUT_MFG_MODE") << dut
@@ -596,27 +596,27 @@ gnd >> shifter2.GND
 jtag_mux = Mux()
 pp3300 >> jtag_mux.VCC << decoupling()
 gnd >> jtag_mux.GND
-Net("SERVO_JTAG_TDO_SEL") << stm32 >> jtag_mux.SEL
+Net("SERVO_JTAG_TDO_SEL") << ec >> jtag_mux.SEL
 
 jtag_output_buffer = OutputBuffer()
 pp3300 >> jtag_output_buffer.VCC << decoupling()
 gnd >> jtag_output_buffer.GND
-Net("SERVO_JTAG_TDO_BUFFER_EN") << stm32 >> jtag_output_buffer.OE
+Net("SERVO_JTAG_TDO_BUFFER_EN") << ec >> jtag_output_buffer.OE
 Net("SERVO_JTAG_MUX_TDO") << jtag_mux.OUT >> jtag_output_buffer.IN
 uart3_rx << jtag_output_buffer.OUT # also Net("JTAG_BUFFER_TO_SERVO_TDO")
 
-Net("JTAG_BUFOUT_EN_L") << stm32 >> shifter1.OE_L
-Net("JTAG_BUFIN_EN_L")  << stm32  >> shifter2.OE_L
+Net("JTAG_BUFOUT_EN_L") << ec >> shifter1.OE_L
+Net("JTAG_BUFIN_EN_L")  << ec  >> shifter2.OE_L
 
 pp3300 >> shifter1.A1 # spare
-Net("SERVO_JTAG_TRST_L") << stm32 << shifter1.A2
-Net("SERVO_JTAG_TMS") << stm32 << shifter1.A3
-Net("SERVO_JTAG_TDI") << stm32 << shifter1.A4
+Net("SERVO_JTAG_TRST_L") << ec << shifter1.A2
+Net("SERVO_JTAG_TMS") << ec << shifter1.A3
+Net("SERVO_JTAG_TDI") << ec << shifter1.A4
 
 shifter1.direction_AB >> shifter1.DIR1 # spare
-Net("SERVO_JTAG_TRST_DIR") << stm32 >> shifter1.DIR2
-Net("SERVO_JTAG_TMS_DIR") << stm32 >> shifter1.DIR3
-Net("SERVO_JTAG_TDI_DIR") << stm32 >> shifter1.DIR4
+Net("SERVO_JTAG_TRST_DIR") << ec >> shifter1.DIR2
+Net("SERVO_JTAG_TMS_DIR") << ec >> shifter1.DIR3
+Net("SERVO_JTAG_TDI_DIR") << ec >> shifter1.DIR4
 
 shifter1.B1 # spare
 Net("DUT_JTAG_TRST_L") << dut << shifter1.B2
@@ -633,14 +633,14 @@ shifter2.direction_BA >> shifter2.DIR3
 shifter2.direction_AB >> shifter2.DIR4
 
 Net("SERVO_JTAG_TDO") << shifter2.A1 >> jtag_mux.IN0
-Net("SERVO_JTAG_RTCK") >> stm32 << shifter2.A2
+Net("SERVO_JTAG_RTCK") >> ec << shifter2.A2
 Net("SERVO_JTAG_SWDIO") << shifter2.A3 >> jtag_mux.IN1
 uart3_tx << shifter2.A4 # also Net("DUT_JTAG_TCK")
 
 # SPI1 & 2
 # TODO SERVO_TO_SPI1_MUX_CLK
-servo_spi_mosi = Net("SERVO_SPI_MOSI") << stm32
-servo_spi_cs = Net("SERVO_SPI_CS") << stm32
+servo_spi_mosi = Net("SERVO_SPI_MOSI") << ec
+servo_spi_cs = Net("SERVO_SPI_CS") << ec
 
 # Since the circuits look so similar, we'll just have a loop
 spi_shifters = {
@@ -658,7 +658,7 @@ for i, s in spi_shifters.items():
 	]
 	for voltage, input_rail, power_switch in power_switches:
 		gnd << power_switch.GND
-		Net("SPI%d_VREF_%s" % (i, voltage)) << stm32 >> power_switch.EN << R("4.7k", to=gnd)
+		Net("SPI%d_VREF_%s" % (i, voltage)) << ec >> power_switch.EN << R("4.7k", to=gnd)
 		input_rail << power_switch.IN
 		vref << power_switch.OUT
 
@@ -666,7 +666,7 @@ for i, s in spi_shifters.items():
 	pp3300 >> s.VCCA << decoupling()
 	vref >> s.VCCB << decoupling()
 	gnd >> s.GND
-	Net("SPI%d_BUF_EN_L" % i) << stm32 >> s.OE_L
+	Net("SPI%d_BUF_EN_L" % i) << ec >> s.OE_L
 
 	# MISO
 	Net("DUT_SPI%d_MISO" % i) << dut >> s.B1
@@ -691,13 +691,13 @@ for i, s in spi_shifters.items():
 spi1_mux = AnalogSwitch()
 pp3300 >> spi1_mux.VCC >> decoupling()
 gnd >> spi1_mux.GND
-Net("SPI1_MUX_SEL") << stm32 >> spi1_mux.SEL1 >> spi1_mux.SEL2
+Net("SPI1_MUX_SEL") << ec >> spi1_mux.SEL1 >> spi1_mux.SEL2
 
 Net("SPI_MUX_TO_DUT_SPI1_MISO") >> spi1_mux.COM1 << spi_shifters[1].A1
 Net("SPI_MUX_TO_DUT_SPI1_CLK")  << spi1_mux.COM2 >> spi_shifters[1].A4
 
-Net("SERVO_TO_SPI1_MUX_MISO")  << spi1_mux.NO1 << spi_shifters[2].A1 >> stm32
-Net("SERVO_TO_SPI1_MUX_CLK")   >> spi1_mux.NO2 >> spi_shifters[2].A4 << stm32
+Net("SERVO_TO_SPI1_MUX_MISO")  << spi1_mux.NO1 << spi_shifters[2].A1 >> ec
+Net("SERVO_TO_SPI1_MUX_CLK")   >> spi1_mux.NO2 >> spi_shifters[2].A4 << ec
 
 uart3_rx << spi1_mux.NC1
 uart3_tx >> spi1_mux.NC2
@@ -715,14 +715,14 @@ for i, s in uart_shifters.items():
 	pp3300 >> s.VCCA << decoupling()
 	vref >> s.VCCB << decoupling()
 	gnd >> s.GND
-	Net("UART%d_EN_L" % i) << stm32 >> s.OE_L
+	Net("UART%d_EN_L" % i) << ec >> s.OE_L
 
-	Net("UART%d_TX" % i) << stm32 >> s.A1
+	Net("UART%d_TX" % i) << ec >> s.A1
 	s.direction_AB >> s.DIR1
 	Net("UART%d_SERVO_DUT_TX" % i) >> dut << s.B1
 
 	Net("UART%d_DUT_SERVO_TX" % i) << dut >> s.B2
 	s.direction_BA >> s.DIR2
-	Net("UART%d_RX" % i) >> stm32 << s.A2
+	Net("UART%d_RX" % i) >> ec << s.A2
 
 global_context.autoname("servo_micro.refdes_mapping")
