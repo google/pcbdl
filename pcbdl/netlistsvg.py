@@ -44,14 +44,18 @@ class SVGNet(object):
 
 		for original_group in self.instance.grouped_connections:
 			group = list(original_group) # make a copy so we can fragment it
+			group_pin_count = sum(len(pin.part.pins) for pin in group)
 			self.grouped_connections.append(group)
 
 			if self.schematic_page.airwires < 2:
 				continue
 
+			#if group_pin_count < 40:
+				#continue
+
 			first_big_part = None
 			for pin in original_group:
-				if len(pin.part.pins) <= 4:
+				if len(pin.part.pins) <= 3:
 					# part is too small, probably should stay here
 					continue
 
@@ -69,16 +73,22 @@ class SVGNet(object):
 		self.node_numbers = [self.get_next_node_number()
 			for group in self.grouped_connections]
 
-	def get_node_number(self, pin):
+	def _find_group(self, pin):
 		if not hasattr(self, "node_numbers"):
 			self.categorize_groups()
 
 		for i, group in enumerate(self.grouped_connections):
 			if pin in group:
-				group_idx = i
-				break
-		else:
-			raise ValueError("Can't find pin %s on %s" % (pin, self.instance))
+				return i, group
+
+		raise ValueError("Can't find pin %s on %s" % (pin, self.instance))
+
+	def get_other_pins_in_group(self, pin):
+		_, group = self._find_group(pin)
+		return group
+
+	def get_node_number(self, pin):
+		group_idx, _ = self._find_group(pin)
 
 		if self.schematic_page.airwires == 0:
 			return self.node_numbers[0]
@@ -89,8 +99,8 @@ class SVGPart(object):
 		self.instance = instance
 		self.schematic_page = schematic_page
 
-	def attach_airwire(self, net, net_node_number, direction):
-		self.schematic_page.ports_dict[net.name + str(net_node_number)] = {
+	def attach_net_name_port(self, net, net_node_number, direction):
+		self.schematic_page.ports_dict["%s_ignore%s" % (net.name, str(net_node_number))] = {
 			"bits": [net_node_number],
 			"direction": direction
 		}
@@ -105,19 +115,21 @@ class SVGPart(object):
 
 		power_symbol = {
 			"connections": {"A": [net_node_number]},
-			"port_directions": {"A" : "input" if net.is_gnd else "output"},
 			"attributes": {"value": name_attribute},
 			"type": "gnd" if net.is_gnd else "vcc",
 		}
 
 		self.schematic_page.parts_dict[name] = power_symbol
 
-	def add_parts(self):
+	def add_parts(self, indent_depth=""):
 		# Every real part might yield multiple smaller parts (eg: airwires, gnd/vcc connections)
 		part = self.instance
+		self.schematic_page.parts_to_draw.remove(part)
 
 		connections = {}
 		port_directions = {}
+
+		parts_to_bring_on_page = []
 
 		pin_count = len(part.pins)
 		for i, pin in enumerate(part.pins):
@@ -128,6 +140,14 @@ class SVGPart(object):
 
 			DIRECTIONS = ["output", "input"] # aka right, left
 			port_directions[name] = DIRECTIONS[i < pin_count/2]
+
+			# TODO: Make this depend on pin type, instead of such a rough heuristic
+			if "OUT" in pin.name:
+				port_directions[name] = "output"
+			if "IN" in pin.name:
+				port_directions[name] = "input"
+			if "EN" in pin.name:
+				port_directions[name] = "input"
 
 			is_connector = part.refdes.startswith("J") or part.refdes.startswith("CN")
 			if is_connector:
@@ -148,8 +168,9 @@ class SVGPart(object):
 				net_node_number = pin_net_helper.get_node_number(pin)
 				connections[name] = [net_node_number]
 
-				#if len(pin_net_helper.grouped_connections) > 1 and not (pin.net.is_gnd or pin.net.is_power):
-					#self.attach_airwire(pin.net, net_node_number, port_directions[name])
+				for other_pin in pin_net_helper.get_other_pins_in_group(pin):
+					other_part = other_pin.part
+					parts_to_bring_on_page.append(other_part)
 			else:
 				# Make up a new disposable connection
 				connections[name] = [SVGNet.get_next_node_number()]
@@ -158,6 +179,13 @@ class SVGPart(object):
 			skip_drawing_pin = False
 			if not self.schematic_page.net_regex.match(str(pin.net.name)):
 				skip_drawing_pin = True
+
+			if isinstance(part, (R, C)) or part.refdes.startswith("Q"):
+				# we might not want to skip drawing this pin, are any other pins good?
+				for other_pin in set(part.pins) - set((pin,)):
+					if self.schematic_page.net_regex.match(str(other_pin.net.name)):
+						# at least one pin of this part is good, so make sure we draw all its other pins
+						skip_drawing_pin = False
 
 			if pin in self.schematic_page.pins_to_skip:
 				skip_drawing_pin = True
@@ -171,6 +199,10 @@ class SVGPart(object):
 
 			if pin.net.is_gnd or pin.net.is_power:
 				self.attach_power_symbol(pin.net, net_node_number)
+			else:
+				##if len(pin_net_helper.grouped_connections) > 1:
+				#self.attach_net_name_port(pin.net, net_node_number, port_directions[name])
+				pass
 
 		if not connections:
 			return
@@ -183,9 +215,6 @@ class SVGPart(object):
 			svg_type = "r_"
 		if isinstance(part, (R, C)):
 			suffix = "h"
-
-			#for pin in port_directions.keys():
-				#port_directions[pin] = "input"
 
 			swap_pins = False
 			for i, pin in enumerate(part.pins):
@@ -210,6 +239,16 @@ class SVGPart(object):
 			"port_directions": port_directions,
 			"type": svg_type
 		}
+
+		print(indent_depth + str(part))
+
+		# Make sure the other related parts are squeezed on this page
+		for other_part in parts_to_bring_on_page:
+			if other_part not in self.schematic_page.parts_to_draw:
+				# we already drew it earlier
+				continue
+
+			self.schematic_page.part_helpers[other_part].add_parts(indent_depth + " ")
 
 class NetlistSVG(object):
 	"""Represents single .svg file"""
@@ -237,13 +276,16 @@ class NetlistSVG(object):
 
 		self.part_helpers = {}
 		for part in self.context.parts_list:
+			self.part_helpers[part] = SVGPart(part, self)
+
+		self.parts_to_draw = collections.deque(self.context.parts_list)
+		while self.parts_to_draw:
+			part = self.parts_to_draw[0]
 			if self.max_pin_count and self.pin_count > self.max_pin_count:
 				# stop drawing, this page is too cluttered
-				self.net_regex = re.compile(".^")
+				break
 
-			part_helper = SVGPart(part, self)
-			self.part_helpers[part] = part_helper
-			part_helper.add_parts()
+			self.part_helpers[part].add_parts()
 
 		big_dict = {"modules": {"SVG Output": {
 			"cells": self.parts_dict,
@@ -271,26 +313,26 @@ class NetlistSVG(object):
 				f.name
 			], input=json.encode("utf-8"))
 
-			return f.read()
+			ret = f.read()
+		ret = re.sub("_ignore\d+", "", ret)
+		return ret
 
 
 def generate_svg(filename, pins_to_skip=[], *args, **kwargs):
 	i = 0
 	while True:
-		for attempt in range(10):
-			print(i)
-			n = NetlistSVG(*args, **kwargs, pins_to_skip=pins_to_skip)
-			svg_contents = n.svg
-			if svg_contents != "undefined":
-				break
+		page_filename = "%s%d.svg" % (filename, i)
 
-			kwargs["max_pin_count"] -= 1
-		if len(svg_contents)>700:
-			with open("%s%d.svg" % (filename, i), "w") as f:
-				f.write(svg_contents)
+		n = NetlistSVG(*args, **kwargs, pins_to_skip=pins_to_skip)
+		svg_contents = n.svg
 		pins_to_skip += n.pins_drawn
 
-		i+=1
 		if not n.pins_drawn:
 			break
+
+		with open(page_filename, "w") as f:
+			f.write(svg_contents)
+		print("Finished writing %s\n" % page_filename)
+
+		i+=1
 
