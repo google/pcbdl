@@ -355,6 +355,9 @@ class PartInstancePin(PartClassPin):
 
 		self._net = new_net
 
+	def connect(self, *args, **kwargs):
+		self.net.connect(*args, **kwargs)
+
 	def __lshift__(self, others):
 		net = self._net
 		if net is None:
