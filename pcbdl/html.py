@@ -52,7 +52,12 @@ class HTMLPart(Plugin):
 	@property
 	def part_li(self):
 		part = self.instance
-		yield "<li><h2 id=\"part-%s\">%s</h2>" % (part.refdes, part.refdes)
+
+		class_str = ""
+		if not part.populated:
+			class_str = "class=\"not-populated\""
+
+		yield "<li%s><h2 id=\"part-%s\">%s</h2>" % (class_str, part.refdes, part.refdes)
 
 		yield part.plugins[HTMLDefinedAt].href_line
 		yield "<p>%s</p>" % html.escape(self.class_list)
@@ -66,6 +71,8 @@ class HTMLPart(Plugin):
 
 		yield "<p>Value: %s</p>" % part.value
 		yield "<p>Part Number: %s</p>" % part.part_number
+		if not part.populated:
+			yield "<p>Do Not Populate!</p>"
 		try:
 			yield "<p>Package: %s</p>" % part.package
 		except AttributeError:
@@ -240,7 +247,8 @@ def html_generator(context):
 
 	yield "<html>"
 	yield "<style>"
-	yield ":target {background-color: #ffff99;}"
+	yield ":target { background-color: #ffff99; }"
+	yield ".not-populated { color: #777777; }"
 	yield from code_manager.css_generator()
 
 	# unnamed variables
