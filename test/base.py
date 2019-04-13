@@ -112,6 +112,12 @@ class PartTest(unittest.TestCase):
 			self.assertNotIn(refdes, names)
 			names.add(refdes)
 
+	def test_duplicate(self):
+		"""We shouldn't allow 2 parts with the same refdes."""
+		Part(refdes="duplicate_part")
+		with self.assertRaises(Exception):
+			Part(refdes="duplicate_part")
+
 	def test_part_naming(self):
 		p = Part()
 		p.refdes = "naming_test"

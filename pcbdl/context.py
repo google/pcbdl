@@ -31,16 +31,21 @@ class Context(object):
 
 	def new_part(self, part):
 		assert(part not in self.parts_list)
+
+		if part.refdes in (other_part.refdes for other_part in self.parts_list):
+			raise Exception("Cannot have more than one part with the refdes %s in %s" % (part.refdes, self))
+
+		# Add to the part list
 		self.parts_list.append(part)
 
 	def new_net(self, net):
 		assert(net not in self.net_list)
-		self.net_list.append(net)
 
 		if net.name in self.named_nets:
 			raise Exception("Cannot have more than one net called %s in %s" % (net.name, self))
 
 		# Add to the net list
+		self.net_list.append(net)
 		self.named_nets[net.name] = net
 
 	def name_part_with_mapping(self, part, mapping):
