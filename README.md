@@ -25,7 +25,7 @@ To start one should define a couple of nets:
 	>>> vin = Net("vin")
 	>>> base = Net("base")
 
-We then can connect varios components between those nets with the `<<` operator and the `to=` argument (for the other side):
+We then can connect various components between those nets with the `<<` operator and the `to=` argument (for the other side):
 
 	>>> base << C("1000u", to=vin)
 	>>> base << (
@@ -44,7 +44,7 @@ Let's try to get more complicated by defining a transistor and connect some of i
 	>>> q = Transistor()
 	>>> base << q.B
 
-Nets can also be created annonymously if started from a part's pins:
+Nets can also be created anonymously if started from a part's pins:
 
 	>>> q.E << (
 		R("100", to=gnd),
@@ -89,7 +89,7 @@ Then one can explore the circuit:
 
 ## Examples
 
-Found in the `examples/` folder. Another way to make sure the enviroment is sane.
+Found in the `examples/` folder. Another way to make sure the environment is sane.
 One can just "run" any example schematic with python, add -i to do more analysis operations on the schematic.
 
 * `voltage_divider.py`: Very simple voltage divider
@@ -108,7 +108,7 @@ For now we have a **minimum viable example** of an exporter for the Allegro Cade
 
 ### HTML
 
-This produces a standalone html page with everything crosslinked:
+This produces a standalone html page with everything cross-linked:
 
 * List of nets with links to the parts and pins on each
 * List of parts with the part properties and a list of pins linking to the nets connected
@@ -155,7 +155,7 @@ Pins will have beyond just simple input/output/open drain/power properties, but 
 * Output voltages
 
 With this information it should be possible to make isolated spice circuits to check for current leaks.
-For every net, for every combination of output pins on that net, are all the input pins recieving proper voltages?
+For every net, for every combination of output pins on that net, are all the input pins receiving proper voltages?
 
 ## Importing from traditional EDA schematics
 
@@ -168,6 +168,8 @@ A kicad importer should be pretty trivial to implement. **TODO**
 ## Support
 
 This is not an officially supported Google product.
+
+The language itself is still in flux, things might change. A lot of the syntax was added as a demo of what could be possible, might still need polishing. Please don't use this language without expecting some tinkering to keep your schematics up to date to the language.
 
 ## Credits / Thanks
 
