@@ -55,7 +55,7 @@ class HTMLPart(Plugin):
 
 		class_str = ""
 		if not part.populated:
-			class_str = "class=\"not-populated\""
+			class_str = " class=\"not-populated\""
 
 		yield "<li%s><h2 id=\"part-%s\">%s</h2>" % (class_str, part.refdes, part.refdes)
 
