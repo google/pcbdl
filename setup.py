@@ -21,7 +21,7 @@ with open("README.md", "r") as readme_file:
 
 setuptools.setup(
 	name="pcbdl",
-	version="0.1.0",
+	version="0.1.1",
 	author="Google LLC",
 	description="A programming way to design schematics.",
 	long_description=long_description,
