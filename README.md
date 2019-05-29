@@ -65,7 +65,7 @@ Note: One can find a completed version of this amplifier in `examples/class_a.py
 
 One can now give automatic consecutive reference designators to components that haven't been named manually already:
 
-	>>> global_context.fill_refdes()
+	>>> global_context.autoname()
 
 Then one can explore the circuit:
 

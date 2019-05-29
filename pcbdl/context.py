@@ -66,7 +66,7 @@ class Context(object):
 		# remove from mapping in case there's other parts at the same line that need to be named differently
 		mapping.pop(i)
 
-	def autoname(self, mapping_file):
+	def autoname(self, mapping_file=None):
 		try:
 			with open(mapping_file, "r") as file:
 				mapping = [line.strip().split(" ") for line in file.readlines()]
@@ -105,9 +105,10 @@ class Context(object):
 						self.refdes_counters[prefix] += 1
 			self.named_parts[part.refdes] = part
 
-		with open(mapping_file, "w") as file:
-			for final_name, part in self.named_parts.items():
-				file.write("%s %s\n" % (final_name, part._refdes_from_context))
+		if mapping_file:
+			with open(mapping_file, "w") as file:
+				for final_name, part in self.named_parts.items():
+					file.write("%s %s\n" % (final_name, part._refdes_from_context))
 
 		for net in self.net_list:
 			# Look only for unnamed nets
