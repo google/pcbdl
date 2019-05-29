@@ -20,6 +20,7 @@ import collections
 from datetime import datetime
 import html
 import textwrap
+import inspect
 import itertools
 
 import pygments
@@ -31,24 +32,29 @@ __all__ = ["generate_html"]
 
 @Plugin.register((Net, Part))
 class HTMLDefinedAt(Plugin):
-	@property
-	def href_line(self):
+	def register(self):
 		defined_at = self.instance.defined_at
 
-		file, line = defined_at.split(":")
-		line = int(line)
-		self.code_manager.instanced_here(self.instance, file, line)
+		self.file, self.line = defined_at.split(":")
+		self.line = int(self.line)
 
-		return "<p>Defined at: %s<a href=\"#line-%d\">:%d</a></p>" % (file, line, line)
+		self.code_manager.instanced_here(self.instance, self.file, self.line)
+
+	@property
+	def href_line(self):
+		return "<p>Defined at: %s<a href=\"#line-%d\">:%d</a></p>" % (self.file, self.line, self.line)
 
 @Plugin.register(Part)
 class HTMLPart(Plugin):
-	@property
-	def class_list(self):
+	def class_list_generator(self):
 		l = self.instance.__class__.__mro__
-		s = repr(l[:l.index(Part) + 1])
-		s = s.strip("(),")
-		return s
+		l = l[:l.index(Part) + 1]
+		for cls in l:
+			if inspect.getsourcefile(cls) in self.code_manager.file_database:
+				_, line = inspect.getsourcelines(cls)
+				yield "<a href=\"#line-%d\">%s</a>" % (line, html.escape(repr(cls)))
+			else:
+				yield "%s" % html.escape(repr(cls))
 
 	@property
 	def part_li(self):
@@ -61,7 +67,7 @@ class HTMLPart(Plugin):
 		yield "<li%s><h2 id=\"part-%s\">%s</h2>" % (class_str, part.refdes, part.refdes)
 
 		yield part.plugins[HTMLDefinedAt].href_line
-		yield "<p>%s</p>" % html.escape(self.class_list)
+		yield "<p>%s</p>" % ", ".join(self.class_list_generator())
 		try:
 			yield "<p>Variable Name: %s</p>" % part.variable_name
 		except AttributeError:
@@ -254,9 +260,19 @@ def html_generator(context=global_context, include_svg=False):
 		HTMLNet.netlistsvg = svg
 
 	HTMLDefinedAt.code_manager = code_manager
+	HTMLPart.code_manager = code_manager
 
 	# Make sure the code_manager knows about everything already
-	_ = [instance.plugins[HTMLDefinedAt].href_line for instance in context.parts_list + context.net_list]
+	for instance in context.parts_list + context.net_list:
+		instance.plugins[HTMLDefinedAt].register()
+	for part in context.parts_list:
+		l = part.__class__.__mro__
+		l = l[:l.index(Part) + 1]
+		for cls in l:
+			file = inspect.getsourcefile(cls)
+			if file in code_manager.file_database:
+				_, line = inspect.getsourcelines(cls)
+				code_manager.instanced_here(part, file, line)
 
 	yield "<!DOCTYPE html>"
 	yield "<html>"
