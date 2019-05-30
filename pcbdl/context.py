@@ -229,6 +229,8 @@ class Context(object):
             # Look only for unnamed nets
             if net.has_name:
                 continue
+            #if not net.connections:
+                #continue
 
             old_name = net.name
             new_name = "ANON_NET_%s" % str(net.connections[0]).replace(".","_")

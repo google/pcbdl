@@ -169,12 +169,16 @@ class SVGPart(object):
                     port_directions[name] = DIRECTIONS[pin_number % 2]
 
             pin_net = pin._net
+            pin_net_helper = None
             if pin_net:
                 if hasattr(pin_net, "parent"):
                     pin_net = pin_net.parent
 
-                pin_net_helper = self.schematic_page.net_helpers[pin_net]
-
+                try:
+                    pin_net_helper = self.schematic_page.net_helpers[pin_net]
+                except KeyError:
+                    pass
+            if pin_net_helper:
                 net_node_number = pin_net_helper.get_node_number(pin)
                 connections[name] = [net_node_number]
 
@@ -207,12 +211,15 @@ class SVGPart(object):
             self.schematic_page.pins_drawn.append(pin)
             self.schematic_page.pin_count += 1
 
-            if pin_net:
-                display_net_name = pin.net.has_name
-                if pin.net.is_gnd or pin.net.is_power:
-                    self.attach_power_symbol(pin.net, net_node_number)
-                    display_net_name = False
-                self.attach_net_name(pin.net, net_node_number, display=display_net_name)
+            try:
+                if pin_net:
+                    display_net_name = pin.net.has_name
+                    if pin.net.is_gnd or pin.net.is_power:
+                        self.attach_power_symbol(pin.net, net_node_number)
+                        display_net_name = False
+                    self.attach_net_name(pin.net, net_node_number, display=display_net_name)
+            except UnboundLocalError:
+                pass
 
         if not connections:
             return

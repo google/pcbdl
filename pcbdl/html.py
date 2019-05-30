@@ -52,7 +52,11 @@ class HTMLPart(Plugin):
         l = self.instance.__class__.__mro__
         l = l[:l.index(Part) + 1]
         for cls in l:
-            filename, line = inspect.getsourcelines(cls)
+            try:
+                filename, line = inspect.getsourcelines(cls)
+            except OSError:
+                # Could be a dynamic class created by an importer
+                filename = None
             filename = os.path.relpath(inspect.getsourcefile(cls), pcbdl.defined_at.cwd)
             if filename in self.code_manager.file_database:
                 yield "<a href=\"#%s-%d\">%s</a>" % (filename, line, html.escape(repr(cls)))
@@ -77,7 +81,7 @@ class HTMLPart(Plugin):
             pass
 
         if part.__doc__:
-            yield "<pre>%s</pre>" % textwrap.dedent(part.__doc__.rstrip())
+            yield "<pre>%s</pre>" % textwrap.dedent(html.escape(part.__doc__.rstrip()))
 
         yield "<p><a href=\"#cell_%s\">See in SVG</a></p>" % part.refdes
 
