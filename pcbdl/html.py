@@ -35,7 +35,7 @@ class HTMLDefinedAt(Plugin):
 	def register(self):
 		defined_at = self.instance.defined_at
 
-		self.file, self.line = defined_at.split(":")
+		self.file, self.line = defined_at.rsplit(":", 1)
 		self.line = int(self.line)
 
 		self.code_manager.instanced_here(self.instance, self.file, self.line)

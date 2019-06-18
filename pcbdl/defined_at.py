@@ -19,7 +19,7 @@ __all__ = []
 
 source_code = {}
 def grab_nearby_lines(defined_at, range_):
-	filename, lineno = defined_at.split(":")
+	filename, lineno = defined_at.rsplit(":", 1)
 	lineno = int(lineno)
 
 	if filename not in source_code:
