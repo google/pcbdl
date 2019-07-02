@@ -52,9 +52,12 @@ class HTMLPart(Plugin):
         l = self.instance.__class__.__mro__
         l = l[:l.index(Part) + 1]
         for cls in l:
-            filename, line = inspect.getsourcelines(cls)
-            filename = os.path.relpath(inspect.getsourcefile(cls), pcbdl.defined_at.cwd)
-            if filename in self.code_manager.file_database:
+            try:
+                filename, line = inspect.getsourcelines(cls)
+                filename = os.path.relpath(inspect.getsourcefile(cls), pcbdl.defined_at.cwd)
+            except OSError:
+                filename = None
+            if filename and filename in self.code_manager.file_database:
                 yield "<a href=\"#%s-%d\">%s</a>" % (filename, line, html.escape(repr(cls)))
             else:
                 yield "%s" % html.escape(repr(cls))
@@ -273,8 +276,11 @@ def html_generator(context=global_context, include_svg=False):
             filename = inspect.getsourcefile(cls)
             filename = os.path.relpath(filename, pcbdl.defined_at.cwd)
             if filename in code_manager.file_database:
-                _, line = inspect.getsourcelines(cls)
-                code_manager.instanced_here(part, filename, line)
+                try:
+                    _, line = inspect.getsourcelines(cls)
+                    code_manager.instanced_here(part, filename, line)
+                except OSError:
+                    pass
 
     yield "<!DOCTYPE html>"
     yield "<html>"
