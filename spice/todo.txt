@@ -1,0 +1,6 @@
+* overvoltage on a input pin (TODO: output, todo: disable, todo: 0.3V BAT54GWJ)
+* overcurrent on a output pins
+
+* hiz
+* vih vih
+* vol voh
