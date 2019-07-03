@@ -60,6 +60,7 @@ test: RUN_TEST ?= $(RUN_COVERAGE)
 test:
 	$(RUN_TEST) test/base.py -v
 	$(RUN_TEST) test/small_parts.py -v
+	$(RUN_TEST) test/spice.py -v
 
 .PHONY: show-coverage
 show-coverage:

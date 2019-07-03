@@ -26,3 +26,5 @@ from .allegro import *
 from .html import *
 
 from .netlistsvg import *
+
+import pcbdl.spice as spice

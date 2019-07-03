@@ -20,33 +20,41 @@ def r_spice_helpler(self, pin):
 	return spice_contents, other_pins
 R.spice_helpler = r_spice_helpler
 
-class SpiceChecker(SpiceError):
+__all__ = []
+def _export(o):
+	__all__.append(o.__name__)
+	return o
+
+@_export
+class PinChecker(SpiceError):
 	def __init__(self, pin, simulation_inputs):
 		self.pin = pin
 		self.net = pin.net
 		self.simulation_inputs = simulation_inputs
 
 	def watches(self):
-		"""Returns spice prints for this checker."""
+		"""Yields spice prints for this checker."""
 		for spice_probe in self.PROBES.values():
 			spice_probe = spice_probe.format(self=self)
 			yield f"print {spice_probe}"
 
 	def parse_probes(self, all_probes):
+		"""Set the values of all probes of interest as properties to this instance."""
 		self.all_probes = all_probes
 		for probe_name, spice_probe in self.PROBES.items():
-			spice_probe = spice_probe.format(self=self)
-			probe_value = all_probes[spice_probe.lower()]
+			spice_probe = spice_probe.format(self=self).lower()
+			probe_value = all_probes[spice_probe]
 			setattr(self, probe_name, probe_value)
 
 	def check(self):
 		raise NotImplementedError
 
-	def error(self, msg):
+	def _error(self, msg):
 		SpiceError.__init__(self, msg)
 		raise self
 
-class OutputOvercurrent(SpiceChecker):
+@_export
+class OutputOvercurrent(PinChecker):
 	PROBES = {
 		"output_voltage": "pinnode_{self.pin}",
 		"current":        "I(V_{self.pin})",
@@ -54,9 +62,10 @@ class OutputOvercurrent(SpiceChecker):
 
 	def check(self):
 		if abs(self.current) > OUTPUT_PIN_CURRENT_LIMIT:
-			self.error(f"{-self.current}A on pin {self.pin} when outputting {self.output_voltage}V toward net {self.net.name}.")
+			self._error(f"{-self.current}A on pin {self.pin} when outputting {self.output_voltage}V toward net {self.net.name}.")
 
-class InputOverVoltage(SpiceChecker):
+@_export
+class InputOverVoltage(PinChecker):
 	"""Detect current leaks into input pins."""
 	PROBES = {
 		"diode_current": "I(Vwell_{self.pin})",
@@ -65,9 +74,10 @@ class InputOverVoltage(SpiceChecker):
 
 	def check(self):
 		if self.diode_current > 0:
-			self.error(f"{self.input_voltage}V on pin {self.pin}(well={self.pin.well.net}) from net {self.net.name}")
+			self._error(f"{self.input_voltage}V on pin {self.pin}(well={self.pin.well.net}) from net {self.net.name}")
 
-class InputVoltage(SpiceChecker):
+@_export
+class InputVoltageWeak(PinChecker):
 	"""Make sure input voltage is enough to properly open the pin."""
 	PROBES = {
 		"input_voltage": "net_{self.net.name}",
@@ -76,8 +86,13 @@ class InputVoltage(SpiceChecker):
 
 	def check(self):
 		if self.well_voltage * 0.3 < self.input_voltage < self.well_voltage * 0.7:
-			self.error(f"{self.input_voltage}V on pin {self.pin}(well={self.pin.well.net}) not between VIL and VIH from net {self.net.name}")
+			self._error(f"{self.input_voltage}V on pin {self.pin}(well={self.pin.well.net}) not between VIL and VIH from net {self.net.name}")
 
+@_export
+class HiZ(SpiceError):
+	pass
+
+@_export
 def scan_net(net, start_pin=None):
 	"""Recursively circuit simulation elements starting at a net, ignores start_pin."""
 
@@ -121,6 +136,7 @@ def scan_net(net, start_pin=None):
 
 	return elements
 
+@_export
 def scan_nets(nets):
 	"""Yields simulation elements for every circuit in `nets`."""
 	nets_todo = set(nets)
@@ -139,19 +155,22 @@ def scan_nets(nets):
 		# Make sure we don't repeat this set of nets
 		nets_todo.difference_update(elements["nets"])
 
-def do_circuit_simulation(elements):
+@_export
+def do_circuit_simulation(elements, raise_errors=True):
 	OUTPUT_PIN_STATES = [0, 1]
-	HIZ_NET_STATES = ["normal"] #+ ["tryhigh", "trylow"]
+	HIZ_NET_STATES = ["normal"] #+ ["tryhigh", "trylow"] # TODO
 	for output_values in itertools.product(OUTPUT_PIN_STATES, repeat=len(elements["chip_output_pins"])):
 		output_values = dict(zip(elements["chip_output_pins"], output_values))
 
 		for net_state in itertools.product(HIZ_NET_STATES, repeat=len(elements["nets"])):
 			net_state = dict(zip(elements["nets"], net_state))
 
-			print(f" Outputs {output_values}")
-			print(" Net HiZ testers " + repr({net.name: state for net, state in net_state.items()}))
-			do_circuit_state_simulation(elements, output_values, net_state)
-			print("")
+			#print(f" Outputs {output_values}")
+			#print(" Net HiZ testers " + repr({net.name: state for net, state in net_state.items()}))
+			errors = do_circuit_state_simulation(elements, output_values, net_state)
+			if errors and raise_errors:
+				raise errors[0]
+			#print("")
 
 def do_circuit_state_simulation(elements, output_values, net_state):
 	simulation_inputs = locals().copy()
@@ -182,7 +201,7 @@ def do_circuit_state_simulation(elements, output_values, net_state):
 		cir.append(f"Vwell_{pin} wellnode_{pin} 0 {pin.well.net.spice_voltage}")
 		cir.append(f"Dclamp_{pin} net_{net.name} wellnode_{pin} {CLAMP_DIODE_MODEL}")
 
-		for checker in (InputOverVoltage, InputVoltage):
+		for checker in (InputOverVoltage, InputVoltageWeak):
 			checkers.append(checker(pin, simulation_inputs))
 
 		cir.append("")
@@ -210,73 +229,21 @@ def do_circuit_state_simulation(elements, output_values, net_state):
 			input_file.name, # input
 		], stderr=subprocess.STDOUT).decode("utf-8")
 
+	#print(spice_output)
+
 	probes = {}
 	for line in spice_output.split("\n")[:-2][-len(watches):]:
 		probe_name, probe_value = line.split(" = ")
 		probes[probe_name] = float(probe_value)
 
-	#print(spice_output)
-
-	found_problem = False
+	errors = []
 	for checker in checkers:
 		try:
 			checker.parse_probes(probes)
 			checker.check()
-		except SpiceChecker as e:
-			print(f"  {e!r}")
-			found_problem = True
-			#raise
-	if not found_problem:
-		print("  Combination good!")
-	print(f"  f{probes}")
+		except PinChecker as e:
+			#print(f"  {e!r}")
+			errors.append(e)
+	#print(f"  f{probes}")
 
-class Chip(Part):
-	pass
-
-class OutputChip(Chip):
-	PINS = [
-		Pin("VCC", type=PinType.POWER_INPUT),
-		Pin("OUT", type=PinType.OUTPUT, well="VCC")
-	]
-
-class InputChip(Chip):
-	PINS = [
-		Pin("VCC", type=PinType.POWER_INPUT),
-		Pin("IN", type=PinType.INPUT, well="VCC")
-	]
-
-#class ODChip(Part):
-	#PINS = [
-		#Pin("VCC", type=PinType.POWER_INPUT),
-		#Pin("OD", type=PinType.OUTPUT, well="VCC")
-	#]
-
-pp3300 = Net("PP3300")
-pp1800 = Net("PP1800")
-gnd = Net("GND")
-pp3300.spice_voltage = "3.3"
-pp1800.spice_voltage = "1.8"
-
-po = OutputChip(refdes="OUTCHIP")
-pp3300 >> po.VCC
-
-pi = InputChip(refdes="INCHIP")
-pp1800 >> pi.VCC
-
-s1 = Net("SIGNAL")
-s2 = Net("SIGNAL_R")
-s1 << po.OUT >> R("1", to=s2)
-s2 >> pi.IN
-
-f1 = OutputChip(refdes="FIGHTCHIP1")
-pp3300 >> f1.VCC
-f2 = OutputChip(refdes="FIGHTCHIP2")
-pp1800 >> f2.VCC
-
-fightnet = Net("Fightnet")
-fightnet << f1.OUT << f2.OUT
-
-#for i in range(200):
-for elements in scan_nets(global_context.net_list):
-	do_circuit_simulation(elements)
-#do_circuit_simulation(scan_net(fightnet))
+	return errors
