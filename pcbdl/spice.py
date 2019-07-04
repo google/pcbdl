@@ -3,6 +3,8 @@ import collections
 import itertools
 import subprocess
 import tempfile
+from .ngspice import NgSpice
+ngspice = NgSpice()
 
 class CannotStartSimulation(Exception):
 	pass
@@ -32,12 +34,6 @@ class PinChecker(SpiceError):
 		self.net = pin.net
 		self.simulation_inputs = simulation_inputs
 
-	def watches(self):
-		"""Yields spice prints for this checker."""
-		for spice_probe in self.PROBES.values():
-			spice_probe = spice_probe.format(self=self)
-			yield f"print {spice_probe}"
-
 	def parse_probes(self, all_probes):
 		"""Set the values of all probes of interest as properties to this instance."""
 		self.all_probes = all_probes
@@ -57,7 +53,7 @@ class PinChecker(SpiceError):
 class OutputOvercurrent(PinChecker):
 	PROBES = {
 		"output_voltage": "pinnode_{self.pin}",
-		"current":        "I(V_{self.pin})",
+		"current":        "V_{self.pin}#branch",
 	}
 
 	def check(self):
@@ -68,7 +64,7 @@ class OutputOvercurrent(PinChecker):
 class InputOverVoltage(PinChecker):
 	"""Detect current leaks into input pins."""
 	PROBES = {
-		"diode_current": "I(Vwell_{self.pin})",
+		"diode_current": "Vwell_{self.pin}#branch",
 		"input_voltage":   "net_{self.net.name}",
 	}
 
@@ -158,7 +154,7 @@ def scan_nets(nets):
 @_export
 def do_circuit_simulation(elements, raise_errors=True):
 	OUTPUT_PIN_STATES = [0, 1]
-	HIZ_NET_STATES = ["normal"] #+ ["tryhigh", "trylow"] # TODO
+	HIZ_NET_STATES = ["normal"] + ["tryhigh", "trylow"] # TODO
 	for output_values in itertools.product(OUTPUT_PIN_STATES, repeat=len(elements["chip_output_pins"])):
 		output_values = dict(zip(elements["chip_output_pins"], output_values))
 
@@ -186,7 +182,7 @@ def do_circuit_state_simulation(elements, output_values, net_state):
 	for pin in elements["chip_output_pins"]:
 		cir.append("* Output Pin: %r" % pin)
 		net = pin.net
-		output_voltage = pin.well.net.spice_voltage * output_values[pin]
+		output_voltage = pin.well.net.spice_voltage if output_values[pin] else "0"
 		cir.append(f"V_{pin} pinnode_{pin} 0 {output_voltage}")
 		cir.append(f"R{pin} pinnode_{pin} net_{net.name} {OUTPUT_PIN_IMPEDANCE}") # TODO(variable resistor, CCVS)
 
@@ -208,33 +204,12 @@ def do_circuit_state_simulation(elements, output_values, net_state):
 
 	cir.append(".control")
 	cir.append("op")
-	watches = set()
-	for checker in checkers:
-		watches.update(checker.watches())
-	cir.extend(watches)
-	cir.append("quit")
 	cir.append(".endc")
 
 	cir.append(".end")
 
-	cir = '\n'.join(cir)
-	#print(cir)
-
-	with tempfile.NamedTemporaryFile() as input_file:
-		input_file.write(cir.encode("utf-8"))
-		input_file.flush()
-
-		spice_output = subprocess.check_output([
-			"ngspice",
-			input_file.name, # input
-		], stderr=subprocess.STDOUT).decode("utf-8")
-
-	#print(spice_output)
-
-	probes = {}
-	for line in spice_output.split("\n")[:-2][-len(watches):]:
-		probe_name, probe_value = line.split(" = ")
-		probes[probe_name] = float(probe_value)
+	#print('\n'.join(cir))
+	probes = ngspice.circ(cir)
 
 	errors = []
 	for checker in checkers:

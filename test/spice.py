@@ -89,8 +89,8 @@ class DriveFightTest(unittest.TestCase):
 		print(cm.exception)
 
 class InputVoltageWeakTest(unittest.TestCase):
-	"""Make sure VIH and VIL work."""
 	def test(self):
+		"""Make sure VIH and VIL work."""
 		po = OutputChip(refdes="WEAKOUTCHIP")
 		pp1800 >> po.VCC
 		pi = InputChip(refdes="VILCHIP")
@@ -103,8 +103,8 @@ class InputVoltageWeakTest(unittest.TestCase):
 		print(cm.exception)
 
 class HizTest(unittest.TestCase):
-	"""Make sure VIH and VIL work."""
 	def test(self):
+		"""Do we catch undriven inputs?"""
 		pi = InputChip(refdes="HIZCHIP")
 		pp3300 >> pi.VCC
 
@@ -113,6 +113,25 @@ class HizTest(unittest.TestCase):
 		with self.assertRaises(spice.HiZ) as cm:
 			spice.do_circuit_simulation(spice.scan_net(hiznet))
 		print(cm.exception)
+
+class PerformanceTest(unittest.TestCase):
+	def test(self):
+		"""Simulating 1000 nets."""
+		po1 = OutputChip(refdes="PERFCHIPO1")
+		po2 = OutputChip(refdes="PERFCHIPO2")
+		pp3300 >> po1.VCC
+		pp3300 >> po2.VCC
+
+		pi1 = InputChip(refdes="PERFCHIPI1")
+		pi2 = InputChip(refdes="PERFCHIPI2")
+		pp1800 >> pi1.VCC
+		pp1800 >> pi2.VCC
+
+		n = Net("PERFNET")
+		n << po1.OUT << po2.OUT >> pi1.IN >> pi2.IN
+
+		for i in range(1000):
+			spice.do_circuit_simulation(spice.scan_net(n), raise_errors=False)
 
 if __name__ == "__main__":
 	unittest.main()
