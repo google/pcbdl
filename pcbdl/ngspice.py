@@ -1,7 +1,23 @@
 #!/usr/bin/env python3
 
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from cffi import FFI
 import ctypes.util
+import signal
+import warnings
 
 ffi = FFI()
 ffi.cdef("""
@@ -73,8 +89,15 @@ pvector_info ngGet_Vec_Info(char* vecname);
 """)
 lib = ffi.dlopen(ctypes.util.find_library("ngspice"))
 
+class NgSpiceError(Exception):
+	pass
+
+class SimulationError(NgSpiceError):
+	errors = ""
+
 class NgSpice():
 	_keepalives = []
+	stderr = []
 
 	def _callback(self, cdecl, method):
 		function_ptr = ffi.callback(cdecl, method)
@@ -82,6 +105,8 @@ class NgSpice():
 		return function_ptr
 
 	def __init__(self):
+		original_sigint_handler = signal.getsignal(signal.SIGINT)
+
 		lib.ngSpice_Init(
 			self._callback("SendChar",        self.send_char),
 			ffi.NULL, #self._callback("SendStat",        self.send_stat),
@@ -92,20 +117,50 @@ class NgSpice():
 			ffi.NULL, # we don't need this void* to be set to `self` since we're already wrapping everything
 		)
 
+		signal.signal(signal.SIGINT, original_sigint_handler)
+
 	def command(self, command):
 		ret = lib.ngSpice_Command(command.encode("utf-8"))
 		if ret:
-			raise ValueError(f"ngSpice_Command error: {command}")
+			raise NgSpiceError(f"ngSpice_Command error: {command}")
 
 	def circ(self, circ):
+		self.reset_simulator()
+
+		lines = [ffi.from_buffer(line.encode("utf-8")) for line in circ]
+		lines.append(ffi.NULL)
+		lib.ngSpice_Circ(lines)
+
+		self.check_errors()
+
+		return self.vectors
+
+	def reset_simulator(self):
 		# Make sure we clean everything before so we don't memory leak
 		self.command("remcirc")
 		self.command("destroy all")
 		# TODO: https://sourceforge.net/p/ngspice/discussion/133842/thread/d29f4768/#1218
 		# "The memory leak is related to ngGet_Vec_Info -> newvec = vec_get(vecname);"
 
-		lib.ngSpice_Circ([ffi.from_buffer(line.encode("utf-8")) for line in circ] + [ffi.NULL])
-		return self.vectors
+		self.stderr = []
+
+	def check_errors(self):
+		if not self.stderr:
+			return
+
+		errors = "\n".join(self.stderr)
+		if "op simulation(s) aborted" in errors:
+			for line in self.stderr:
+				if "stderr Warning:":
+					warning_line = line.split(" ", 2)[2]
+					e = SimulationError(f"Simulation Aborted, first warning: {warning_line}")
+					break
+			else:
+				e = SimulationError(f"Simulation aborted with no warning.")
+			e.full_text = errors
+			raise e
+		else:
+			warnings.warn(errors, RuntimeWarning)
 
 	@property
 	def vectors(self):
@@ -124,15 +179,16 @@ class NgSpice():
 		return vectors
 
 	def send_char(self, string, _ident, _void):
-		input_line = ffi.string(string).decode("utf-8")
-		channel, *line_parts = input_line.split(" ")
-		line = ' '.join(line_parts)
-		if channel == "stderr":
-			print(line)
+		line = ffi.string(string).decode("utf-8")
+		if line.startswith("stderr"):
+			self.stderr.append(line)
+		else:
+			#print(line)
+			pass
 		return 0
 
 	def controlled_exit(self, status, immediate, normal, _ident, _void):
-		raise Exception(f"We don't really want ngspice to close on us. {locals()}")
+		raise NgSpiceError(f"We don't really want ngspice to close on us. {locals()}")
 		return 0
 
 if __name__ == "__main__":

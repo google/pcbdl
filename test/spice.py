@@ -48,8 +48,9 @@ class IncompletePartTest(unittest.TestCase):
 			PINS = ["IDKPIN"]
 
 		idknet = Net("IDKNET") << IncompletePart().IDKPIN
-		with self.assertRaisesRegex(spice.CannotStartSimulation, "unknown type PinType"):
+		with self.assertRaisesRegex(spice.IncompleteSimulationModel, "unknown type PinType") as cm:
 			spice.do_circuit_simulation(spice.scan_net(idknet))
+		print(cm.exception)
 
 class CurrentLeakTest(unittest.TestCase):
 	def test(self):
@@ -62,7 +63,7 @@ class CurrentLeakTest(unittest.TestCase):
 
 		s1 = Net("CURRENT_LEAK")
 		s2 = Net("CURRENT_LEAK_R")
-		s1 << po.OUT >> R("100k", to=s2)
+		s1 << po.OUT >> R("1k", refdes=f"R_CURRENT_LEAK", to=s2)
 		s2 >> pi.IN
 
 		#Make sure we catch it
@@ -86,12 +87,14 @@ class DriveFightTest(unittest.TestCase):
 
 		with self.assertRaises(spice.OutputOvercurrent) as cm:
 			spice.do_circuit_simulation(spice.scan_net(fightnet))
+		global e
+		e=cm.exception
 		print(cm.exception)
 
 class InputVoltageWeakTest(unittest.TestCase):
 	def test(self):
 		"""Make sure VIH and VIL work."""
-		po = OutputChip(refdes="WEAKOUTCHIP")
+		po = OutputChip(refdes="WEAKOUTCHIP") # TODO: replace this with just a resistor to pp1800 or a voltage divider
 		pp1800 >> po.VCC
 		pi = InputChip(refdes="VILCHIP")
 		pp3300 >> pi.VCC
@@ -102,17 +105,37 @@ class InputVoltageWeakTest(unittest.TestCase):
 			spice.do_circuit_simulation(spice.scan_net(weaknet))
 		print(cm.exception)
 
-class HizTest(unittest.TestCase):
-	def test(self):
-		"""Do we catch undriven inputs?"""
-		pi = InputChip(refdes="HIZCHIP")
+class HizNetTest(unittest.TestCase):
+	@staticmethod
+	def populate_circuit(name):
+		pi = InputChip(refdes=f"{name}_CHIP")
 		pp3300 >> pi.VCC
+		n = Net(f"{name}_NET") >> pi.IN
 
-		hiznet = Net("HIZNET") >> pi.IN
+		pi2 = InputChip(refdes=f"{name}_CHIP2")
+		pp3300 >> pi2.VCC
+		n2 = Net(f"{name}_NET2") >> pi2.IN
 
-		with self.assertRaises(spice.HiZ) as cm:
-			spice.do_circuit_simulation(spice.scan_net(hiznet))
+		n >> R("100k", refdes=f"R_{name}", to=n2)
+		return n
+
+	def test_bad_net(self):
+		"""Do we catch undriven inputs?"""
+		n = self.populate_circuit("HIZ")
+
+		with self.assertRaises(spice.HizNets) as cm:
+			spice.do_circuit_simulation(spice.scan_net(n))
 		print(cm.exception)
+
+	def test_good_net(self):
+		"""Are we ok with driven inputs though?"""
+		n = self.populate_circuit("NOT_HIZ_BUT_DRIVEN")
+
+		po = OutputChip(refdes="HIZ_FIXER") # TODO: replace this with just a pullup
+		pp3300 >> po.VCC
+
+		n << po.OUT
+		spice.do_circuit_simulation(spice.scan_net(n))
 
 class PerformanceTest(unittest.TestCase):
 	def test(self):
@@ -135,3 +158,5 @@ class PerformanceTest(unittest.TestCase):
 
 if __name__ == "__main__":
 	unittest.main()
+	#HizNetTest().test()
+	#DriveFightTest().test()

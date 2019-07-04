@@ -17,18 +17,14 @@ import collections
 import itertools
 import subprocess
 import tempfile
-from .ngspice import NgSpice
+from .ngspice import NgSpice, SimulationError
 ngspice = NgSpice()
 
-class CannotStartSimulation(Exception):
+class IncompleteSimulationModel(Exception):
 	pass
 
-class SpiceError(Exception):
-	"""Problem with the circuit detected as a result of a SPICE simulation."""
-
-OUTPUT_PIN_IMPEDANCE = "5ohm"
-OUTPUT_PIN_CURRENT_LIMIT = 0.1
-CLAMP_DIODE_MODEL = "Default"
+class SchematicProblem(Exception):
+	pass
 
 def r_spice_helpler(self, pin):
 	other_pins = list(set(self.pins) - set((pin,)))
@@ -42,11 +38,15 @@ def _export(o):
 	return o
 
 @_export
-class PinChecker(SpiceError):
-	def __init__(self, pin, simulation_inputs):
-		self.pin = pin
-		self.net = pin.net
-		self.simulation_inputs = simulation_inputs
+class Checker(Exception):
+	"""Problem with the circuit detected as a result of a SPICE simulation."""
+	@staticmethod
+	def make_pin_checkers(pin, checker_types):
+		for checker_type in checker_types:
+			c = checker_type()
+			c.pin = pin
+			c.net = pin.net
+			yield c
 
 	def parse_probes(self, all_probes):
 		"""Set the values of all probes of interest as properties to this instance."""
@@ -60,22 +60,27 @@ class PinChecker(SpiceError):
 		raise NotImplementedError
 
 	def _error(self, msg):
-		SpiceError.__init__(self, msg)
+		SchematicProblem.__init__(self, msg)
 		raise self
 
 @_export
-class OutputOvercurrent(PinChecker):
+class OutputOvercurrent(Checker, SchematicProblem):
+	OUTPUT_PIN_IMPEDANCE = "5ohm"
+	OUTPUT_PIN_CURRENT_LIMIT = 0.1
+
 	PROBES = {
 		"output_voltage": "pinnode_{self.pin}",
 		"current":        "V_{self.pin}#branch",
 	}
 
 	def check(self):
-		if abs(self.current) > OUTPUT_PIN_CURRENT_LIMIT:
+		if abs(self.current) > self.OUTPUT_PIN_CURRENT_LIMIT:
 			self._error(f"{-self.current}A on pin {self.pin} when outputting {self.output_voltage}V toward net {self.net.name}.")
 
 @_export
-class InputOverVoltage(PinChecker):
+class InputOverVoltage(Checker, SchematicProblem):
+	CLAMP_DIODE_MODEL = "Default"
+
 	"""Detect current leaks into input pins."""
 	PROBES = {
 		"diode_current": "Vwell_{self.pin}#branch",
@@ -83,11 +88,11 @@ class InputOverVoltage(PinChecker):
 	}
 
 	def check(self):
-		if self.diode_current > 0:
+		if self.diode_current > 1e-10:
 			self._error(f"{self.input_voltage}V on pin {self.pin}(well={self.pin.well.net}) from net {self.net.name}")
 
 @_export
-class InputVoltageWeak(PinChecker):
+class InputVoltageWeak(Checker, SchematicProblem):
 	"""Make sure input voltage is enough to properly open the pin."""
 	PROBES = {
 		"input_voltage": "net_{self.net.name}",
@@ -98,9 +103,33 @@ class InputVoltageWeak(PinChecker):
 		if self.well_voltage * 0.3 < self.input_voltage < self.well_voltage * 0.7:
 			self._error(f"{self.input_voltage}V on pin {self.pin}(well={self.pin.well.net}) not between VIL and VIH from net {self.net.name}")
 
-@_export
-class HiZ(SpiceError):
+class HizNets(SchematicProblem):
 	pass
+
+@_export
+class HizNetChecker(Checker):
+	EXCITATION_VOLTAGE = "1V"
+	EXCITATION_MIN_CURRENT = 100e-9 # 100nA, EXCITATION_VOLTAGE / 10MegOhm
+
+	PROBES = {
+		"hiz_current": "Vnethiz_{self.net.name}#branch",
+	}
+
+	def check(self):
+		if self.triggered:
+			self._error(f"Not enough current({self.hiz_current}A) when {self.net.name} pulled to {self.output_voltage}")
+
+	@property
+	def triggered(self):
+		return abs(self.hiz_current) < self.EXCITATION_MIN_CURRENT
+
+	def spice_helpler(self):
+		self.output_voltage = self.EXCITATION_VOLTAGE if self.direction else "0V"
+
+		return [
+			f"Vnethiz_{self.net.name} net_{self.net.name} 0 {self.output_voltage}",
+			"",
+		]
 
 @_export
 def scan_net(net, start_pin=None):
@@ -142,7 +171,7 @@ def scan_net(net, start_pin=None):
 			elif pin.type == PinType.INPUT:
 				elements["chip_input_pins"].append(pin)
 			else:
-				raise CannotStartSimulation(f"Cannot add pin {pin} into the SPICE simulation, unknown type {pin.type}.")
+				raise IncompleteSimulationModel(f"Cannot add pin {pin} into the SPICE simulation, unknown type {pin.type}.")
 
 	return elements
 
@@ -168,21 +197,38 @@ def scan_nets(nets):
 @_export
 def do_circuit_simulation(elements, raise_errors=True):
 	OUTPUT_PIN_STATES = [0, 1]
-	HIZ_NET_STATES = ["normal"] + ["tryhigh", "trylow"] # TODO
 	for output_values in itertools.product(OUTPUT_PIN_STATES, repeat=len(elements["chip_output_pins"])):
 		output_values = dict(zip(elements["chip_output_pins"], output_values))
 
-		for net_state in itertools.product(HIZ_NET_STATES, repeat=len(elements["nets"])):
-			net_state = dict(zip(elements["nets"], net_state))
+		errors = do_circuit_state_simulation(elements, output_values, {})
+		if raise_errors and errors:
+			raise errors[0]
+		for error in errors:
+			if isinstance(error, SimulationError):
+				if "singular matrix" in error.full_text:
+					new_e = HizNets(f"Singular matrix with nets {elements['nets']}")
+					new_e.nets = elements["nets"]
+					raise new_e from error
+				raise error
 
-			#print(f" Outputs {output_values}")
-			#print(" Net HiZ testers " + repr({net.name: state for net, state in net_state.items()}))
-			errors = do_circuit_state_simulation(elements, output_values, net_state)
-			if errors and raise_errors:
-				raise errors[0]
-			#print("")
+		for tested_hiz_net in elements["nets"]:
+			triggered = []
+			for hiz_net_direction in [0, 1]:
+				errors = do_circuit_state_simulation(elements, output_values, {tested_hiz_net: hiz_net_direction})
+				if errors and isinstance(errors[0], HizNetChecker):
+					triggered.append(errors[0])
+			if len(triggered) == 2:
+				max_current = max(abs(c.hiz_current) for c in triggered)
+				e = HizNets(f"Not enough current(<={max_current}A) when pulling {tested_hiz_net} in both directions.")
+				e.nets = elements["nets"]
+				e.checkers = triggered
+				#print(f" {e!r}")
+				if raise_errors:
+					raise e
 
-def do_circuit_state_simulation(elements, output_values, net_state):
+
+def do_circuit_state_simulation(elements, output_values, try_hiz_nets):
+	#print(f" Outputs {output_values}")
 	simulation_inputs = locals().copy()
 	checkers = []
 	cir = [f"PCBDL Analysis for nets {elements['nets']}"]
@@ -193,15 +239,23 @@ def do_circuit_state_simulation(elements, output_values, net_state):
 		cir.append(active)
 	cir.append("")
 
+	for net_attempt in try_hiz_nets.items():
+		c = HizNetChecker()
+		c.net, c.direction = net_attempt
+		c.nets = elements["nets"]
+		cir.extend(c.spice_helpler())
+		checkers.append(c)
+
 	for pin in elements["chip_output_pins"]:
 		cir.append("* Output Pin: %r" % pin)
 		net = pin.net
 		output_voltage = pin.well.net.spice_voltage if output_values[pin] else "0"
 		cir.append(f"V_{pin} pinnode_{pin} 0 {output_voltage}")
-		cir.append(f"R{pin} pinnode_{pin} net_{net.name} {OUTPUT_PIN_IMPEDANCE}") # TODO(variable resistor, CCVS)
+		cir.append(f"R{pin} pinnode_{pin} net_{net.name} {OutputOvercurrent.OUTPUT_PIN_IMPEDANCE}") # TODO(variable resistor, CCVS)
 
-		for checker in (OutputOvercurrent,):
-			checkers.append(checker(pin, simulation_inputs))
+		checkers.extend(Checker.make_pin_checkers(pin, (
+			OutputOvercurrent,
+		)))
 
 		cir.append("")
 
@@ -209,30 +263,37 @@ def do_circuit_state_simulation(elements, output_values, net_state):
 		cir.append("* Input Pin: %r" % pin)
 		net = pin.net
 		cir.append(f"Vwell_{pin} wellnode_{pin} 0 {pin.well.net.spice_voltage}")
-		cir.append(f"Dclamp_{pin} net_{net.name} wellnode_{pin} {CLAMP_DIODE_MODEL}")
+		cir.append(f"Dclamp_{pin} net_{net.name} wellnode_{pin} {InputOverVoltage.CLAMP_DIODE_MODEL}")
 
-		for checker in (InputOverVoltage, InputVoltageWeak):
-			checkers.append(checker(pin, simulation_inputs))
+		checkers.extend(Checker.make_pin_checkers(pin, (
+			InputOverVoltage, InputVoltageWeak,
+		)))
 
 		cir.append("")
 
 	cir.append(".control")
 	cir.append("op")
 	cir.append(".endc")
+	cir.append(".op")
 
 	cir.append(".end")
 
 	#print('\n'.join(cir))
-	probes = ngspice.circ(cir)
+	try:
+		probes = ngspice.circ(cir)
+	except SimulationError as e:
+		return [e]
 
 	errors = []
 	for checker in checkers:
 		try:
 			checker.parse_probes(probes)
+			checker.simulation_inputs = simulation_inputs
 			checker.check()
-		except PinChecker as e:
+		except Checker as e:
 			#print(f"  {e!r}")
 			errors.append(e)
 	#print(f"  f{probes}")
 
+	#print("")
 	return errors
