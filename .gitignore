@@ -11,6 +11,8 @@ build/
 htmlcov/
 .coverage
 
+doc/_build/
+
 # output files
 *.svg
 *.json

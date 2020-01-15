@@ -14,15 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .base import (
-	PinType, ConnectDirection,
-	Net, Part, Pin
-)
-from .small_parts import *
-from .defined_at import *
-from .context import *
+from pcbdl.base import *
 
-from .allegro import *
-from .html import *
+from pcbdl.small_parts import *
+from pcbdl.defined_at import *
+from pcbdl.context import *
 
-from .netlistsvg import *
+from pcbdl.allegro import *
+from pcbdl.html import *
+
+from pcbdl.netlistsvg import *

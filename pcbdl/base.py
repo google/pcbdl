@@ -18,7 +18,7 @@ import enum
 import itertools
 __all__ = [
 	"PinType", "ConnectDirection",
-	"Part", "Pin"
+	"Net", "Part", "Pin"
 ]
 
 class Plugin(object):
@@ -151,10 +151,10 @@ class Net(object):
 	def __rshift__(self, others):
 		return self._shift(ConnectDirection.OUT, others)
 
-	MAX_REPR_CONNECTIONS = 10
+	_MAX_REPR_CONNECTIONS = 10
 	def __repr__(self):
 		connected = self.connections
-		if len(connected) >= self.MAX_REPR_CONNECTIONS:
+		if len(connected) >= self._MAX_REPR_CONNECTIONS:
 			inside_str = "%d connections" % (len(connected))
 		elif len(connected) == 0:
 			inside_str = "unconnected"
@@ -184,12 +184,27 @@ class Net(object):
 		self.has_name = True
 
 	@property
-	def grouped_connections(self):
-		return tuple(tuple(group.keys()) for group in self._connections)
+	def connections(self):
+		"""
+		A :class:`tuple` of pins connected to this net.
+
+		Useful in the interpreter and/or when you want to inspect your schematic::
+
+			>>> gnd.connections
+			(U1.GND, VREG1.GND, U2.GND, VREG2.GND)
+
+		"""
+		return sum(self.grouped_connections, ())
 
 	@property
-	def connections(self):
-		return sum(self.grouped_connections, ())
+	def grouped_connections(self):
+		"""
+		Similar to :attr:`connections`, but this time pins that were connected together stay in groups::
+
+			>>> pp1800.grouped_connections
+			((U1.GND, VREG1.GND), (U2.GND, VREG2.GND))
+		"""
+		return tuple(tuple(group.keys()) for group in self._connections)
 
 	def is_net_of_class(self, keywords):
 		for keyword in keywords:
@@ -205,7 +220,19 @@ class Net(object):
 		return self.is_net_of_class(("GND",))
 
 class PinFragment(object):
-	"""Saves everything it's given, resolves later"""
+	"""
+	This is the fully featured (as opposed to just a tuple of parameters)
+	element of :attr:`PINS<pcbdl.Part.PINS>` at the time of writing
+	a :class:`Part<pcbdl.Part>`. Saves all parameters it's given,
+	merges later once the Part is fully defined.
+
+	.. warning:: Just like the name implies this is just a fragment of the
+		information we need for the pin. It's possible the Part needs to be
+		overlayed on top of its parents before we can have a complete picture.
+		Ex: this could be the pin labeled "PA2" of a microcontroller, but until
+		the part is told what package it is, we don't really know the pin
+		number.
+	"""
 	def __init__(self, names, number=None, numbers=(), *args, **kwargs):
 		if isinstance(names, str):
 			names = (names,)
@@ -285,8 +312,11 @@ class PinFragment(object):
 Pin = PinFragment
 
 class PartClassPin(object):
-	"""Pin of a Part, but no particular Part instance.
-	   Contains general information about the pin (but it could be for any part of that type), nothing related to a specific part instance."""
+	"""
+	Pin of a Part, but no particular Part instance.
+	Contains general information about the pin (but it could be for any
+	part of that type), nothing related to a specific part instance.
+	"""
 	well_name = None
 
 	def __init__(self, names, numbers, type=PinType.UNKNOWN, well=None):
@@ -340,6 +370,11 @@ class PartInstancePin(PartClassPin):
 
 	@property
 	def net(self):
+		"""
+		The :class:`Net<pcbdl.Net>` that this pin is connected to.
+
+		If it's not connected to anything yet, we'll get a fresh net.
+		"""
 		if self._net is None:
 			fresh_net = Net() #defined_at: not here
 			return fresh_net << self
@@ -367,7 +402,7 @@ class PartInstancePin(PartClassPin):
 			net >>= self
 		return net << others
 
-	def __lshift__(self, others):
+	def __rshift__(self, others):
 		net = self._net
 		if net is None:
 			# don't let the net property create a new one,
@@ -381,10 +416,95 @@ class PartInstancePin(PartClassPin):
 	__repr__ = __str__
 
 class Part(object):
+	"""
+	This is the :ref:`base class<python:tut-inheritance>` for any new Part the writer of a schematic or a part librarian has to make. ::
+
+		class Transistor(Part):
+			REFDES_PREFIX = "Q"
+			PINS = ["B", "C", "E"]
+	"""
+
 	PINS = []
+	"""
+	This is how the pins of a part are defined, as a :class:`list` of pins.
+
+	Each pin entry can be one of:
+
+	* :class:`Pin`
+	* :class:`tuple` of properties which will automatically be turned into a :class:`Pin`
+	* just one :class:`string<str>`, representing a pin name, if one cares about nothing else.
+
+	So these are all valid ways to define a pin, and mean about the same thing::
+
+		PINS = [
+			Pin("GND", "1", type=PinType.POWER_INPUT),
+			("GND", "1"),
+			"GND",
+		]
+
+	See the :class:`Pins Section<Pin>` for the types of properties that can be
+	defined on each Pin entry.
+	"""
+
+	pins = _PinList()
+	"""
+	Once the Part is instanced (aka populated on the schematic), our pins become real too (they turn into :class:`PartInstancePins<pcbdl.base.PartInstancePin>`).
+	This is a :class:`dict` like object where the pins are stored. One can look up pins by any of its names::
+
+		somechip.pins["VCC"]
+
+	Though most pins are also directly populated as a attributes to the part, so this is equivalent::
+
+		somechip.VCC
+
+	The pins list can still be used to view all of the pins at once, like on the console:
+
+		>>> diode.pins
+		(D1.VCC, D1.NC, D1.P1, D1.GND, D1.P2)
+	"""
+
 	REFDES_PREFIX = "UNK"
+	"""
+	The prefix that every reference designator of this part will have.
+
+	Example: :attr:`"R"<pcbdl.small_parts.R.REFDES_PREFIX>` for resistors,
+	:attr:`"C"<pcbdl.small_parts.C.REFDES_PREFIX>` for capacitors.
+
+	The auto namer system will eventually put numbers after the prefix to get the complete :attr:`refdes`.
+	"""
+
 	pin_names_match_nets = False
+	"""
+	Sometimes when connecting nets to a part, the pin names become very redundant::
+
+		Net("GND") >> somepart.GND
+		Net("VCC") >> somepart.VCC
+		Net("RESET") >> somepart.RESET
+
+	We can use this variable tells the part to pick the right pin depending on
+	the variable name, at that point the part itself can be used in lieu of
+	the pin::
+
+		Net("GND") >> somepart
+		Net("VCC") >> somepart
+		Net("RESET") >> somepart
+	"""
+
 	pin_names_match_nets_prefix = ""
+	"""
+	When :attr:`pin_names_match_nets` is active, it strips a
+	little bit of the net name in case it's part of a bigger net group::
+
+		class SPIFlash(Part):
+			pin_names_match_nets = True
+			pin_names_match_nets_prefix = "SPI1"
+			PINS = ["MOSI", "MISO", "SCK", "CS", ...]
+		...
+		Net("SPI1_MOSI") >> spi_flash # autoconnects to the pin called only "MOSI"
+		Net("SPI1_MISO") << spi_flash # "MISO"
+		Net("SPI1_SCK")  >> spi_flash # "SCK"
+		Net("SPI1_CS")   >> spi_flash # "CS"
+	"""
 
 	def __init__(self, value=None, refdes=None, package=None, part_number=None, populated=True):
 		if part_number is not None:
@@ -474,6 +594,12 @@ class Part(object):
 
 	@property
 	def refdes(self):
+		"""
+		Reference designator of the part. Example: R1, R2.
+
+		It's essentially the unique id for the part that will be used to
+		refer to it in most output methods.
+		"""
 		if self._refdes is not None:
 			return self._refdes
 

@@ -13,9 +13,10 @@ usage:
 	@echo
 	@echo
 	@echo "Other pcbdl project centric options:"
+	@echo "	make doc"
 	@echo "	make test"
 	@echo "	make show-coverage"
-	@echo "	make gh-pages-examples"
+	@echo "	make gh-pages"
 	@echo "	make clean"
 
 
@@ -46,7 +47,7 @@ EXECUTE_SCHEMATIC_TO_FILE = $(call EXECUTE_SCHEMATIC, output=open('$(@F)', 'w');
 
 SERVO_MICRO_EXAMPLE_OUTPUTS := $(shell echo examples/servo_micro.{svg,html,allegro_third_party/} examples/servo_micro.{i2c,power}.svg)
 
-.PHONY: gh-pages-examples
+.PHONY: gh-pages
 gh-pages-examples: $(SERVO_MICRO_EXAMPLE_OUTPUTS) ;
 
 clean-gh-pages-examples:
@@ -72,6 +73,17 @@ clean-coverage:
 	-$(COVERAGE) erase
 	$(RM) -R htmlcov
 
+.PHONY: doc
+doc: doc/_build/html
+doc/_build/html: .
+	cd doc/ && $(MAKE) html
+
+.PHONY: clean-doc
+clean-doc:
+	$(RM) -R doc/_build
+
+.PHONY: gh-pages
+gh-pages: doc gh-pages-examples
 
 .PHONY: clean
-clean: clean-coverage clean-gh-pages-examples
+clean: clean-coverage clean-gh-pages-examples clean-doc
