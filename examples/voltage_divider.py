@@ -23,6 +23,6 @@ from pcbdl import *
 vin, gnd = Net("vin"), Net("gnd")
 
 Net("vout") << (
-	R("100k", to=vin),
-	R("200k", to=gnd),
+    R("100k", to=vin),
+    R("200k", to=gnd),
 )

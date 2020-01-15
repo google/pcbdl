@@ -7,15 +7,15 @@ A programming way to design schematics.
 
 [![PyPI version](https://badge.fury.io/py/pcbdl.svg)](https://pypi.org/project/pcbdl/)
 
-	sudo apt-get install python3 python3-pip python3-pygments
+    sudo apt-get install python3 python3-pip python3-pygments
 
-	sudo pip3 install pcbdl
+    sudo pip3 install pcbdl
 
 ## Interactive terminal
 
 A good way to try various features without having to write a file separately.
 
-	python3 -i -c "from pcbdl import *"
+    python3 -i -c "from pcbdl import *"
 
 ## Language
 
@@ -23,71 +23,71 @@ PCBDL's goal is to allow designing schematics via Code. Similar to how VHDL or V
 
 To start one should define a couple of nets:
 
-	>>> vcc, gnd = Net("vcc"), Net("gnd")
-	>>> vin = Net("vin")
-	>>> base = Net("base")
+    >>> vcc, gnd = Net("vcc"), Net("gnd")
+    >>> vin = Net("vin")
+    >>> base = Net("base")
 
 We then can connect various components between those nets with the `<<` operator and the `to=` argument (for the other side):
 
-	>>> base << C("1000u", to=vin)
-	>>> base << (
-		R("1k", to=vcc),
-		R("1k", to=gnd),
-	)
+    >>> base << C("1000u", to=vin)
+    >>> base << (
+        R("1k", to=vcc),
+        R("1k", to=gnd),
+    )
 
 2 pin devices (aka JellyBean in pcbdl) like capacitors and resistors are one of the easiest things to connect. Internally they have a primary (connected with `>>`) and secondary, other side, pin (connected with `to=`).
 
 Let's try to get more complicated by defining a transistor and connect some of its pins.
 
-	>>> class Transistor(Part):
-		REFDES_PREFIX = "Q"
-		PINS = ["B", "C", "E"]
-	...
-	>>> q = Transistor()
-	>>> base << q.B
+    >>> class Transistor(Part):
+        REFDES_PREFIX = "Q"
+        PINS = ["B", "C", "E"]
+    ...
+    >>> q = Transistor()
+    >>> base << q.B
 
 Nets can also be created anonymously if started from a part's pins:
 
-	>>> q.E << (
-		R("100", to=gnd),
-		C("1u", to=gnd),
-	)
+    >>> q.E << (
+        R("100", to=gnd),
+        C("1u", to=gnd),
+    )
 
 Let's finish our class A amplifier (note how we created the "vout" net in place, and how we gave a name ("Rc") to one of our resistors):
 
-	>>> q.C << (
-		C("100u", to=Net("vout")),
-		R("100", "Rc", to=vcc),
-	)
+    >>> q.C << (
+        C("100u", to=Net("vout")),
+        R("100", "Rc", to=vcc),
+    )
 
 Note: One can find a completed version of this amplifier in `examples/class_a.py`:
 
-	python3 -i examples/class_a.py
+    python3 -i examples/class_a.py
 
 
 One can now give automatic consecutive reference designators to components that haven't been named manually already:
 
-	>>> global_context.autoname()
+    >>> global_context.autoname()
 
 Then one can explore the circuit:
 
-	>>> global_context.parts_list
-	[R1, R2, R3, Rc, C10, C11, Q1, C12]
+    >>> global_context.parts_list
+    [R1, R2, R3, Rc, C10, C11, Q1, C12]
 
-	>>> global_context.parts_list[0].refdes
-	'R1'
-	>>> global_context.parts_list[0].value
-	'1kΩ'
-	>>> global_context.parts_list[0].pins
-	(R1.P1, R1.P2)
-	>>> global_context.parts_list[0].pins[1].net
-	VCC(connected to R1.P2, R2.P2)
+    >>> global_context.parts_list[0].refdes
+    'R1'
+    >>> global_context.parts_list[0].value
+    '1kΩ'
+    >>> global_context.parts_list[0].pins
+    (R1.P1, R1.P2)
+    >>> global_context.parts_list[0].pins[1].net
+    VCC(connected to R1.P2, R2.P2)
 
-	>>> nets
-	OrderedDict([('VCC', VCC(connected to R1.P2, R2.P2)), ('GND', GND(connected to R3.P2, Rc.P2, C10.-)), ('VIN', VIN(connected to C11.-)), ('VOUT', VOUT(connected to C12.-))])
+    >>> nets
+    OrderedDict([('VCC', VCC(connected to R1.P2, R2.P2)), ('GND', GND(connected to R3.P2, Rc.P2, C10.-)), ('VIN', VIN(connected to C11.-)), ('VOUT', VOUT(connected to C12.-))])
 
-	>>> nets["GND"]
-	GND(connected to R3.P2, Rc.P2, C10.-)
+    >>> nets["GND"]
+    GND(connected to R3.P2, Rc.P2, C10.-)
 
 ## Examples
 
@@ -106,7 +106,7 @@ The main goal of this language is to aid in creating PCBs. The intermediate file
 
 For now we have a **minimum viable example** of an exporter for the Allegro Cadence netlists (found in `netlist.py`):
 
-	>>> generate_netlist("/tmp/some_export_location")
+    >>> generate_netlist("/tmp/some_export_location")
 
 ### HTML
 
@@ -124,22 +124,22 @@ In order for schematics to be more easily parsable, we want to graphically displ
 
 1. Convert a pcbdl schematic back into a traditional schematic
 
-	`generate_svg('svg_filename')`
+    `generate_svg('svg_filename')`
 
-	Here's the [svg output for the servo_micro example](https://google.github.io/pcbdl/examples/servo_micro.svg).
+    Here's the [svg output for the servo_micro example](https://google.github.io/pcbdl/examples/servo_micro.svg).
 
 2. Isolated schematics for how a particular thing is hooked up:
-	* I2C map, ([servo_micro's](https://google.github.io/pcbdl/examples/servo_micro.i2c.svg))
+    * I2C map, ([servo_micro's](https://google.github.io/pcbdl/examples/servo_micro.i2c.svg))
 
-	`generate_svg('svg_filename', net_regex='.*(SDA|SCL).*', airwires=0)`
+    `generate_svg('svg_filename', net_regex='.*(SDA|SCL).*', airwires=0)`
 
-	* Power connections ([servo_micro's](https://google.github.io/pcbdl/examples/servo_micro.power.svg))
+    * Power connections ([servo_micro's](https://google.github.io/pcbdl/examples/servo_micro.power.svg))
 
-	`generate_svg('svg_filename', net_regex='.*(PP|GND|VIN|VBUS).*')`
+    `generate_svg('svg_filename', net_regex='.*(PP|GND|VIN|VBUS).*')`
 
 3. Block diagrams of the overall system
-	* This depends on how the schematics is declared, if it's not hierarchical enough, it won't have many "blocks" to display
-	* This task is dependent on allowing hierarchies in pcbdl
+    * This depends on how the schematics is declared, if it's not hierarchical enough, it won't have many "blocks" to display
+    * This task is dependent on allowing hierarchies in pcbdl
 
 ### BOM
 

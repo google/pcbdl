@@ -31,17 +31,17 @@ q = BJT("2n3904")
 C = C_POL
 
 q.BASE << (
-	C(ac_coupling_value, to=Net("vin")),
-	R("1k", to=vcc),
-	R("1k", to=gnd),
+    C(ac_coupling_value, to=Net("vin")),
+    R("1k", to=vcc),
+    R("1k", to=gnd),
 )
 
 q.COLLECTOR << (
-	C(ac_coupling_value, to=Net("vout")),
-	R("100", to=vcc),
+    C(ac_coupling_value, to=Net("vout")),
+    R("100", to=vcc),
 )
 
 q.EMITTER << (
-	R("100", "Rc", to=gnd),
-	C("1u", "C10", to=gnd),
+    R("100", "Rc", to=gnd),
+    C("1u", "C10", to=gnd),
 )
