@@ -85,5 +85,21 @@ clean-doc:
 .PHONY: gh-pages
 gh-pages: doc gh-pages-examples
 
+.PHONY: refresh-gh-pages
+refresh-gh-pages:
+	git checkout gh-pages
+	git reset --hard master # track the master branch
+
+	$(MAKE) clean
+	$(MAKE) gh-pages
+	git add -f doc/*
+	git add -f $(SERVO_MICRO_EXAMPLE_OUTPUTS)
+
+	touch .nojekyll # Make sure we can show index.html from docs/
+	git add .nojekyll
+
+	git commit -s -m "Ran make refresh-gh-pages"
+	git checkout -
+
 .PHONY: clean
 clean: clean-coverage clean-gh-pages-examples clean-doc
