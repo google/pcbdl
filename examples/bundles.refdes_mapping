@@ -1,0 +1,5 @@
+refdes	code	nets	variable_name	class	value	part_number
+IC1	cd089adbb	n978fb3ad	spiflash1	<class 'bundles.SPIFlash'>	SPI_FLASH_32MB	SPI_FLASH_32MB
+IC2	c24f6c391	n9d97ccf9	spiflash2	<class 'bundles.SPIFlash'>	SPI_FLASH_32MB	SPI_FLASH_32MB
+IC3	c8be3ef8b	ne2e71cc2	i2cflash	<class 'bundles.I2CFlash'>	I2C_FLASH_32MB	I2C_FLASH_32MB
+IC4	cc67aac4c	nc18424ea	ap	<class 'bundles.SOC'>	Google Novem-Core Processor	Google Novem-Core Processor

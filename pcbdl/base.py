@@ -16,9 +16,12 @@ import collections
 import copy
 import enum
 import itertools
+import re
+
 __all__ = [
     "PinType", "ConnectDirection",
-    "Net", "Part", "Pin"
+    "Net", "Part", "Pin",
+    "NetBundle", "Interface"
 ]
 
 class Plugin(object):
@@ -117,7 +120,7 @@ class Net(object):
             pin = None
 
             if isinstance(other, Part):
-                pin = other.get_pin_to_connect(pin_type, self)
+                pin = other.get_stuff_to_connect(pin_type, self)
 
             if isinstance(other, PartInstancePin):
                 pin = other
@@ -504,6 +507,9 @@ class Part(object):
         (D1.VCC, D1.NC, D1.P1, D1.GND, D1.P2)
     """
 
+    PORTS = []
+    ports = _PinList()
+
     REFDES_PREFIX = "UNK"
     """
     The prefix that every reference designator of this part will have.
@@ -569,6 +575,7 @@ class Part(object):
         self.populated = populated
 
         self._generate_pin_instances()
+        self._generate_port_instances()
 
         Plugin.init(self)
 
@@ -595,6 +602,18 @@ class Part(object):
             # save the pin as an attr for this part too
             for name in pin.names:
                 self.__dict__[name] = pin
+
+    def _generate_port_instances(self):
+        self.ports = _PinList()
+        if not self.PORTS:
+            return
+        for interface_line in self.PORTS:
+            yielded_ports = tuple(PartInstancePort._create_ports(interface_line, self))
+            for port in yielded_ports:
+                self.ports[port.name] = port
+                self.__dict__[port.name] = port
+            if not yielded_ports:
+                raise ValueError(f"Interface {interface_line} for {self} did not yield any ports. They were all incomplete. {interface_line.__class__.__name__}.SIGNALS too conservative?")
 
     @property
     def _refdes_from_memory_address(self):
@@ -624,7 +643,7 @@ class Part(object):
     def __str__(self):
         return "%s - %s%s" % (self.refdes, self.value, " DNS" if not self.populated else "")
 
-    def get_pin_to_connect(self, pin_type, net=None): # pragma: no cover
+    def get_stuff_to_connect(self, pin_type, net=None): # pragma: no cover
         assert isinstance(pin_type, PinType)
 
         if self.pin_names_match_nets and net is not None:
@@ -638,7 +657,20 @@ class Part(object):
                         return pin
             raise ValueError("Couldn't find a matching named pin on %r to connect the net %s" % (self, net_name))
 
-        raise NotImplementedError("Don't know how to get %s pin from %r" % (pin_type.name, self))
+        if isinstance(net, NetBundle):
+            net_interface = net.interface
+            available_ports = [port for port in self.ports if type(port.interface) == net_interface]
+            if len(available_ports) == 0:
+                raise ValueError("Couldn't find an appropriate port in %r to connect %r" % (self, net))
+            elif len(available_ports) > 1:
+                raise ValueError("Too many port options available in %r to connect  %r" % (self, net))
+            else:
+                return available_ports[0]
+            for port in self.ports:
+                if type(port.interface) == net_interface:
+                    return port
+
+        raise NotImplementedError("Don't know how to get %s pin or port from %r" % (pin_type.name, self))
 
     @classmethod
     def _postprocess_pin(cls, pin):
@@ -659,3 +691,198 @@ class Part(object):
         * A simple programmatic alias on pin names without subclassing the part itself.
         """
         raise TypeError("This particular implementation of _postprocess_pin should be skipped by PinFragmentList()")
+
+class Interface():
+    """Example: SPI, I2C"""
+
+    SIGNALS = []
+    """
+    This represents the "wires" (either the pins or the net names) of an interface, as a :class:`list`.
+
+    Each signal can be one of:
+
+    * a :class:`string<str>` denoting the name of each signal of that interface
+    * :class:`tuple` of names, in case there's more than one common name for a certain signal
+    * another :class:`Interface`, in order to support a composite interface
+    """
+
+    def __init__(self, regex, name=None):
+        self.regex = re.compile(regex)
+        if name is not None:
+            self.name = name
+
+    def __repr__(self):
+        if hasattr(self, "name"):
+            return f"{self.__class__.__name__}({self.regex.pattern!r}, {self.name})"
+        else:
+            return f"{self.__class__.__name__}({self.regex.pattern!r})"
+
+    @classmethod
+    def signal_matching_name(cls, name):
+        for signal in cls.SIGNALS:
+            if name == signal: # probably a str
+                return signal
+            elif name in signal: # tuple case
+                return signal
+            elif isinstance(signal, Interface):
+                if signal.name == name:
+                    return signal
+        else:
+            raise KeyError
+
+    @staticmethod
+    def signal_name(signal):
+        if isinstance(signal, str):
+            return signal
+        elif isinstance(signal, Interface):
+            raise NotImplementedError()
+        else: # tuple case
+            return signal[0]
+
+class NetBundle(collections.OrderedDict):
+    """A group of nets (or more further bundles) complying to an :class:`Interface`, connecting :class:`Ports` together."""
+
+    def __init__(self, interface, prefix):
+        self.interface = interface
+        self.prefix = prefix
+
+        super().__init__()
+
+        # Generate all the nets that are part of this bundle
+        for signal in self.interface.SIGNALS:
+            if isinstance(signal, Interface):
+                #TODO
+                #subinterface = signal
+                #name = subinterface.__class__.__name__ # TODO: what happens if more than one of the same type of subinterfaces
+                #subbundle = NetBundle(subinterface, prefix + "_" + name) #defined_at: not here
+                #self[subinterface] = subbundle
+                raise NotImplementedError()
+            else:
+                if not isinstance(signal, str):
+                    # probably a list of alternate names, here we only care about the first, main, one
+                    signal = signal[0]
+                assert(isinstance(signal, str))
+                net_name = prefix + "_" + signal
+                net = Net(net_name) #defined_at: not here
+                self[signal] = net
+                self.__dict__[signal] = net
+
+        self._connections = []
+
+    def connect(self, others, direction=ConnectDirection.UNKNOWN, pin_type=PinType.PRIMARY):
+        for other in _maybe_single(others):
+            port = None
+
+            if isinstance(other, Part): # TODO
+                port = other.get_stuff_to_connect(pin_type, self)
+
+            if isinstance(other, PartInstancePort):
+                port = other
+
+            if isinstance(other, NetBundle):
+                raise NotImplementedError("Can't connect net bundles together yet.")
+
+            if self.interface != type(port.interface):
+                raise TypeError("Interface mismatch when trying to connect %r to %r. %r != %r" % (self, other, self.interface, port.interface))
+
+            if port is None:
+                raise TypeError("Don't know how to get %s port from %r." % (self.interface, other))
+
+            # connect signals together
+            for signal in self.interface.SIGNALS:
+                signal_name = Interface.signal_name(signal)
+                self_net = self[signal_name]
+                other_pin = port.pins[signal_name]
+                self_net.connect(other_pin)
+
+            # save the meta connection
+            port.net_bundle = self
+            self.connections.append(port)
+
+    @property
+    def connections(self):
+        return self._connections
+
+    def _shift(self, direction, others):
+        self.connect(others, direction, PinType.PRIMARY)
+        # TODO: insert grouped stuff here
+        return self
+
+    def __lshift__(self, others):
+        return self._shift(ConnectDirection.IN, others)
+
+    def __rshift__(self, others):
+        return self._shift(ConnectDirection.OUT, others)
+
+
+    def __repr__(self):
+        return "NetBundle(%r)" % (self.prefix)
+
+class PartInstancePort():
+    """A group of pins (or more further ports) complying to an :class:`Interface`"""
+
+    pins = _PinList()
+    _net_bundle = None
+
+    @staticmethod
+    def _create_ports(interface, part):
+        # let's find all pins of the part matching the regex
+        regex = interface.regex
+        matches = collections.defaultdict(dict)
+        for pin in part.pins:
+            for name in pin.names:
+                match = regex.match(name)
+                if match is not None:
+                    *maybe_port_name, pin_name = match.groups()
+                    matches[tuple(maybe_port_name)][pin_name] = pin
+        if not matches:
+            raise ValueError(f"Interface {interface} for {part} yielded no regex matches.")
+
+        # now we have a grouped (by port name) list of possible pin matches
+        for maybe_port_name, grouped_port in matches.items():
+            # Let's make a port for each of those groups
+            pins = _PinList()
+            for pin_name, pin in grouped_port.items():
+                try:
+                    signal = interface.signal_matching_name(pin_name)
+                except KeyError:
+                    # It's possible that the user's regex is too liberal, so we got more pins matched than we needed
+                    continue
+                pins[Interface.signal_name(signal)] = pin
+
+            if len(pins) != len(interface.SIGNALS):
+                #print(f"Incomplete port for {interface}: {maybe_port_name} {dict(pins.items())}")
+                continue
+
+            if maybe_port_name:
+                name = maybe_port_name[0]
+            else:
+                try:
+                    name = interface.name
+                except AttributeError:
+                    raise ValueError("Interface %r for part %s doesn't know it's name. Either expand the regex or give it a name attribute." % (interface, part.__class__))
+
+            yield PartInstancePort(name, pins, interface)
+
+    def __init__(self, name, pins, interface):
+        self.name = name
+        self.pins = pins
+        self.__dict__.update(self.pins.items())
+        self.interface = interface
+
+    @property
+    def names(self):
+        # in order for PartInstancePort to work in a _PinList structure
+        return (self.name,)
+
+    @property
+    def net_bundle(self):
+        return self._net_bundle
+    @net_bundle.setter
+    def net_bundle(self, new_net_bundle):
+        if self._net_bundle is not None:
+            raise ValueError("%s port is already connected to a net bundle (%s). Can't connect to %s too." % (self, self._net_bundle, new_net_bundle))
+        self._net_bundle = new_net_bundle
+
+    def __repr__(self):
+        return "Port(%s)" % (self.name)

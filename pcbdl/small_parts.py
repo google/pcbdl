@@ -56,7 +56,7 @@ class JellyBean(Part):
         if to is not None:
             to.connect(self, ConnectDirection.OUT, pin_type=PinType.SECONDARY)
 
-    def get_pin_to_connect(self, pin_type, net=None):
+    def get_stuff_to_connect(self, pin_type, net=None):
         assert isinstance(pin_type, PinType)
 
         mapping = [0, 1]
@@ -79,7 +79,7 @@ class JellyBean(Part):
                   with the slight difference in how it can chain.
         """
         assert isinstance(left_net, Net)
-        left_net << self.get_pin_to_connect(PinType.PRIMARY)
+        left_net << self.get_stuff_to_connect(PinType.PRIMARY)
         return self
 
     def __xor__(self, right_net):
@@ -90,7 +90,7 @@ class JellyBean(Part):
         .. note:: This is similar to ``JellyBean(to=right_net)`` but a little cleaner looking.
         """
         assert isinstance(right_net, Net)
-        grouped_right_net = right_net << self.get_pin_to_connect(PinType.SECONDARY)
+        grouped_right_net = right_net << self.get_stuff_to_connect(PinType.SECONDARY)
         return grouped_right_net
 
 
@@ -102,7 +102,7 @@ class OnePinPart(Part):
         if to is not None:
             to.connect(self, ConnectDirection.OUT, pin_type=PinType.PRIMARY)
 
-    def get_pin_to_connect(self, pin_type, net=None):
+    def get_stuff_to_connect(self, pin_type, net=None):
         if pin_type == PinType.PRIMARY:
             # Perhaps we can name ourselves too after the net
             if net is not None and net._name is not None:
