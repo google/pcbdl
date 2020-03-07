@@ -1,0 +1,8 @@
+-e . # install pcbdl in as a package while still being editable
+
+coverage
+
+# documentation
+sphinx
+sphinx_rtd_theme
+m2r

@@ -1,8 +1,8 @@
 # Developing
 
-This command will install the current folder globally and it can easily be imported.
+This command will setup the development enviroment so it will be eaasy to make changes to PCBDL:
 
-    sudo pip3 install -e .
+    sudo pip3 install -r requirements.txt
 
 ## Tests
 
