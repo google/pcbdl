@@ -1,4 +1,4 @@
-# Developing
+# Developing PCBDL
 
 This command will setup the development enviroment so it will be eaasy to make changes to PCBDL:
 
