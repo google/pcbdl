@@ -131,10 +131,6 @@ class SVGPart(object):
         cell_name = "power_symbol_%d" % (net_node_number)
         self.schematic_page.cells_dict[cell_name] = power_symbol
 
-    @property
-    def cell_name(self):
-        return "%s" % (self.part.refdes)
-
     def add_parts(self, indent_depth=""):
         # Every real part might yield multiple smaller parts (eg: airwires, gnd/vcc connections)
         part = self.part
@@ -248,7 +244,7 @@ class SVGPart(object):
 
             svg_type += suffix
 
-        self.schematic_page.cells_dict[self.cell_name] = {
+        self.schematic_page.cells_dict[self.part.refdes] = {
             "connections": connections,
             "port_directions": port_directions,
             "attributes": {"value": part.value},
@@ -343,7 +339,8 @@ class SVGPage(object):
         return svg_contents
 
 
-def generate_svg(pins_to_skip=[], *args, **kwargs):
+def generate_svg(*args, **kwargs):
+    pins_to_skip = []
     while True:
         n = SVGPage(*args, **kwargs, pins_to_skip=pins_to_skip)
         svg_contents = n.generate()

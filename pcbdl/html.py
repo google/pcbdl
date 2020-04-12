@@ -14,7 +14,7 @@
 
 from .base import Part, PartInstancePin, Net, Plugin
 from .context import *
-from .netlistsvg import SVGPage
+from .netlistsvg import generate_svg
 
 import collections
 from datetime import datetime
@@ -76,8 +76,7 @@ class HTMLPart(Plugin):
         if part.__doc__:
             yield "<pre>%s</pre>" % textwrap.dedent(part.__doc__.rstrip())
 
-        if hasattr(self, "svgpage"):
-            yield "<p><a href=\"#cell_%s\">See in SVG</a></p>" % self.svgpage.part_helpers[self.instance].cell_name
+        yield "<p><a href=\"#cell_%s\">See in SVG</a></p>" % part.refdes
 
         yield "<p>Value: %s</p>" % part.value
         yield "<p>Part Number: %s</p>" % part.part_number
@@ -254,11 +253,6 @@ class Code(object):
 def html_generator(context=global_context, include_svg=False):
     code_manager = Code()
 
-    if include_svg:
-        svgpage = SVGPage(context=context)
-        HTMLPart.svgpage = svgpage
-        HTMLNet.svgpage = svgpage
-
     HTMLDefinedAt.code_manager = code_manager
     HTMLPart.code_manager = code_manager
 
@@ -284,7 +278,8 @@ def html_generator(context=global_context, include_svg=False):
     yield ":target { background-color: #ffff99; }"
     yield ".not-populated { color: #777777; }"
     yield from code_manager.css_generator()
-    yield "svg text {font-weight: normal; font-family: monospace; }"
+    yield "svg text { font-weight: normal; font-family: monospace; }"
+    yield "svg { border-style: double; border-width: 3px; padding: 40px; margin-bottom: 20px; }"
 
     yield "svg :target text {font-weight: bold; text-shadow: 0 0 10px #ffff00}"
     yield "svg :target :not(text) { fill: #ffff99; stroke: #000; stroke-width: 3; }"
@@ -334,7 +329,7 @@ def html_generator(context=global_context, include_svg=False):
 
     if include_svg:
         yield "<h1 id=\"svg\">SVG</h1>"
-        yield svgpage.generate()
+        yield from generate_svg(context=context, max_pin_count=50)
 
     yield "</body>"
     yield "</html>"
