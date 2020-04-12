@@ -96,7 +96,7 @@ One can just "run" any example schematic with python, add -i to do more analysis
 
 * `voltage_divider.py`: Very simple voltage divider
 * `class_a.py`: Class A transistor amplifier, a good example to how a complicatedish analog circuit would look like.
-* `servo_micro.py`: **Servo micro schematics**, reimplementation in pcbdl, [originally an 8 page pdf schematic](https://www.chromium.org/chromium-os/servo/servomicro).
+* `servo_micro.py`: **Servo micro schematics**, reimplementation in pcbdl, [originally an 8 page pdf schematic](https://chromium.googlesource.com/chromiumos/third_party/hdctools/+/refs/heads/master/docs/servo_micro.md#overview).
 
 ## Exporting
 

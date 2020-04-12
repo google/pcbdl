@@ -18,7 +18,7 @@
 Full reimplementation of servo micro in pcbdl.
 
 Servo Micro's information page (including pdf schematics made in orthodox tools) can be found at:
-https://www.chromium.org/chromium-os/servo/servomicro
+https://chromium.googlesource.com/chromiumos/third_party/hdctools/+/refs/heads/master/docs/servo_micro.md
 """
 
 from pcbdl import *
