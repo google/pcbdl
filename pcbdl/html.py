@@ -14,7 +14,7 @@
 
 from .base import Part, PartInstancePin, Net, Plugin
 from .context import *
-from .netlistsvg import NetlistSVG
+from .netlistsvg import SVGPage
 
 import collections
 from datetime import datetime
@@ -76,8 +76,8 @@ class HTMLPart(Plugin):
         if part.__doc__:
             yield "<pre>%s</pre>" % textwrap.dedent(part.__doc__.rstrip())
 
-        if hasattr(self, "netlistsvg"):
-            yield "<p><a href=\"#cell_%s\">See in SVG</a></p>" % self.netlistsvg.part_helpers[self.instance].cell_name
+        if hasattr(self, "svgpage"):
+            yield "<p><a href=\"#cell_%s\">See in SVG</a></p>" % self.svgpage.part_helpers[self.instance].cell_name
 
         yield "<p>Value: %s</p>" % part.value
         yield "<p>Part Number: %s</p>" % part.part_number
@@ -255,9 +255,9 @@ def html_generator(context=global_context, include_svg=False):
     code_manager = Code()
 
     if include_svg:
-        svg = NetlistSVG(context=context)
-        HTMLPart.netlistsvg = svg
-        HTMLNet.netlistsvg = svg
+        svgpage = SVGPage(context=context)
+        HTMLPart.svgpage = svgpage
+        HTMLNet.svgpage = svgpage
 
     HTMLDefinedAt.code_manager = code_manager
     HTMLPart.code_manager = code_manager
@@ -334,7 +334,7 @@ def html_generator(context=global_context, include_svg=False):
 
     if include_svg:
         yield "<h1 id=\"svg\">SVG</h1>"
-        yield svg.svg
+        yield svgpage.generate()
 
     yield "</body>"
     yield "</html>"

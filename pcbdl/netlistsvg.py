@@ -23,7 +23,7 @@ import subprocess
 import tempfile
 
 """Renders our circuit into svg with the help of netlistsvg."""
-__all__ = ["generate_svg"]
+__all__ = ["generate_svg", "SVGPage"]
 
 NETLISTSVG_LOCATION = os.path.expanduser(
     os.environ.get("NETLISTSVG_LOCATION", "~/netlistsvg"))
@@ -100,10 +100,17 @@ class SVGPart(object):
         self.schematic_page = schematic_page
 
     def attach_net_name_port(self, net, net_node_number, direction):
-        self.schematic_page.ports_dict["%s_ignore%s" % (net.name, str(net_node_number))] = {
+        self.schematic_page.ports_dict["%s_node%s" % (net.name, str(net_node_number))] = {
             "bits": [net_node_number],
             "direction": direction
         }
+
+    def attach_net_name(self, net, net_node_number, display=True):
+        netname_entry = self.schematic_page.netnames_dict[net.name]
+        if net_node_number not in netname_entry["bits"]: # avoid duplicates
+            netname_entry["bits"].append(net_node_number)
+        if display:
+            netname_entry["hide_name"] = 0
 
     def attach_power_symbol(self, net, net_node_number):
         name = net.name
@@ -206,10 +213,10 @@ class SVGPart(object):
 
             if pin.net.is_gnd or pin.net.is_power:
                 self.attach_power_symbol(pin.net, net_node_number)
-            else:
-                ##if len(pin_net_helper.grouped_connections) > 1:
+            #else:
+                #if len(pin_net_helper.grouped_connections) > 1:
                 #self.attach_net_name_port(pin.net, net_node_number, port_directions[name])
-                pass
+            self.attach_net_name(pin.net, net_node_number, display=not(pin.net.is_gnd or pin.net.is_power))
 
         if not connections:
             return
@@ -258,8 +265,8 @@ class SVGPart(object):
 
             self.schematic_page.part_helpers[other_part].add_parts(indent_depth + " ")
 
-class NetlistSVG(object):
-    """Represents single .svg file"""
+class SVGPage(object):
+    """Represents single .svg page"""
 
     def __init__(self, net_regex=".*", airwires=2, pins_to_skip=[], max_pin_count=None, context=global_context):
         self.net_regex = re.compile(net_regex)
@@ -273,6 +280,7 @@ class NetlistSVG(object):
         self.pins_drawn = []
 
         self.cells_dict = {}
+        self.netnames_dict = collections.defaultdict(lambda: {"bits": [], "hide_name": 1})
         self.ports_dict = {}
 
         # start helper classes
@@ -284,52 +292,61 @@ class NetlistSVG(object):
         for part in self.context.parts_list:
             self.part_helpers[part] = SVGPart(part, self)
 
-    @property
-    def json(self):
+    def write_json(self, fp):
+        """Generate the json input required for netlistsvg and dumps it to a file."""
         self.parts_to_draw = collections.deque(self.context.parts_list)
         while self.parts_to_draw:
-            part = self.parts_to_draw[0]
+
             if self.max_pin_count and self.pin_count > self.max_pin_count:
                 # stop drawing, this page is too cluttered
                 break
 
+            part = self.parts_to_draw[0]
             self.part_helpers[part].add_parts()
 
         big_dict = {"modules": {"SVG Output": {
             "cells": self.cells_dict,
+            "netnames": self.netnames_dict,
             "ports": self.ports_dict,
         }}}
 
-        return json.dumps(big_dict, indent="\t")
+        json.dump(big_dict, fp, indent=4)
+        fp.flush()
 
-    @property
-    def svg(self):
-        with tempfile.NamedTemporaryFile("r") as f:
-            json = self.json
-            with open("out.json", "w") as f2:
-                f2.write(json)
-            subprocess.check_output([
+    def generate(self):
+        """Calls netlistsvg to generate the page and returns the svg contents as a string."""
+        with tempfile.NamedTemporaryFile("w", prefix="netlistsvg_input_", suffix=".json", delete=False) as json_file, \
+             tempfile.NamedTemporaryFile("r", prefix="netlistsvg_output_", suffix=".svg", delete=False) as netlistsvg_output:
+            self.write_json(json_file)
+            netlistsvg_command = [
                 "/usr/bin/env", "node",
                 os.path.join(NETLISTSVG_LOCATION, "bin", "netlistsvg.js"),
 
                 "--skin",
                 os.path.join(NETLISTSVG_LOCATION, "lib", "analog.svg"),
 
-                "/dev/stdin", # input
+                json_file.name,
 
                 "-o",
-                f.name
-            ], input=json.encode("utf-8"))
+                netlistsvg_output.name
+            ]
+            print(netlistsvg_command)
+            subprocess.call(netlistsvg_command)
 
-            ret = f.read()
-        ret = re.sub("_ignore\d+", "", ret)
-        return ret
+            svg_contents = netlistsvg_output.read()
+
+        # When a net appears in a few places (when we have airwires), we need to disambiguage the parts of the net
+        # so netlistsvg doesn't think they're actually the same net and should connect them together.
+        # Remove the extra decoration:
+        svg_contents = re.sub("_node\d+", "", svg_contents)
+
+        return svg_contents
 
 
 def generate_svg(pins_to_skip=[], *args, **kwargs):
     while True:
-        n = NetlistSVG(*args, **kwargs, pins_to_skip=pins_to_skip)
-        svg_contents = n.svg
+        n = SVGPage(*args, **kwargs, pins_to_skip=pins_to_skip)
+        svg_contents = n.generate()
         pins_to_skip += n.pins_drawn
 
         if not n.pins_drawn:
