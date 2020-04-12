@@ -13,11 +13,130 @@
 # limitations under the License.
 
 from .base import Net, Part, Plugin
+from .defined_at import grab_nearby_lines
 import collections
+import csv
+import hashlib
+
 __all__ = [
     "Context",
     "global_context", "nets",
 ]
+
+class RefdesRememberer:
+    """
+    Remembers refdeses from old executions of the schematic. This tries to guarantee that as the schematic
+    evolves, automatically generated refdefs are deterministic. It does this by storing the refdefs in a
+    file (.refdes_mapping), in part definition order, together with some information about the part (called
+    anchors). Even partial matches of the anchors will be enough to remember the name.
+
+    .. warning:: This class is very stateful, successful matches consume the entries from the internal state.
+    """
+
+    anchor_names = ("code", "nets", "variable_name", "class", "value", "part_number")
+
+    """[(refdes, {anchor_name: anchor})]"""
+    _mapping = []
+
+    csv.register_dialect("pcbdl", delimiter="\t", lineterminator="\n", strict=True) #TODO: strict=False
+
+    class MatchNotFound(Exception):
+        pass
+
+    def __init__(self, filename):
+        self.filename = filename
+        self.read()
+
+    def read(self):
+        """
+        Read in the existing .refdes_mapping file and populate the internal state
+        """
+        self._mapping = []
+        try:
+            with open(self.filename, "r") as f:
+                reader = csv.DictReader(f, dialect="pcbdl")
+                for row in reader:
+                    refdes = row.pop("refdes")
+                    self._mapping.append((refdes, row))
+        except FileNotFoundError:
+            pass # We'll start fresh!
+
+    def find_match(self, part, score_threshold=0.6, debug=False):
+        """
+        Given a part, finds a match in the older mapping based on the current values of the anchors.
+
+        If most of them match (given the score) with an older entry the refdes of that entry is returned and the entry
+        is removed from the matches so it's not matched in the future with another part.
+        """
+        current_anchors = self.get_part_anchors(part)
+        max_score = len(self.anchor_names)
+
+        scored_others = [] # score, (refdes, anchors)
+        for refdes, older_anchors in self._mapping:
+            score = 0
+
+            for anchor_name in current_anchors.keys():
+                if anchor_name not in older_anchors:
+                    continue # change of schema?
+
+                if current_anchors[anchor_name] == older_anchors[anchor_name]:
+                    score += 1
+
+            scored_others.append((score, (refdes, older_anchors)))
+
+        scored_others.sort(key=(lambda other: other[0]), reverse=True)
+        first_match = scored_others[0]
+        score, row = first_match
+        if score < max_score * score_threshold:
+            raise self.MatchNotFound()
+
+        refdes, older_anchors = row
+
+        # some logging if it's inexact
+        if debug and (score != max_score):
+            print(f"RefdesRememberer: Inexact match ({score}/{max_score}) for {part}:")
+            for anchor_name in current_anchors.keys():
+                if anchor_name not in older_anchors:
+                    print(" [%r] %r not found" % (anchor_name, current_anchors[anchor_name]))
+                    continue # change of schema?
+                if current_anchors[anchor_name] != older_anchors[anchor_name]:
+                    print(" [%r] %r!=%r" % (anchor_name, current_anchors[anchor_name], older_anchors[anchor_name]))
+
+        #make sure nobody else matches with this row again, since we already found the instance matching it
+        self._mapping.remove(row)
+
+        return refdes
+
+    def get_part_anchors(self, part):
+        """
+        Generates a dict of anchors (keys being anchor_names) for a given part.
+        """
+        anchors = {}
+        anchors["code"] = part.plugins[PartContext]._anchor_code
+        anchors["nets"] = part.plugins[PartContext]._anchor_nets
+        try:
+            anchors["variable_name"] = part.variable_name
+        except AttributeError:
+            anchors["variable_name"] = ""
+        anchors["class"] = repr(part.__class__)
+        anchors["value"] = part.value
+        anchors["part_number"] = part.part_number
+
+        assert(set(anchors.keys()) == set(self.anchor_names))
+        return anchors
+
+    def overwrite(self, context):
+        """
+        Writes the context (all the refdeses and new computed anchors) to a file,
+        ready to read for next time.
+        """
+        with open(self.filename, "w") as f:
+            writer = csv.DictWriter(f, dialect="pcbdl", fieldnames=("refdes",) + self.anchor_names)
+            writer.writeheader()
+            for refdes, part in context.named_parts.items():
+                row = self.get_part_anchors(part)
+                row["refdes"] = refdes
+                writer.writerow(row)
 
 class Context(object):
     def __init__(self, name = ""):
@@ -26,8 +145,6 @@ class Context(object):
         self.net_list = []
         self.parts_list = []
         self.named_nets = collections.OrderedDict()
-
-        self.refdes_counters = collections.defaultdict(lambda:1)
 
     def new_part(self, part):
         assert(part not in self.parts_list)
@@ -48,32 +165,11 @@ class Context(object):
         self.net_list.append(net)
         self.named_nets[net.name] = net
 
-    def name_part_with_mapping(self, part, mapping):
-        try:
-            part_context_name = part._refdes_from_context
-        except:
-            # just give up, we can't get context name for some reason
-            return
-
-        for i, (final_name, context_name) in enumerate(mapping):
-            if context_name == part_context_name:
-                part.refdes = final_name
-                break
-        else:
-            # couldn't find it in the mapping
-            return
-
-        # remove from mapping in case there's other parts at the same line that need to be named differently
-        mapping.pop(i)
-
     def autoname(self, mapping_file=None):
-        try:
-            with open(mapping_file, "r") as file:
-                mapping = [line.strip().split(" ") for line in file.readlines()]
-        except:
-            mapping = []
-
         self.named_parts = collections.OrderedDict()
+        refdes_rememberer = RefdesRememberer(mapping_file)
+
+        # Do a pass trying to remember it
         for part in self.parts_list:
             original_name = part.refdes
             prefix = part.REFDES_PREFIX
@@ -81,9 +177,24 @@ class Context(object):
                 number = original_name[len(prefix):]
 
                 if number.startswith("?"):
-                    self.name_part_with_mapping(part, mapping)
-                    number = part.refdes[len(prefix):]
-                    #print ("Renaming %s -> %s with mapping file" % (original_name, part.refdes))
+                    try:
+                        refdes = refdes_rememberer.find_match(part)
+                    except RefdesRememberer.MatchNotFound:
+                        continue
+                    part.refdes = refdes
+                    number = refdes[len(prefix):]
+                    #print("Remembering refdes %s -> %s" % (original_name, part.refdes))
+
+                    if part.refdes in (other_part.refdes for other_part in self.parts_list if other_part != part):
+                        raise Exception("Cannot have more than one part with the refdes %s in %s" % (part.refdes, self))
+
+        # Another pass by naming things with the autoincrement
+        self.refdes_counters = collections.defaultdict(lambda:1)
+        for part in self.parts_list:
+            original_name = part.refdes
+            prefix = part.REFDES_PREFIX
+            if original_name.startswith(prefix):
+                number = original_name[len(prefix):]
 
                 if number.startswith("?"):
                     while True:
@@ -91,7 +202,7 @@ class Context(object):
                         self.refdes_counters[prefix] += 1
                         if part.refdes not in self.named_parts:
                             break
-                    #print ("Renaming %s -> %s" % (original_name, part.refdes))
+                    print("New refdes %s -> %s" % (original_name, part.refdes))
                 else:
                     # Yay, there's a part that's already named
                     # Let's remember the number for it and save it
@@ -101,14 +212,12 @@ class Context(object):
                         pass
                     else:
                         self.refdes_counters[prefix] = number
-                        #print ("Skipping ahead to %s%d+1" % (prefix, self.refdes_counters[prefix]))
+                        #print("Skipping ahead to %s%d+1" % (prefix, self.refdes_counters[prefix]))
                         self.refdes_counters[prefix] += 1
             self.named_parts[part.refdes] = part
 
-        if mapping_file:
-            with open(mapping_file, "w") as file:
-                for final_name, part in self.named_parts.items():
-                    file.write("%s %s\n" % (final_name, part._refdes_from_context))
+        refdes_rememberer.overwrite(self)
+        del refdes_rememberer
 
         for net in self.net_list:
             # Look only for unnamed nets
@@ -134,7 +243,59 @@ class NetContext(Plugin):
 @Plugin.register(Part)
 class PartContext(Plugin):
     def __init__(self, instance):
+        self.instance = instance
         global_context.new_part(instance)
+
+    def _generate_anchor_code(self):
+        if not hasattr(self.instance, "defined_at"):
+            self._context_ref_value = None
+            raise Exception("No defined_at")
+
+        if self.instance.defined_at.startswith("<stdin>"):
+            self._context_ref_value = None
+            raise Exception("Can't get context from stdin")
+
+
+        tohash = repr((
+            grab_nearby_lines(self.instance.defined_at, 3),
+        ))
+
+        h = hashlib.md5(tohash.encode("utf8")).hexdigest()
+
+        ret = "c" + h[:8]
+        self._context_ref_value = ret
+        return ret
+
+    @property
+    def _anchor_code(self):
+        try:
+            return self._anchor_code_value
+        except AttributeError:
+            pass
+
+        self._anchor_code_value = self._generate_anchor_code()
+        return self._anchor_code_value
+
+    def _generate_anchor_nets(self):
+        tohash = repr((
+            sorted(pin.net.name for pin in self.instance.pins if (pin._net is not None and "ANON_NET" not in pin.net.name)),
+        ))
+
+        h = hashlib.md5(tohash.encode("utf8")).hexdigest()
+
+        ret = "n" + h[:8]
+        self._context_ref_value = ret
+        return ret
+
+    @property
+    def _anchor_nets(self):
+        try:
+            return self._anchor_nets_value
+        except AttributeError:
+            pass
+
+        self._anchor_nets_value = self._generate_anchor_nets()
+        return self._anchor_nets_value
 
 global_context = Context()
 nets = global_context.named_nets

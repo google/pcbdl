@@ -1,70 +1,71 @@
-CN1 CN?h4bbf014
-D1 D?h81a480d
-U3 U?h98f08e4
-C9 C?h1edb8e1
-C10 C?h6f489d2
-C12 C?h0ddc584
-C15 C?he21e030
-U7 U?ha52c1e2
-D2 D?h0540962
-C22 C?hfb0b218
-C19 C?hb3fb5d1
-U6 U?h5670bf1
-C2 C?h4f535fb
-C5 C?hccbe1cd
-C1 C?hc5a9879
-FB1 L?hd4fa3f7
-C4 C?h1d24bb0
-C7 C?h65ea8b6
-C6 C?h252b2f9
-C13 C?hd0f94be
-CN2 CN?h0e88b23
-C8 C?h5701139
-Q4 Q?h0a35173
-R22 R?h483064b
-R23 R?hf86a3f9
-J3 CN?h59a4754
-U9 U?hc3af7d3
-C25 C?h29b6c7a
-R502 R?haf51894
-R501 R?h2e8a059
-C20 C?h8e9cde3
-U14 U?h26c5927
-C33 C?h6021be3
-R48 R?h6021be3
-TP1 TP?h6f2b349
-TP2 TP?h429d8f7
-C29 C?hb8c64f5
-R46 R?hf05a5f6
-U56 U?he76e8f9
-C109 C?h3e11e23
-C108 C?h16ae1cc
-U55 U?h1558101
-C111 C?h870507a
-C110 C?h1b34cc9
-U1 U?ha63c2dc
-C11 C?h7fd822d
-U10 U?h1d0b4c9
-C3 C?h0f31962
-U57 U?hc2875ac
-U59 U?he683b0e
-U43 U?h7d19a4f
-U42 U?h128a14f
-R95 R?hcd81fd2
-R96 R?hcd81fd2
-C107 C?h28cc4a3
-C106 C?h4e20e72
-U23 U?h7d19a4f
-U24 U?h128a14f
-R61 R?hcd81fd2
-R60 R?hcd81fd2
-C120 C?h28cc4a3
-C119 C?h4e20e72
-U5 U?h69f7b57
-C14 C?h0f9a910
-U45 U?h5374ffe
-U4 U?h5b22328
-C76 C?hd2273c5
-C77 C?h415c632
-C91 C?hd2273c5
-C90 C?h415c632
+refdes	code	nets	variable_name	class	value	part_number
+CN1	c4bbf014a	n087de42b	usb	<class 'servo_micro.UsbConnector'>	1981568-1	1981568-1
+D1	c81a480df	na82391bc	usb_esd	<class 'servo_micro.UsbEsdDiode'>	TPD2E001DRLR	TPD2E001DRLR
+U3	c98f08e4d	n8d3b0f2c	reg3300	<class 'servo_micro.Regulator'>	MIC5504-3.3YMT	MIC5504-3.3YMT
+C9	c1edb8e1e	n002ad366	self	<class 'pcbdl.small_parts.C'>	2.2uF	CY2.2u
+C10	c6f489d26	n3be07f19		<class 'pcbdl.small_parts.C'>	10uF	CY10u
+C12	c0ddc584e	n3be07f19		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+C15	ce21e0300	n3be07f19		<class 'pcbdl.small_parts.C'>	1000pF	CY1000p
+U7	ca52c1e28	na68a2e39	reg1800	<class 'servo_micro.Regulator'>	TLV70018DSER	TLV70018DSER
+D2	c05409620	n29740cdc	drop_diode	<class 'servo_micro.DoubleDiode'>	240-800MV	240-800MV
+C22	cfb0b2182	n3d4e6bc1		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+C19	cb3fb5d17	ndf667ade		<class 'pcbdl.small_parts.C'>	1uF	CY1u
+U6	c5670bf1e	ndf1e55c4	ec	<class 'servo_micro.ServoEC'>	STM32F072CBU6TR	STM32F072CBU6TR
+C2	c4f535fb1	n3be07f19		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+C5	cccbe1cdd	n3be07f19		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+C1	cc5a9879e	n3be07f19		<class 'pcbdl.small_parts.C'>	4.7uF	CY4.7u
+FB1	cd4fa3f7a	nc98cb2ba		<class 'pcbdl.small_parts.L'>	600@100MHzH	FERRITEBEAD100MHz
+C4	c1d24bb07	ncb5ff657		<class 'pcbdl.small_parts.C'>	1uF	CY1u
+C7	c65ea8b6f	ncb5ff657		<class 'pcbdl.small_parts.C'>	100pF	CY100p
+C6	c252b2f94	n3be07f19		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+C13	cd0f94be7	n3be07f19		<class 'pcbdl.small_parts.C'>	4.7uF	CY4.7u
+CN2	c0e88b23e	ndd1a89e4	prog	<class 'servo_micro.ProgrammingConnector'>	FH34SRJ-8S-0.5SH(50)	FH34SRJ-8S-0.5SH(50)
+C8	c5701139b	n324b81f1		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+Q4	c0a351736	nfc1d6b38	boot0_q	<class 'pcbdl.small_parts.FET'>	CSD13381F4	CSD13381F4
+R22	c483064be	nfda1c818		<class 'pcbdl.small_parts.R'>	51.1kΩ	R51.1k
+R23	cf86a3f9b	nab4a6662		<class 'pcbdl.small_parts.R'>	51.1kΩ	R51.1k
+J3	c59a4754d	nef319300	dut	<class 'servo_micro.ServoConnector'>	AXK850145WG	AXK850145WG
+U9	cc3af7d3d	n899a9803	io	<class 'servo_micro.I2cIoExpander'>	TCA6416ARTWR	TCA6416ARTWR
+C25	c29b6c7a2	n3be07f19		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+R502	caf518945	nc691d59e		<class 'pcbdl.small_parts.R'>	4.7kΩ	R4.7k
+R501	c2e8a0594	n5978efce		<class 'pcbdl.small_parts.R'>	4.7kΩ	R4.7k
+C20	c8e9cde30	ndf667ade		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+U14	c26c5927c	n681bfbea	mfg_mode_shifter	<class 'servo_micro.LevelShifter1'>	SN74AVC1T45DRLR	SN74AVC1T45DRLR
+C33	c6021be37	n819da06e		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+R48	c6021be37	n819da06e		<class 'pcbdl.small_parts.R'>	4.7kΩ	R4.7k
+TP1	c6f2b349e	n9d97ccf9	self	<class 'pcbdl.small_parts.TP'>	TP	TP
+TP2	c429d8f7c	n9d97ccf9		<class 'pcbdl.small_parts.TP'>	TP	TP
+C29	cb8c64f5e	n27a30867		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+R46	cf05a5f62	ne80feabd		<class 'pcbdl.small_parts.R'>	0Ω	R0
+U56	ce76e8f9e	n7d7f524f	shifter1	<class 'servo_micro.LevelShifter4'>	SN74AVC4T774RSVR	SN74AVC4T774RSVR
+C109	c3e11e232	n3be07f19		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+C108	c16ae1cca	ne53160cf		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+U55	c1558101b	nfda01d5e	shifter2	<class 'servo_micro.LevelShifter4'>	SN74AVC4T774RSVR	SN74AVC4T774RSVR
+C111	c870507ac	n3be07f19		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+C110	c1b34cc9d	ne53160cf		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+U1	ca63c2dc4	n5202b4d7	jtag_mux	<class 'servo_micro.Mux'>	313-00929-00	313-00929-00
+C11	c7fd822d2	n3be07f19		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+U10	c1d0b4c92	n61f33688	jtag_output_buffer	<class 'servo_micro.OutputBuffer'>	SN74LVC1G126YZPR	SN74LVC1G126YZPR
+C3	c0f31962d	n3be07f19		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+U57	cc2875acb	n22654218	s	<class 'servo_micro.LevelShifter4'>	SN74AVC4T774RSVR	SN74AVC4T774RSVR
+U59	ce683b0e0	n9c79a1e8	s	<class 'servo_micro.LevelShifter4'>	SN74AVC4T774RSVR	SN74AVC4T774RSVR
+U43	c7d19a4f6	n958bec8c	power_switch	<class 'servo_micro.PowerSwitch'>	ADP194ACBZ-R7	ADP194ACBZ-R7
+U42	c128a14f0	n4ac5ff35	power_switch	<class 'servo_micro.PowerSwitch'>	ADP194ACBZ-R7	ADP194ACBZ-R7
+R95	ccd81fd2a	n676b6954		<class 'pcbdl.small_parts.R'>	4.7kΩ	R4.7k
+R96	ccd81fd2a	n4b0df73f		<class 'pcbdl.small_parts.R'>	4.7kΩ	R4.7k
+C107	c28cc4a35	n3be07f19		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+C106	c4e20e726	n2679f586		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+U23	c7d19a4f6	n4b8d5137	power_switch	<class 'servo_micro.PowerSwitch'>	ADP194ACBZ-R7	ADP194ACBZ-R7
+U24	c128a14f0	n034da286	power_switch	<class 'servo_micro.PowerSwitch'>	ADP194ACBZ-R7	ADP194ACBZ-R7
+R61	ccd81fd2a	nf27ea2b2		<class 'pcbdl.small_parts.R'>	4.7kΩ	R4.7k
+R60	ccd81fd2a	ne273c382		<class 'pcbdl.small_parts.R'>	4.7kΩ	R4.7k
+C120	c28cc4a35	n3be07f19		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+C119	c4e20e726	n27a30867		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+U5	c69f7b575	n66e201a4	spi1_mux	<class 'servo_micro.AnalogSwitch'>	TS3A24159	TS3A24159
+C14	c0f9a9104	n3be07f19		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+U45	c5374ffe6	n9ed9f3d4	s	<class 'servo_micro.LevelShifter2'>	SN74AVC2T245RSWR	SN74AVC2T245RSWR
+U4	c5b22328d	nd1ba133f	s	<class 'servo_micro.LevelShifter2'>	SN74AVC2T245RSWR	SN74AVC2T245RSWR
+C76	cd2273c52	n3be07f19		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+C77	c415c632e	n32e455a2		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+C91	cd2273c52	n3be07f19		<class 'pcbdl.small_parts.C'>	100nF	CY100n
+C90	c415c632e	nce5564f6		<class 'pcbdl.small_parts.C'>	100nF	CY100n
