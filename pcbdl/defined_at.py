@@ -15,6 +15,8 @@
 from .base import Net, Part, PinFragment, Plugin
 
 import inspect
+import os
+
 __all__ = []
 
 source_code = {}
@@ -29,6 +31,8 @@ def grab_nearby_lines(defined_at, range_):
     range_ = slice(lineno - range_, lineno + range_ - 1)
 
     return source_code[filename][range_]
+
+cwd = os.getcwd()
 
 @Plugin.register((Net, Part, PinFragment))
 class DefinedAt(Plugin):
@@ -64,7 +68,8 @@ class DefinedAt(Plugin):
 
         label_locals_with_variable_names(self.frame.frame.f_locals)
 
-        instance.defined_at = '%s:%d' % (self.frame.filename, self.frame.lineno)
+        filename = os.path.relpath(self.frame.filename, cwd)
+        instance.defined_at = '%s:%d' % (filename, self.frame.lineno)
 
 def label_locals_with_variable_names(locals_dict):
     for variable_name, instance in locals_dict.items():
