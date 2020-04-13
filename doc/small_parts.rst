@@ -6,6 +6,7 @@ JellyBean
 .. autoclass:: pcbdl.small_parts.JellyBean
    :show-inheritance:
    :members:
+   :special-members: __rxor__, __xor__
 
 Test Point
 ----------

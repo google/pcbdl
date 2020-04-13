@@ -20,9 +20,6 @@ Super trivial voltage divider circuit.
 
 from pcbdl import *
 
-vin, gnd = Net("vin"), Net("gnd")
+vin, gnd = Net("PP3300"), Net("gnd")
 
-Net("vout") << (
-    R("100k", to=vin),
-    R("200k", to=gnd),
-)
+vin ^ R("30k") ^ Net("Vout_tap1") ^ R("20k") ^ Net("Vout_tap2") ^ R("10k") ^ gnd
