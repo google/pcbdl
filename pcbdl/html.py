@@ -15,13 +15,15 @@
 from .base import Part, PartInstancePin, Net, Plugin
 from .context import *
 from .netlistsvg import generate_svg
+import pcbdl.defined_at
 
 import collections
 from datetime import datetime
 import html
-import textwrap
 import inspect
 import itertools
+import os
+import textwrap
 
 import pygments
 import pygments.lexers
@@ -33,16 +35,16 @@ __all__ = ["generate_html"]
 @Plugin.register((Net, Part))
 class HTMLDefinedAt(Plugin):
     def register(self):
-        defined_at = self.instance.defined_at
+        self.defined_at = self.instance.defined_at
 
-        self.file, self.line = defined_at.rsplit(":", 1)
+        self.filename, self.line = self.defined_at.rsplit(":", 1)
         self.line = int(self.line)
 
-        self.code_manager.instanced_here(self.instance, self.file, self.line)
+        self.code_manager.instanced_here(self.instance, self.filename, self.line)
 
     @property
     def href_line(self):
-        return "<p>Defined at: %s<a href=\"#line-%d\">:%d</a></p>" % (self.file, self.line, self.line)
+        return "<p>Defined at: <a href=\"#%s-%d\">%s</a></p>" % (self.filename, self.line, self.defined_at)
 
 @Plugin.register(Part)
 class HTMLPart(Plugin):
@@ -50,9 +52,10 @@ class HTMLPart(Plugin):
         l = self.instance.__class__.__mro__
         l = l[:l.index(Part) + 1]
         for cls in l:
-            if inspect.getsourcefile(cls) in self.code_manager.file_database:
-                _, line = inspect.getsourcelines(cls)
-                yield "<a href=\"#line-%d\">%s</a>" % (line, html.escape(repr(cls)))
+            filename, line = inspect.getsourcelines(cls)
+            filename = os.path.relpath(inspect.getsourcefile(cls), pcbdl.defined_at.cwd)
+            if filename in self.code_manager.file_database:
+                yield "<a href=\"#%s-%d\">%s</a>" % (filename, line, html.escape(repr(cls)))
             else:
                 yield "%s" % html.escape(repr(cls))
 
@@ -142,11 +145,7 @@ class HTMLPin(Plugin):
         part_anchor = "<a href=\"#part-%s\">%s</a>." % (pin.part.refdes, pin.part.refdes)
         return part_anchor + self.short_anchor
 
-class Code(object):
-    # {filename: {line: [instance]}}
-    file_database = collections.defaultdict(lambda: collections.defaultdict(set))
-    _instances = set()
-
+class Code:
     class CodeHtmlFormatter(pygments.formatters.HtmlFormatter):
         def _wrap_linespans(self, inner):
             s = self.linespans
@@ -156,49 +155,56 @@ class Code(object):
                     line_no += 1
                     variables = self.fill_variables_for_line(line_no)
                     line = line.rstrip("\n")
-                    yield 1, '<span id="%s-%d">%s%s\n</span>' % (s, line_no, line, variables)
+                    yield 1, '<span a id="%s-%d">%s%s\n</span>' % (s, line_no, line, variables)
                 else:
                     yield 0, line
 
+        def set_source_file(self, filename, fileinstances):
+            self.linespans = filename
+            self.lineanchors = filename
+            self.fileinstances = fileinstances
+
+        def fill_variables_for_line(self, line_no):
+            variables_on_this_line = self.fileinstances[line_no]
+
+            if not variables_on_this_line:
+                return ""
+
+            links = []
+            for variable in variables_on_this_line:
+                if isinstance(variable, Net):
+                    net_name = variable.name
+                    links.append("<a href=\"#net-%s\">%s</a>" % (net_name, net_name))
+                    continue
+
+                if isinstance(variable, Part):
+                    part = variable
+                    links.append("<a href=\"#part-%s\">%s</a>" % (part.refdes, part.refdes))
+                    continue
+
+                raise Exception("No idea how to make link for %r of type %r" % (variable, type(variable)))
+
+            return "<span class=\"uv\"># %s</span>" % ", ".join(links)
+
     def __init__(self):
+        # {filename: {line: [instance]}}
+        self.file_database = collections.defaultdict(lambda: collections.defaultdict(set))
+        self._instances = set()
+
         self.lexer = pygments.lexers.PythonLexer()
         self.formatter = self.CodeHtmlFormatter(
             linenos=True,
-            linespans="line",
+            linespans="undefined",
 
             anchorlinenos = True,
-            lineanchors="line",
+            lineanchors="undefined",
 
             cssclass="code",
         )
-        self.formatter.fill_variables_for_line = self.fill_variables_for_line
+        self.formatter.file_database = self.file_database
 
-    def fill_variables_for_line(self, line_no):
-
-        file = tuple(self.file_database.values())[0] #TODO: fix this to work for multiple files
-        variables_on_this_line = file[line_no]
-
-        if not variables_on_this_line:
-            return ""
-
-        links = []
-        for variable in variables_on_this_line:
-            if isinstance(variable, Net):
-                net_name = variable.name
-                links.append("<a href=\"#net-%s\">%s</a>" % (net_name, net_name))
-                continue
-
-            if isinstance(variable, Part):
-                part = variable
-                links.append("<a href=\"#part-%s\">%s</a>" % (part.refdes, part.refdes))
-                continue
-
-            raise Exception("No idea how to make link for %r of type %r" % (variable, type(variable)))
-
-        return "<span class=\"uv\"># %s</span>" % ", ".join(links)
-
-    def instanced_here(self, instance, file, line):
-        self.file_database[file][line].add(instance)
+    def instanced_here(self, instance, filename, line):
+        self.file_database[filename][line].add(instance)
         self._instances.add(instance)
 
     def css_generator(self):
@@ -206,12 +212,13 @@ class Code(object):
 
     def code_generator(self):
         file_list = self.file_database.keys()
-        for file_name in file_list:
-            yield "<h2>%s</h2>" % file_name
+        for filename in file_list:
+            yield "<h2 id=\"%s\">%s</h2>" % (filename, filename)
 
-            with open(file_name) as file:
-                source_code = file.read()
+            with open(filename) as f:
+                source_code = f.read()
 
+            self.formatter.set_source_file(filename, self.file_database[filename])
             result = pygments.highlight(source_code, self.lexer, self.formatter)
 
             for instance in self._instances:
@@ -263,10 +270,11 @@ def html_generator(context=global_context, include_svg=False):
         l = part.__class__.__mro__
         l = l[:l.index(Part) + 1]
         for cls in l:
-            file = inspect.getsourcefile(cls)
-            if file in code_manager.file_database:
+            filename = inspect.getsourcefile(cls)
+            filename = os.path.relpath(filename, pcbdl.defined_at.cwd)
+            if filename in code_manager.file_database:
                 _, line = inspect.getsourcelines(cls)
-                code_manager.instanced_here(part, file, line)
+                code_manager.instanced_here(part, filename, line)
 
     yield "<!DOCTYPE html>"
     yield "<html>"
@@ -305,13 +313,14 @@ def html_generator(context=global_context, include_svg=False):
     yield "<h2>Contents</h2><ul>"
     yield "<li><a href=\"#parts\">Parts</a></li>"
     yield "<li><a href=\"#nets\">Nets</a></li>"
-    yield "<li><a href=\"#code\">Code</a></li>"
+    yield "<li><a href=\"#code\">Code</a>"
+    yield "<ul>"
+    for filename in code_manager.file_database.keys():
+        yield "<li><a href=\"#%s\">%s</a></li>" % (filename, filename)
+    yield "</ul>"
+    yield "</li>"
     if include_svg:
         yield "<li><a href=\"#svg\">SVG</a></li>"
-    yield "</ul>"
-    yield "<p>Generated from:</p><ul>"
-    for filename in code_manager.file_database.keys():
-        yield "<li>%s</li>" % (filename)
     yield "</ul>"
 
     yield "<h1 id=\"parts\">Parts</h1><ul>"
