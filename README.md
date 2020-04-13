@@ -1,7 +1,7 @@
 # PCB Design Language
 A programming way to design schematics.
 
-[Spinx Documentation](https://google.github.io/pcbdl/doc/_build/html/)
+[Sphinx Documentation](https://google.github.io/pcbdl/doc/_build/html/)
 
 ## Installing
 
