@@ -71,6 +71,9 @@ class RefdesRememberer:
         current_anchors = self.get_part_anchors(part)
         max_score = len(self.anchor_names)
 
+        if not self._mapping:
+            raise self.MatchNotFound("Empty state.")
+
         scored_others = [] # score, (refdes, anchors)
         for refdes, older_anchors in self._mapping:
             score = 0
@@ -88,7 +91,7 @@ class RefdesRememberer:
         first_match = scored_others[0]
         score, row = first_match
         if score < max_score * score_threshold:
-            raise self.MatchNotFound()
+            raise self.MatchNotFound("Score %d/%d too low." % (score, max_score))
 
         refdes, older_anchors = row
 
