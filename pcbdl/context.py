@@ -52,14 +52,15 @@ class RefdesRememberer:
         Read in the existing .refdes_mapping file and populate the internal state
         """
         self._mapping = []
-        try:
-            with open(self.filename, "r") as f:
-                reader = csv.DictReader(f, dialect="pcbdl")
-                for row in reader:
-                    refdes = row.pop("refdes")
-                    self._mapping.append((refdes, row))
-        except FileNotFoundError:
-            pass # We'll start fresh!
+        if self.filename is not None:
+            try:
+                with open(self.filename, "r") as f:
+                    reader = csv.DictReader(f, dialect="pcbdl")
+                    for row in reader:
+                        refdes = row.pop("refdes")
+                        self._mapping.append((refdes, row))
+            except FileNotFoundError:
+                pass # We'll start fresh!
 
     def find_match(self, part, score_threshold=0.6, debug=False):
         """
@@ -133,13 +134,14 @@ class RefdesRememberer:
         Writes the context (all the refdeses and new computed anchors) to a file,
         ready to read for next time.
         """
-        with open(self.filename, "w") as f:
-            writer = csv.DictWriter(f, dialect="pcbdl", fieldnames=("refdes",) + self.anchor_names)
-            writer.writeheader()
-            for refdes, part in context.named_parts.items():
-                row = self.get_part_anchors(part)
-                row["refdes"] = refdes
-                writer.writerow(row)
+        if self.filename is not None:
+            with open(self.filename, "w") as f:
+                writer = csv.DictWriter(f, dialect="pcbdl", fieldnames=("refdes",) + self.anchor_names)
+                writer.writeheader()
+                for refdes, part in context.named_parts.items():
+                    row = self.get_part_anchors(part)
+                    row["refdes"] = refdes
+                    writer.writerow(row)
 
 class Context(object):
     def __init__(self, name = ""):
