@@ -212,7 +212,8 @@ class SVGPart(object):
             #else:
                 #if len(pin_net_helper.grouped_connections) > 1:
                 #self.attach_net_name_port(pin.net, net_node_number, port_directions[name])
-            self.attach_net_name(pin.net, net_node_number, display=not(pin.net.is_gnd or pin.net.is_power))
+            if pin_net:
+                self.attach_net_name(pin.net, net_node_number, display=not(pin.net.is_gnd or pin.net.is_power))
 
         if not connections:
             return
