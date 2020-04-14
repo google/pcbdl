@@ -289,6 +289,9 @@ class SVGPage(object):
         for part in self.context.parts_list:
             self.part_helpers[part] = SVGPart(part, self)
 
+    class PageEmpty(Exception):
+        pass
+
     def write_json(self, fp):
         """Generate the json input required for netlistsvg and dumps it to a file."""
         self.parts_to_draw = collections.deque(self.context.parts_list)
@@ -300,6 +303,9 @@ class SVGPage(object):
 
             part = self.parts_to_draw[0]
             self.part_helpers[part].add_parts()
+
+        if not self.pins_drawn:
+            raise self.PageEmpty
 
         big_dict = {"modules": {"SVG Output": {
             "cells": self.cells_dict,
@@ -344,10 +350,10 @@ def generate_svg(*args, **kwargs):
     pins_to_skip = []
     while True:
         n = SVGPage(*args, **kwargs, pins_to_skip=pins_to_skip)
-        svg_contents = n.generate()
+        try:
+            svg_contents = n.generate()
+        except SVGPage.PageEmpty:
+            break
         pins_to_skip += n.pins_drawn
-
-        if not n.pins_drawn:
-            return
 
         yield svg_contents
