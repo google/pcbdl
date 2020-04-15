@@ -54,13 +54,13 @@ clean-gh-pages-examples:
 	$(RM) -R $(SERVO_MICRO_EXAMPLE_OUTPUTS)
 
 COVERAGE ?= python3 -m coverage
-RUN_COVERAGE ?= $(COVERAGE) run -a --branch
+WITH_COVERAGE ?= $(COVERAGE) run -a --branch
 
 .PHONY: test
-test: RUN_TEST ?= $(RUN_COVERAGE)
 test:
-	$(RUN_TEST) test/base.py -v
-	$(RUN_TEST) test/small_parts.py -v
+	$(WITH_COVERAGE) test/base.py -v
+	$(WITH_COVERAGE) test/small_parts.py -v
+	test/integration/netlist.py -v
 
 .PHONY: show-coverage
 show-coverage:
