@@ -170,26 +170,28 @@ class Context(object):
 
     def autoname(self, mapping_file=None):
         self.named_parts = collections.OrderedDict()
-        refdes_rememberer = RefdesRememberer(mapping_file)
 
-        # Do a pass trying to remember it
-        for part in self.parts_list:
-            original_name = part.refdes
-            prefix = part.REFDES_PREFIX
-            if original_name.startswith(prefix):
-                number = original_name[len(prefix):]
+        if mapping_file:
+            refdes_rememberer = RefdesRememberer(mapping_file)
 
-                if number.startswith("?"):
-                    try:
-                        refdes = refdes_rememberer.find_match(part)
-                    except RefdesRememberer.MatchNotFound:
-                        continue
-                    part.refdes = refdes
-                    number = refdes[len(prefix):]
-                    #print("Remembering refdes %s -> %s" % (original_name, part.refdes))
+            # Do a pass trying to remember it
+            for part in self.parts_list:
+                original_name = part.refdes
+                prefix = part.REFDES_PREFIX
+                if original_name.startswith(prefix):
+                    number = original_name[len(prefix):]
 
-                    if part.refdes in (other_part.refdes for other_part in self.parts_list if other_part != part):
-                        raise Exception("Cannot have more than one part with the refdes %s in %s" % (part.refdes, self))
+                    if number.startswith("?"):
+                        try:
+                            refdes = refdes_rememberer.find_match(part)
+                        except RefdesRememberer.MatchNotFound:
+                            continue
+                        part.refdes = refdes
+                        number = refdes[len(prefix):]
+                        #print("Remembering refdes %s -> %s" % (original_name, part.refdes))
+
+                        if part.refdes in (other_part.refdes for other_part in self.parts_list if other_part != part):
+                            raise Exception("Cannot have more than one part with the refdes %s in %s" % (part.refdes, self))
 
         # Another pass by naming things with the autoincrement
         self.refdes_counters = collections.defaultdict(lambda:1)
@@ -219,8 +221,9 @@ class Context(object):
                         self.refdes_counters[prefix] += 1
             self.named_parts[part.refdes] = part
 
-        refdes_rememberer.overwrite(self)
-        del refdes_rememberer
+        if mapping_file:
+            refdes_rememberer.overwrite(self)
+            del refdes_rememberer
 
         for net in self.net_list:
             # Look only for unnamed nets
