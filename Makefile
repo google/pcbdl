@@ -27,7 +27,7 @@ EXECUTE_SCHEMATIC_TO_FILE = $(call EXECUTE_SCHEMATIC, output=open('$(@F)', 'w');
 %.refdes_mapping: %.py ;
 
 %.allegro_third_party/: %.py %.refdes_mapping
-	$(call EXECUTE_SCHEMATIC,generate_netlist('$(basename $(<F))'))
+	$(call EXECUTE_SCHEMATIC,generate_netlist('$(basename $(<F)).allegro_third_party'))
 
 %.html: %.py %.refdes_mapping
 	$(call EXECUTE_SCHEMATIC_TO_FILE,generate_html(include_svg=True))

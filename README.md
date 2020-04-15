@@ -104,7 +104,7 @@ One can just "run" any example schematic with python, add -i to do more analysis
 
 The main goal of this language is to aid in creating PCBs. The intermediate file format that layout programs (where one designs physical boards) is called a netlist. We must support outputting to that (or several of such formats).
 
-For now we have a **minimum viable example** of an exporter for the Allegro Cadence netlists (found in `netlist.py`):
+We have a an exporter for the Cadence Allegro Third Party netlists (found in `netlist.py`):
 
     >>> generate_netlist("/tmp/some_export_location")
 

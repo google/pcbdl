@@ -28,10 +28,11 @@ import pprint
 
 """Allegro "third party" format"""
 __all__ = ["generate_netlist"]
+
 def join_across_lines(iterator, count=10):
     iterator = tuple(iterator)
     grouped_generator = (iterator[i:i + count] for i in range(0, len(iterator), count))
-    return ',\n'.join(' '.join(line) for line in grouped_generator)
+    return ' ,\n'.join(' '.join(line) for line in grouped_generator)
 
 @Plugin.register(Net)
 class NetlistNet(Plugin):
@@ -39,17 +40,11 @@ class NetlistNet(Plugin):
     def line(self):
         net = self.instance
         name = net.name
+        pins = (f"{pin.part!r}.{number}" for pin in net.connections for number in pin.numbers)
         return "%s ; %s" % (
             name,
-            join_across_lines(pin.plugins[NetlistPin].name for pin in net.connections)
+            join_across_lines(pins),
         )
-
-@Plugin.register(PartInstancePin)
-class NetlistPin(Plugin):
-    @property
-    def name(self):
-        pin = self.instance
-        return join_across_lines("%r.%s" % (pin.part, number) for number in pin.numbers)
 
 def netlist_generator(context, grouped_parts):
     yield "(NETLIST)"
@@ -101,8 +96,6 @@ END
     return contents
 
 def generate_netlist(output_location, context=global_context):
-    output_location += ".allegro_third_party"
-
     # Clear it and make a new one
     try:
         shutil.rmtree(output_location)
@@ -117,7 +110,7 @@ def generate_netlist(output_location, context=global_context):
 
     netlist_contents = "\n".join(netlist_generator(context, grouped_parts))
 
-    netlist_filename = os.path.join(output_location, "frompcbdl.netlist.txt")
+    netlist_filename = os.path.join(output_location, "frompcbdl.netlist.rpt")
     with open(netlist_filename, "w") as f:
         f.write(netlist_contents)
 
