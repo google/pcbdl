@@ -1,18 +1,21 @@
 # Developing PCBDL
 
 This command will setup the development enviroment so it will be eaasy to make changes to PCBDL:
-
-    sudo pip3 install -r requirements.txt
+```bash
+sudo pip3 install -r requirements.txt
+```
 
 ## Tests
 
 To test pcbdl framework functionality (not the schematics themselves), one can run:
-
-    make test
+```bash
+make test
+```
 
 If everything passes the code coverage can be seen with:
-
-    make show-coverage
+```bash
+make show-coverage
+```
 
 ## Contributor License Agreement
 
