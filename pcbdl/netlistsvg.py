@@ -207,13 +207,12 @@ class SVGPart(object):
             self.schematic_page.pins_drawn.append(pin)
             self.schematic_page.pin_count += 1
 
-            if pin.net.is_gnd or pin.net.is_power:
-                self.attach_power_symbol(pin.net, net_node_number)
-            #else:
-                #if len(pin_net_helper.grouped_connections) > 1:
-                #self.attach_net_name_port(pin.net, net_node_number, port_directions[name])
             if pin_net:
-                self.attach_net_name(pin.net, net_node_number, display=not(pin.net.is_gnd or pin.net.is_power))
+                display_net_name = pin.net.has_name
+                if pin.net.is_gnd or pin.net.is_power:
+                    self.attach_power_symbol(pin.net, net_node_number)
+                    display_net_name = False
+                self.attach_net_name(pin.net, net_node_number, display=display_net_name)
 
         if not connections:
             return
