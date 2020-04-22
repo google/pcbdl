@@ -23,16 +23,6 @@ https://chromium.googlesource.com/chromiumos/third_party/hdctools/+/refs/heads/m
 
 from pcbdl import *
 
-def swap_pin_names(pins):
-    """Swap the order of the names so the functional names are first."""
-    for i, pin in enumerate(pins):
-        if not isinstance(pin, Pin):
-            pin = Pin(pin)
-            pins[i] = pin
-
-        if pin.names[0].startswith("P"):
-            pin.names = pin.names[1:] + (pin.names[0],)
-
 # Start of things that should really be in a generic library
 # It's a TODO to make a library. Until then, 300 lines to start a new schematic from scratch with no library is probably not bad.
 def make_connector(pin_count):
@@ -432,7 +422,7 @@ class ServoConnector(make_connector(pin_count=50)):
         ("P49", "KBD_ROW2"),
         ("P50", "KBD_ROW3"),
     ]
-    swap_pin_names(PINS)
+    _postprocess_pin = Pin.second_name_important
 
 # The following part definitions are only related to this circuit
 class ProgrammingConnector(make_connector(8)):
@@ -447,7 +437,7 @@ class ProgrammingConnector(make_connector(8)):
         ("P8", "BOOT0"),
         Pin("G", numbers=("G1", "G2")),
     ]
-    swap_pin_names(PINS)
+    _postprocess_pin = Pin.second_name_important
 
 class JtagConnector(make_connector(10)):
     part_number = "HDR_2X5_50MIL-210-00939-00-SAMTEC_FTSH-105-01"
@@ -468,7 +458,7 @@ class JtagConnector(make_connector(10)):
         ("P9",  "GNDDetect"),
         ("P10", "RESET"),
     ]
-    swap_pin_names(PINS)
+    _postprocess_pin = Pin.second_name_important
 
 class ServoEC(STM32F072):
     pin_names_match_nets = True
@@ -516,7 +506,7 @@ class ServoEC(STM32F072):
         Pin(("PF0", "JTAG_BUFOUT_EN_L")),
         Pin(("PF1", "JTAG_BUFIN_EN_L")),
     ]
-    swap_pin_names(PINS)
+    _postprocess_pin = Pin.second_name_important
 
 # Start of actual schematic
 vbus_in = Net("VBUS_IN")

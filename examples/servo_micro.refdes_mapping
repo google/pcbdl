@@ -2,7 +2,7 @@ refdes	code	nets	variable_name	class	value	part_number
 CN1	c4bbf014a	n2e9df3aa	usb	<class 'servo_micro.UsbConnector'>	1981568-1	1981568-1
 D1	c14d5125b	n5cfb9168	usb_esd	<class 'servo_micro.UsbEsdDiode'>	TPD2E001DRLR	TPD2E001DRLR
 U3	c98bf87d0	n8d3b0f2c	reg3300	<class 'servo_micro.MIC5504'>	MIC5504-3.3YMT	MIC5504-3.3YMT
-C9	cc19d6a5f	n002ad366	self	<class 'pcbdl.small_parts.C'>	2.2uF	CY2.2u
+C9	cc19d6a5f	n002ad366		<class 'pcbdl.small_parts.C'>	2.2uF	CY2.2u
 C10	c6f489d26	n3be07f19		<class 'pcbdl.small_parts.C'>	10uF	CY10u
 C12	c0ddc584e	n3be07f19		<class 'pcbdl.small_parts.C'>	100nF	CY100n
 C15	ce21e0300	n3be07f19		<class 'pcbdl.small_parts.C'>	1000pF	CY1000p
@@ -33,7 +33,7 @@ C20	cf7d99302	ndf667ade		<class 'pcbdl.small_parts.C'>	100nF	CY100n
 U14	c26c5927c	n681bfbea	mfg_mode_shifter	<class 'servo_micro.LevelShifter1'>	SN74AVC1T45DRLR	SN74AVC1T45DRLR
 C33	c6021be37	n819da06e		<class 'pcbdl.small_parts.C'>	100nF	CY100n
 R48	c6021be37	n819da06e		<class 'pcbdl.small_parts.R'>	4.7kΩ	R4.7k
-TP1	c6f2b349e	n9d97ccf9	self	<class 'pcbdl.small_parts.TP'>	TP	TP
+TP1	c6f2b349e	n9d97ccf9		<class 'pcbdl.small_parts.TP'>	TP	TP
 TP2	c429d8f7c	n9d97ccf9		<class 'pcbdl.small_parts.TP'>	TP	TP
 C29	cb8c64f5e	n27a30867		<class 'pcbdl.small_parts.C'>	100nF	CY100n
 R46	cf05a5f62	ne80feabd		<class 'pcbdl.small_parts.R'>	0Ω	R0

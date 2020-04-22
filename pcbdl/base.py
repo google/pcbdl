@@ -324,6 +324,16 @@ class PinFragment(object):
             kwargs.update(fragment.kwargs)
 
         return PartClassPin(deduplicated_names, pin_numbers, *args, **kwargs)
+
+    @staticmethod
+    def second_name_important(pin):
+        """
+        Swap the order of the pin names so the functional (second) name is first.
+
+        Used as a :func:`Part._postprocess_pin filter<pcbdl.Part._postprocess_pin>`.
+        """
+        if pin.names[0].startswith("P"):
+            pin.names = pin.names[1:] + (pin.names[0],)
 Pin = PinFragment
 
 class PartClassPin(object):
@@ -429,6 +439,23 @@ class PartInstancePin(PartClassPin):
     def __str__(self):
         return "%r.%s" % (self.part, self.name)
     __repr__ = __str__
+
+class PinFragmentList(list):
+    """Used as a marker that we have visited Part.PINS and converted all the elements to PinFragment."""
+    def __init__(self, part_cls):
+        self.part_cls = part_cls
+        list.__init__(self, part_cls.PINS)
+        for i, maybenames in enumerate(self):
+            # syntactic sugar, .PIN list might have only names instead of the long form Pin instances
+            if not isinstance(maybenames, Pin):
+                self[i] = PinFragment(maybenames)
+
+        if part_cls._postprocess_pin.__code__ == Part._postprocess_pin.__code__:
+            # Let's not waste our time with a noop
+            return
+        for i, _ in enumerate(self):
+            # do user's postprocessing
+            part_cls._postprocess_pin(self[i])
 
 class Part(object):
     """
@@ -542,18 +569,19 @@ class Part(object):
             self.package = package
         self.populated = populated
 
-        self._generate_pin_instances(self.PINS)
+        self._generate_pin_instances()
 
         Plugin.init(self)
 
-    def _generate_pin_instances(self, pin_names):
+    def _generate_pin_instances(self):
         cls_list = list(PinFragment.part_superclasses(self))
 
+        # process the pin lists a little bit
         for cls in cls_list:
-            # syntactic sugar, .PIN list might have only names instead of the long form Pin instances
-            for i, maybenames in enumerate(cls.PINS):
-                if not isinstance(maybenames, Pin):
-                    cls.PINS[i] = PinFragment(maybenames)
+            # but only if we didn't already do it
+            if isinstance(cls.PINS, PinFragmentList):
+                continue
+            cls.PINS = PinFragmentList(cls)
 
         self.__class__.pins = [PinFragment.resolve(f) for f in PinFragment.gather_fragments(cls_list)]
 
@@ -612,3 +640,23 @@ class Part(object):
             raise ValueError("Couldn't find a matching named pin on %r to connect the net %s" % (self, net_name))
 
         raise NotImplementedError("Don't know how to get %s pin from %r" % (pin_type.name, self))
+
+    @classmethod
+    def _postprocess_pin(cls, pin):
+        """
+        It's sometimes useful to process the pins from the source code before the part gets placed down.
+        This method will be called for each pin by each subclass of a Part.
+
+        Good uses for this:
+
+        *  :func:`Raise the importance of the second name<pcbdl.base.PinFragment.second_name_important>` in a connector, so the more semantic name is the primary name, not the pin number::
+
+            PINS = [
+                ("P1", "Nicer name"),
+            ]
+            _postprocess_pin = Pin.second_name_important
+
+        * Populate alternate functions of a pin if they follow an easy pattern.
+        * A simple programmatic alias on pin names without subclassing the part itself.
+        """
+        raise TypeError("This particular implementation of _postprocess_pin should be skipped by PinFragmentList()")

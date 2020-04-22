@@ -68,12 +68,13 @@ Parts
 -----
 .. autoclass:: pcbdl.Part
 
+    .. autoproperty:: refdes
     .. autoattribute:: PINS
+    .. automethod:: _postprocess_pin
     .. autoattribute:: pins
     .. autoattribute:: REFDES_PREFIX
     .. autoattribute:: pin_names_match_nets
     .. autoattribute:: pin_names_match_nets_prefix
-    .. autoproperty:: refdes
 
 
 Pins
@@ -81,6 +82,8 @@ Pins
 .. autoclass:: pcbdl.Pin
 
 .. autoclass:: pcbdl.base.PinFragment
+
+    .. automethod:: second_name_important
 
 .. autoclass:: pcbdl.base.PartClassPin
 
