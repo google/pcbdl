@@ -431,14 +431,14 @@ class Part(object):
     Each pin entry can be one of:
 
     * :class:`Pin`
-    * :class:`tuple` of properties which will automatically be turned into a :class:`Pin`
+    * :class:`tuple` of names which will automatically be turned into a :class:`Pin`
     * just one :class:`string<str>`, representing a pin name, if one cares about nothing else.
 
-    So these are all valid ways to define a pin, and mean about the same thing::
+    So these are all valid ways to define a pin (in decreasing order of detail), and mean about the same thing::
 
         PINS = [
-            Pin("GND", "1", type=PinType.POWER_INPUT),
-            ("GND", "1"),
+            Pin(("GND", "GROUND"), "1", type=PinType.POWER_INPUT),
+            ("GND", "GROUND"),
             "GND",
         ]
 
