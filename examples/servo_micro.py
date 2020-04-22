@@ -43,7 +43,7 @@ def make_connector(pin_count):
 
     for i in range(pin_count):
         i += 1 # 1 indexed
-        pin = Pin(("P%d" % i), number=str(i))
+        pin = Pin(i, "P%d" % i)
         Connector.PINS.append(pin)
 
     return Connector
@@ -85,10 +85,10 @@ class MIC5504(Regulator):
     package = "SON65P100X100X40-5T48X48N"
 
     PINS = [
-        Pin("IN",  "4"),
-        Pin("OUT", "1"),
-        Pin("EN",  "3"),
-        Pin(("GND", "PAD"), ("2", "G1")),
+        Pin("4", "IN"),
+        Pin("1", "OUT"),
+        Pin("3", "EN"),
+        Pin(("2", "G1"), ("GND", "PAD")),
     ]
 
 class TLV70018DSER(Regulator):
@@ -96,12 +96,12 @@ class TLV70018DSER(Regulator):
     package = "SON50P150X150X80-6L"
 
     PINS = [
-        Pin("IN",  "1"),
-        Pin("OUT", "3"),
-        Pin("EN",  "6"),
-        Pin("NC1", "4"),
-        Pin("NC2", "5"),
-        Pin("GND", "2"),
+        Pin("1", "IN"),
+        Pin("3", "OUT"),
+        Pin("6", "EN"),
+        Pin("4", "NC1"),
+        Pin("5", "NC2"),
+        Pin("2", "GND"),
     ]
 
 class UsbEsdDiode(Part):
@@ -109,11 +109,11 @@ class UsbEsdDiode(Part):
     part_number = "TPD2E001DRLR"
     package = "SOP50P170X60-5N"
     PINS = [
-        Pin("VCC", "1", type=PinType.POWER_INPUT),
-        Pin("GND", "4", type=PinType.POWER_INPUT),
-        Pin("P1",  "3"),
-        Pin("P2",  "5"),
-        Pin("NC",  "2"),
+        Pin("1", "VCC", type=PinType.POWER_INPUT),
+        Pin("4", "GND", type=PinType.POWER_INPUT),
+        Pin("3", "P1"),
+        Pin("5", "P2"),
+        Pin("2", "NC"),
     ]
 
 class DoubleDiode(Part):
@@ -129,56 +129,56 @@ class STM32F072(Part):
     package = "QFN05P_7-1X7-1_0-6_49N"
 
     PINS = [
-        Pin("VDD",    ("24", "48"), type=PinType.POWER_INPUT),
-        Pin("VBAT",   "1",          type=PinType.POWER_INPUT),
-        Pin("VDDA",   "9",          type=PinType.POWER_INPUT),
-        Pin("VDDIO2", "36",         type=PinType.POWER_INPUT),
+        Pin(("24", "48"), "VDD",    type=PinType.POWER_INPUT),
+        Pin("1",          "VBAT",   type=PinType.POWER_INPUT),
+        Pin("9",          "VDDA",   type=PinType.POWER_INPUT),
+        Pin("36",         "VDDIO2", type=PinType.POWER_INPUT),
 
-        Pin("VSS",    ("23", "35", "47")),
-        Pin("VSSA",   "8"),
-        Pin("PAD",    "49"),
+        Pin(("23", "35", "47"), "VSS"),
+        Pin("8",  "VSSA"),
+        Pin("49", "PAD"),
 
-        Pin("BOOT0",  "44"),
-        Pin("NRST",   "7"),
+        Pin("44", "BOOT0"),
+        Pin("7",  "NRST"),
     ]
 
     for i in range(8):
-        PINS.append(Pin("PA%d" % i, number=str(10 + i)))
+        PINS.append(Pin(i + 10, "PA%d" % i))
 
     PINS += [
-        Pin("PA8",  "29"),
-        Pin("PA9",  "30"),
-        Pin("PA10", "31"),
-        Pin("PA11", "32"),
-        Pin("PA12", "33"),
-        Pin("PA13", "34"),
-        Pin("PA14", "37"),
-        Pin("PA15", "38"),
+        Pin("29", "PA8"),
+        Pin("30", "PA9"),
+        Pin("31", "PA10"),
+        Pin("32", "PA11"),
+        Pin("33", "PA12"),
+        Pin("34", "PA13"),
+        Pin("37", "PA14"),
+        Pin("38", "PA15"),
 
-        Pin("PB0",  "18"),
-        Pin("PB1",  "19"),
-        Pin("PB2",  "20"),
-        Pin("PB3",  "39"),
-        Pin("PB4",  "40"),
-        Pin("PB5",  "41"),
-        Pin("PB6",  "42"),
-        Pin("PB7",  "43"),
+        Pin("18", "PB0"),
+        Pin("19", "PB1"),
+        Pin("20", "PB2"),
+        Pin("39", "PB3"),
+        Pin("40", "PB4"),
+        Pin("41", "PB5"),
+        Pin("42", "PB6"),
+        Pin("43", "PB7"),
 
-        Pin("PB8",  "45"),
-        Pin("PB9",  "46"),
-        Pin("PB10", "21"),
-        Pin("PB11", "22"),
-        Pin("PB12", "25"),
-        Pin("PB13", "26"),
-        Pin("PB14", "27"),
-        Pin("PB15", "28"),
+        Pin("45", "PB8"),
+        Pin("46", "PB9"),
+        Pin("21", "PB10"),
+        Pin("22", "PB11"),
+        Pin("25", "PB12"),
+        Pin("26", "PB13"),
+        Pin("27", "PB14"),
+        Pin("28", "PB15"),
 
-        Pin("PC13",                "2"),
-        Pin(("PC14", "OSC32_IN"),  "3"),
-        Pin(("PC15", "OSC32_OUT"), "4"),
+        Pin("2",  "PC13"),
+        Pin("3", ("PC14", "OSC32_IN")),
+        Pin("4", ("PC15", "OSC32_OUT")),
 
-        Pin(("PF0", "OSC_IN"),     "5"),
-        Pin(("PF1", "OSC_OUT"),    "6"),
+        Pin("5", ("PF0", "OSC_IN")),
+        Pin("6", ("PF1", "OSC_OUT")),
     ]
 
     for pin in PINS:
@@ -201,24 +201,24 @@ class I2cIoExpander(Part):
     package = "QFN50P400X400X080-25N"
 
     PINS = [
-        Pin("VCCI",    "23"),
-        Pin("VCCP",    "21"),
-        Pin("GND",     "9"),
-        Pin("PAD",     "25"),
+        Pin("23", "VCCI"),
+        Pin("21", "VCCP"),
+        Pin("9",  "GND"),
+        Pin("25", "PAD"),
 
-        Pin("SCL",     "19"),
-        Pin("SDA",     "20"),
-        Pin("INT_L",   "22"),
-        Pin("RESET_L", "24"),
+        Pin("19", "SCL"),
+        Pin("20", "SDA"),
+        Pin("22", "INT_L"),
+        Pin("24", "RESET_L"),
 
-        Pin("A0",      "18"),
+        Pin("18", "A0"),
     ]
 
     for i in range(8):
-        PINS.append(Pin("P0%d" % i, number=str(i + 1)))
+        PINS.append(Pin(i + 1, "P0%d" % i))
 
     for i in range(8):
-        PINS.append(Pin("P1%d" % i, number=str(i + 10)))
+        PINS.append(Pin(i + 10, "P1%d" % i))
 
 class Mux(Part):
     REFDES_PREFIX = "U"
@@ -227,14 +227,14 @@ class Mux(Part):
     package = "SOT65P210X110-6L"
 
     PINS = [
-        Pin("VCC",         "5"),
-        Pin("GND",         "2"),
+        Pin("5", "VCC"),
+        Pin("2", "GND"),
 
-        Pin(("0", "IN0"),  "3"),
-        Pin(("1", "IN1"),  "1"),
+        Pin("3", ("0", "IN0")),
+        Pin("1", ("1", "IN1")),
 
-        Pin(("S0", "SEL"), "6"),
-        Pin(("Y", "OUT"),  "4"),
+        Pin("6", ("S0", "SEL")),
+        Pin("4", ("Y", "OUT")),
     ]
 
 class OutputBuffer(Part):
@@ -244,12 +244,12 @@ class OutputBuffer(Part):
     package = "BGA5C50P3X2_141X91X50L"
 
     PINS = [
-        Pin("VCC",         "A2"),
-        Pin("GND",         "C1"),
+        Pin("A2", "VCC"),
+        Pin("C1", "GND"),
 
-        Pin(("A", "IN"),   "B1"),
-        Pin(("OE", "SEL"), "A1"),
-        Pin(("Y", "OUT"),  "C2"),
+        Pin("B1", ("A", "IN")),
+        Pin("A1", ("OE", "SEL")),
+        Pin("C2", ("Y", "OUT")),
     ]
 
 class LevelShifter(Part):
@@ -281,12 +281,12 @@ class LevelShifter1(LevelShifter):
     package = "SOP50P170X60-6N"
 
     PINS = [
-        Pin("VCCA", "1", type=PinType.POWER_INPUT),
-        Pin("VCCB", "6", type=PinType.POWER_INPUT),
-        Pin("A",    "3"),
-        Pin("B",    "4"),
-        Pin("DIR",  "5"),
-        Pin("GND",  "2", type=PinType.POWER_INPUT),
+        Pin("1", "VCCA", type=PinType.POWER_INPUT),
+        Pin("6", "VCCB", type=PinType.POWER_INPUT),
+        Pin("3", "A"),
+        Pin("4", "B"),
+        Pin("5", "DIR"),
+        Pin("2", "GND", type=PinType.POWER_INPUT),
     ]
 
 class LevelShifter2(LevelShifter):
@@ -295,16 +295,16 @@ class LevelShifter2(LevelShifter):
     package = "QFN40P145X185X55-10N"
 
     PINS = [
-        Pin("VCCA", "7", type=PinType.POWER_INPUT),
-        Pin("VCCB", "6", type=PinType.POWER_INPUT),
-        Pin("OE_L", "2"),
-        Pin("A1",   "8"),
-        Pin("A2",   "9"),
-        Pin("B1",   "5"),
-        Pin("B2",   "4"),
-        Pin("DIR1", "10"),
-        Pin("DIR2", "1"),
-        Pin("GND",  "3", type=PinType.POWER_INPUT),
+        Pin("7",  "VCCA", type=PinType.POWER_INPUT),
+        Pin("6",  "VCCB", type=PinType.POWER_INPUT),
+        Pin("2",  "OE_L"),
+        Pin("8",  "A1"),
+        Pin("9",  "A2"),
+        Pin("5",  "B1"),
+        Pin("4",  "B2"),
+        Pin("10", "DIR1"),
+        Pin("1",  "DIR2"),
+        Pin("3",  "GND", type=PinType.POWER_INPUT),
     ]
 
 class LevelShifter4(LevelShifter):
@@ -313,22 +313,22 @@ class LevelShifter4(LevelShifter):
     package = "QFN40P265X185X55-16N"
 
     PINS = [
-        Pin("VCCA", "14", type=PinType.POWER_INPUT),
-        Pin("VCCB", "13", type=PinType.POWER_INPUT),
-        Pin("OE_L", "7"),
-        Pin("A1",   "1"),
-        Pin("A2",   "2"),
-        Pin("A3",   "3"),
-        Pin("A4",   "4"),
-        Pin("B1",   "12"),
-        Pin("B2",   "11"),
-        Pin("B3",   "10"),
-        Pin("B4",   "9"),
-        Pin("DIR1", "15"),
-        Pin("DIR2", "16"),
-        Pin("DIR3", "5"),
-        Pin("DIR4", "6"),
-        Pin("GND",  "8",  type=PinType.POWER_INPUT),
+        Pin("14", "VCCA", type=PinType.POWER_INPUT),
+        Pin("13", "VCCB", type=PinType.POWER_INPUT),
+        Pin("7",  "OE_L"),
+        Pin("1",  "A1"),
+        Pin("2",  "A2"),
+        Pin("3",  "A3"),
+        Pin("4",  "A4"),
+        Pin("12", "B1"),
+        Pin("11", "B2"),
+        Pin("10", "B3"),
+        Pin("9",  "B4"),
+        Pin("15", "DIR1"),
+        Pin("16", "DIR2"),
+        Pin("5",  "DIR3"),
+        Pin("6",  "DIR4"),
+        Pin("8",  "GND",  type=PinType.POWER_INPUT),
     ]
 
 class AnalogSwitch(Part):
@@ -345,18 +345,18 @@ class AnalogSwitch(Part):
     package = "BGA10C50P4X3_186X136X50L"
 
     PINS = [
-        Pin(("V+", "VCC"),   "D2"),
-        Pin("GND",           "A2"),
+        Pin("D2", ("V+", "VCC")),
+        Pin("A2", "GND"),
 
-        Pin(("IN1", "SEL1"), "B1"),
-        Pin("COM1",          "C1"),
-        Pin("NC1",           "A1"),
-        Pin("NO1",           "D1"),
+        Pin("B1", ("IN1", "SEL1")),
+        Pin("C1", "COM1"),
+        Pin("A1", "NC1"),
+        Pin("D1", "NO1"),
 
-        Pin(("IN2", "SEL2"), "B3"),
-        Pin("COM2",          "C3"),
-        Pin("NC2",           "A3"),
-        Pin("NO2",           "D3"),
+        Pin("B3", ("IN2", "SEL2")),
+        Pin("C3", "COM2"),
+        Pin("A3", "NC2"),
+        Pin("D3", "NO2"),
     ]
 
 class PowerSwitch(Part):
@@ -366,10 +366,10 @@ class PowerSwitch(Part):
     package = "BGA4C40P2X2_80X80X56"
 
     PINS = [
-        Pin(("IN", "IN1"),   "A1"),
-        Pin(("OUT", "OUT1"), "A2"),
-        Pin("EN",            "B1"),
-        Pin("GND",           "B2"),
+        Pin("A1", ("IN", "IN1")),
+        Pin("A2", ("OUT", "OUT1")),
+        Pin("B1", "EN"),
+        Pin("B2", "GND"),
     ]
 # End of things that should be in a generic library
 

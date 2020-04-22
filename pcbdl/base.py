@@ -233,17 +233,32 @@ class PinFragment(object):
         the part is told what package it is, we don't really know the pin
         number.
     """
-    def __init__(self, names, number=None, numbers=(), *args, **kwargs):
+    def __init__(self, names_or_numbers=(), names_if_numbers=None, *args, **kwargs):
+        # Check if short form for the positional arguments
+        if names_if_numbers is None:
+            names, numbers = names_or_numbers, ()
+        else:
+            names, numbers = names_if_numbers, names_or_numbers
+
         if isinstance(names, str):
             names = (names,)
-        self.names = tuple(name.upper() for name in names)
+        names += kwargs.pop("names", ())
+        try:
+            names += (kwargs.pop("name"),)
+        except KeyError:
+            pass
+        names = tuple(name.upper() for name in names)
+        self.names = names
 
+        if isinstance(numbers, (str, int)):
+            numbers = (numbers,)
+        numbers += kwargs.pop("numbers", ())
+        try:
+            numbers += (kwargs.pop("number"),)
+        except KeyError:
+            pass
+        numbers = tuple(str(maybe_int) for maybe_int in numbers)
         self.numbers = numbers
-        if number is not None:
-            if isinstance(number, str):
-                self.numbers = (number,) + self.numbers
-            else:
-                self.numbers = number + self.numbers
 
         self.args = args
         self.kwargs = kwargs
@@ -437,7 +452,7 @@ class Part(object):
     So these are all valid ways to define a pin (in decreasing order of detail), and mean about the same thing::
 
         PINS = [
-            Pin(("GND", "GROUND"), "1", type=PinType.POWER_INPUT),
+            Pin("1", ("GND", "GROUND"), type=PinType.POWER_INPUT),
             ("GND", "GROUND"),
             "GND",
         ]
