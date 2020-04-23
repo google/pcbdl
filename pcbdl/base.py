@@ -332,8 +332,7 @@ class PinFragment(object):
 
         Used as a :func:`Part._postprocess_pin filter<pcbdl.Part._postprocess_pin>`.
         """
-        if pin.names[0].startswith("P"):
-            pin.names = pin.names[1:] + (pin.names[0],)
+        pin.names = pin.names[1:] + (pin.names[0],)
 Pin = PinFragment
 
 class PartClassPin(object):
