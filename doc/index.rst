@@ -7,5 +7,7 @@ PCBDL Documentation
 
    readme
    contributing
+   netlistsvg
+
    api
    small_parts

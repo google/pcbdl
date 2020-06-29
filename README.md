@@ -142,7 +142,9 @@ Here's an example of such a [html output for servo micro](https://google.github.
 
 ### Schematics / Graphical representation of the circuit
 
-In order for schematics to be more easily parsable, we want to graphically display them. The [netlistsvg](https://github.com/nturley/netlistsvg) project has been proven to be an excellent tool to solve the hard problems of this. See `pcbdl/netlistsvg.py` for the implementation.
+In order for schematics to be more easily parsable, we want to graphically display them.
+The [netlistsvg](https://github.com/nturley/netlistsvg) project has been proven to be an excellent tool to solve the hard problems of this. See `pcbdl/netlistsvg.py` for the implementation.
+To use the following commands you'll have to [install netlistsvg](https://google.github.io/pcbdl/doc/_build/html/netlistsvg.html#installation).
 
 1. Convert a pcbdl schematic back into a traditional schematic
     ```python

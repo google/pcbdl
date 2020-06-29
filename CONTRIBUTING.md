@@ -1,9 +1,11 @@
 # Developing PCBDL
 
-This command will setup the development enviroment so it will be eaasy to make changes to PCBDL:
+This command will setup the development enviroment so it will be easy to make changes to PCBDL:
 ```bash
 sudo pip3 install -r requirements.txt
 ```
+
+You probably also want to [install netlistsvg](https://google.github.io/pcbdl/doc/_build/html/netlistsvg.html#installation).
 
 ## Tests
 
