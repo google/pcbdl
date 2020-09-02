@@ -1,0 +1,8 @@
+(PCBDL generated stub device file)
+PACKAGE Connector_Dsub:DSUB-9_Female_EdgeMount_P2.77mm
+PINCOUNT 9
+
+PINORDER 'MAIN' 5 P9 4 P8 3 P7 2 P6 1
+FUNCTION G1 'MAIN' 5 9 4 8 3 7 2 6 1
+
+END

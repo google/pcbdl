@@ -1,0 +1,8 @@
+(PCBDL generated stub device file)
+PACKAGE Package_TO_SOT_THT:TO-220-3_Horizontal_TabDown
+PINCOUNT 3
+
+PINORDER 'MAIN' VI GND VO
+FUNCTION G1 'MAIN' 1 2 3
+
+END

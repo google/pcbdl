@@ -1,0 +1,8 @@
+(PCBDL generated stub device file)
+PACKAGE Capacitor_THT:CP_Axial_L10.0mm_D4.5mm_P15.00mm_Horizontal
+PINCOUNT 2
+
+PINORDER 'MAIN' P1 P2
+FUNCTION G1 'MAIN' 1 2
+
+END

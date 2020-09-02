@@ -1,0 +1,8 @@
+(PCBDL generated stub device file)
+PACKAGE 
+PINCOUNT 1
+
+PINORDER 'MAIN' -12V
+FUNCTION G1 'MAIN' 1
+
+END

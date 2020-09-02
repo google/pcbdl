@@ -1,0 +1,8 @@
+(PCBDL generated stub device file)
+PACKAGE Package_DIP:DIP-8_W7.62mm_LongPads
+PINCOUNT 8
+
+PINORDER 'MAIN' + - V+ V- FIN2 FIN1 OUT FOUT
+FUNCTION G1 'MAIN' 3 2 7 4 1 8 6 5
+
+END

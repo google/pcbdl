@@ -1,0 +1,8 @@
+(PCBDL generated stub device file)
+PACKAGE Button_Switch_THT:SW_PUSH_6mm_h4.3mm
+PINCOUNT 2
+
+PINORDER 'MAIN' 1 2
+FUNCTION G1 'MAIN' 1 2
+
+END

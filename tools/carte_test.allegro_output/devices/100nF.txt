@@ -1,0 +1,8 @@
+(PCBDL generated stub device file)
+PACKAGE Capacitor_SMD:C_1206_3216Metric_Pad1.24x1.80mm_HandSolder
+PINCOUNT 2
+
+PINORDER 'MAIN' P1 P2
+FUNCTION G1 'MAIN' 1 2
+
+END

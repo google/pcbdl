@@ -1,0 +1,8 @@
+(PCBDL generated stub device file)
+PACKAGE Diode_THT:D_DO-35_SOD27_P12.70mm_Horizontal
+PINCOUNT 2
+
+PINORDER 'MAIN' A K
+FUNCTION G1 'MAIN' 2 1
+
+END

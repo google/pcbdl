@@ -1,0 +1,8 @@
+(PCBDL generated stub device file)
+PACKAGE Crystal:Crystal_HC18-U_Horizontal
+PINCOUNT 2
+
+PINORDER 'MAIN' 1 2
+FUNCTION G1 'MAIN' 1 2
+
+END

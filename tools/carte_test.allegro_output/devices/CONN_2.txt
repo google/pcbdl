@@ -1,0 +1,8 @@
+(PCBDL generated stub device file)
+PACKAGE TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal
+PINCOUNT 2
+
+PINORDER 'MAIN' P1 PM
+FUNCTION G1 'MAIN' 1 2
+
+END

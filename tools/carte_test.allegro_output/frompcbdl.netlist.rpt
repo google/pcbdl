@@ -1,0 +1,124 @@
+(NETLIST)
+(CREATED BY PCBDL)
+(Wed Sep 02 15:20:15 2020)
+
+$PACKAGES
+'Connector_Dsub:DSUB-9_Female_EdgeMount_P2.77mm' ! 'DB9FEM' ; J2
+'Diode_THT:D_DO-35_SOD27_P12.70mm_Horizontal' ! '1N4004' ; D4 D1
+'Capacitor_THT:CP_Axial_L10.0mm_D4.5mm_P15.00mm_Horizontal' ! '10uF' ; C13 C14 C3 C2
+'' ! '-12V' ; #PWR139 #PWR118
+'Package_DIP:DIP-8_W7.62mm_LongPads' ! 'LM318N' ; U6
+'Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal' ! '75Ω' ; R10
+'Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal' ! '1,1KΩ' ; R7
+'Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal' ! '1,1kΩ' ; R6
+'Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal' ! '2,2KΩ' ; R9 R8
+'Connector_PinHeader_2.54mm:PinHeader_2x02_P2.54mm_Vertical' ! 'CONN_2X2' ; P4
+'Connector_Dsub:DSUB-25_Female_Horizontal_P2.77x2.84mm_EdgePinOffset9.90mm_Housed_MountingHolesOffset11.32mm' ! 'DB25' ; J1
+'Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal' ! '4,7KΩ' ; R5 R4
+'Button_Switch_THT:SW_PUSH_6mm_h4.3mm' ! 'SW_PUSH' ; SW2 SW1
+'LED_THT:LED_D5.0mm' ! 'LED' ; D3 D2
+'Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal' ! '330Ω' ; R3 R2
+'Capacitors_SMD:C_1206' ! '100nF' ; C12 C1
+'Capacitor_SMD:C_1206_3216Metric_Pad1.24x1.80mm_HandSolder' ! '100nF' ; C7 C11 C10 C8
+'Socket_Strips:Socket_Strip_Straight_1x03' ! 'CONN_3' ; K1
+'Sockets_DIP:DIP-28__300__600_ELL' ! 'RAM_32KO' ; U5
+'Package_DIP:DIP-14_W7.62mm_LongPads' ! '74HC04' ; U4
+'TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal' ! 'CONN_2' ; P3
+'Capacitor_THT:CP_Axial_L10.0mm_D4.5mm_P15.00mm_Horizontal' ! '47uF' ; C6
+'TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-3-5.08_1x03_P5.08mm_Horizontal' ! 'CONN_3' ; P2
+'Package_TO_SOT_THT:TO-220-3_Horizontal_TabDown' ! 'LM7805' ; U3
+'Capacitors_SMD:C_1206' ! '22pF' ; C4 C5
+'Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal' ! '100KΩ' ; R1
+'Crystal:Crystal_HC18-U_Horizontal' ! '10MHz' ; X1
+'Package_DIP:DIP-16_W7.62mm_Socket_LongPads' ! 'TDA8702' ; U1
+'Sockets:PLCC84' ! 'XC95108PC84' ; U2
+
+$NETS
+ANON_NET?m2c6f2 ; R6.1 R9.1 U6.3
+ANON_NET?m2c6a3 ; R8.1 R7.2 U6.2
+ANON_NET?m2c685 ; R7.1 R10.2 U6.6
+ANON_NET?m2c69e ; C5.1 R1.2 X1.1
+ANON_NET?m2c6cb ; X1.2 C4.1 R1.1
+ANON_NET?m2c6f8 ; C2.1 U1.15 U1.15 U1.14 U1.14
+ANON_NET?m2c6e6 ; C14.1
+ANON_NET?m2c69a ; R3.1 D3.2
+ANON_NET?m2cd15 ; D2.2 R2.1
+ANON_NET?m2cd06 ; #PWR118.1 U6.4
+ANON_NET?m2cd38 ; U1.1 U1.1 C1.1
+ANON_NET?m2cd4a ; C2.2 R9.2
+ANON_NET?m2cd5c ; K1.2 U5.1
+ANON_NET?m2cd6e ; P3.1 R10.1
+ANON_NET?m2cd03 ; R8.2 C14.2
+VCC ; U1.13 U1.13 U1.16 U1.16 C3.1 U3.3 U2.38 U2.73 U2.78 U2.22 ,
+U2.64 K1.1 C8.1 C10.1 C11.1
+GND ; U1.6 U1.6 U1.2 U1.2 U2.8 U2.16 U2.27 U2.42 U2.49 U2.60 ,
+P4.3 P4.1 SW2.2 SW1.2 D3.1 D2.1 U3.2 P3.2 U4.9 U4.9 ,
+U4.3 U4.3 U4.11 U4.11 U4.1 U4.1 U4.5 U4.5 U4.13 U4.13
++12V ; C6.1 U3.1 D1.1 U6.7
+PWR_FLAG ; #PWR139.1 D4.2 C13.2
+SW1 ; R4.2 SW2.1 U2.71
+SW0 ; R5.2 SW1.1 U2.72
+DAT0 ; U1.12 U1.12 U2.69
+DAT1 ; U1.11 U1.11 U2.66
+DAT2 ; U1.3 U1.3 U2.70
+DAT3 ; U1.4 U1.4 U2.68
+DAT4 ; U1.10 U1.10 U2.63
+DAT5 ; U1.9 U1.9 U2.61
+DAT6 ; U1.8 U1.8 U1.8 U1.8 U2.58
+DAT7 ; U1.7 U1.7 U2.62
+DCLK ; U1.5 U1.5 U2.67
+TMS ; U2.29
+XIN/CLK ; U2.9 U2.10 U2.12 U2.77 U2.76 U2.74
+MA0 ; U5.11 U2.33
+MA1 ; U5.12 U2.32
+MA2 ; U5.13 U2.26
+MA3 ; U5.15 U2.25
+MA4 ; U5.16 U2.24
+MA5 ; U5.17 U2.31
+MA6 ; U5.18 U2.34
+MA7 ; U5.19 U2.36
+MD0 ; U5.10 U2.35
+MD1 ; U5.9 U2.37
+MD2 ; U5.8 U2.40
+MD3 ; U5.7 U2.44
+MD4 ; U5.6 U2.46
+MD5 ; U5.5 U2.48
+MD6 ; U5.4 U2.50
+MD7 ; U5.3 U2.52
+MD8 ; U5.25 U2.51
+MD9 ; U5.24 U2.47
+MD10 ; U5.21 U2.41
+MD11 ; U5.23 U2.45
+MD12 ; U5.2 U2.55
+MD13 ; U5.26 U2.53
+CSMEM ; U5.20 U2.39
+OEMEM ; U5.22 U2.43
+R/W-A14 ; U5.27 U2.54
+MD14 ; K1.3 U2.56
+PARBUS0 ; J1.2
+PARBUS1 ; U2.7 J1.3
+PARBUS2 ; U2.5 J1.4
+PARBUS3 ; U2.3 J1.5
+PARBUS4 ; U2.84 J1.6
+PARBUS5 ; U2.83 J1.7
+PARBUS6 ; U2.81 J1.8
+PARBUS7 ; U2.82 J1.9
+PAR_AUX2/AUTOLF* ; U2.11 J1.14
+PAR_AUX3/SELECT* ; J1.13 U2.75
+LED1 ; R2.2
+LED2 ; R3.2
+PAR_AUX4/PE ; J1.12
+PAR_AUX5/BUSY* ; U2.80 J1.11
+PAR_AUX0/STROBE* ; U2.13 J1.1
+PAR_AUX1/ERROR* ; J1.15
+PAR_AUX6/ACK ; U2.79 J1.10
+PAR_AUX7/INIT ; J1.16 U2.6
+PAR_AUX8/SELECT ; J1.17 U2.4
+PIN_TEST0 ; P4.2 U2.1
+PIN_TEST1 ; P4.4 U2.2
++12BATT ; D1.2 P2.1
+-12BATT ; P2.3 D4.1
+TDO ; U2.59
+TDI ; U2.28
+TCK ; U2.30
+$END

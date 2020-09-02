@@ -1,0 +1,8 @@
+(PCBDL generated stub device file)
+PACKAGE LED_THT:LED_D5.0mm
+PINCOUNT 2
+
+PINORDER 'MAIN' K A
+FUNCTION G1 'MAIN' 1 2
+
+END

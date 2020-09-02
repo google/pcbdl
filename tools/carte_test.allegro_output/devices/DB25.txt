@@ -1,0 +1,8 @@
+(PCBDL generated stub device file)
+PACKAGE Connector_Dsub:DSUB-25_Female_Horizontal_P2.77x2.84mm_EdgePinOffset9.90mm_Housed_MountingHolesOffset11.32mm
+PINCOUNT 25
+
+PINORDER 'MAIN' 13 P25 12 P24 11 P23 10 P22 9 P21 8 P20 7 P19 6 P18 5 P17 4 P16 3 P15 2 P14 1
+FUNCTION G1 'MAIN' 13 25 12 24 11 23 10 22 9 21 8 20 7 19 6 18 5 17 4 16 3 15 2 14 1
+
+END

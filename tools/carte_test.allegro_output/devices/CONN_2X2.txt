@@ -1,0 +1,8 @@
+(PCBDL generated stub device file)
+PACKAGE Connector_PinHeader_2.54mm:PinHeader_2x02_P2.54mm_Vertical
+PINCOUNT 4
+
+PINORDER 'MAIN' 1 3 2 4
+FUNCTION G1 'MAIN' 1 3 2 4
+
+END
