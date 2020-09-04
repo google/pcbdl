@@ -1,0 +1,392 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pcbdl.small_parts &mdash; pcbdl  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> pcbdl
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">PCB Design Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Developing PCBDL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../netlistsvg.html">NetlistSVG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">Core Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../small_parts.html">Small Parts</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pcbdl</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pcbdl.small_parts</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pcbdl.small_parts</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2019 Google LLC</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     https://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="JellyBean"><a class="viewcode-back" href="../../small_parts.html#pcbdl.small_parts.JellyBean">[docs]</a><span class="k">class</span> <span class="nc">JellyBean</span><span class="p">(</span><span class="n">Part</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;2 pin Jelly Bean components (this includes :class:`Resistors&lt;pcbdl.small_parts.R&gt;`</span>
+<span class="sd">    and :class:`Capacitors&lt;pcbdl.small_parts.C&gt;`).</span>
+
+<span class="sd">    The main attraction to subclass this is because of the ``to=`` argument, it&#39;s very easy to chain connections</span>
+<span class="sd">    with such a part because its pins are pretty flexible therefore easy tochoose automatically.</span>
+<span class="sd">    The use of this class is to allow quick connections of 2 pin devices (both pins at the same time).</span>
+
+<span class="sd">    One way to do this is the ``to=`` argument, allows to connect the SECONDARY pin (usually in the same expression)</span>
+<span class="sd">    easily without having to save the JellyBean part to a variable first::</span>
+
+<span class="sd">        supply &gt;&gt; IC.VCC &lt;&lt; C(&quot;100nF&quot;, to=gnd) # note how decoupling cap is fully connected</span>
+
+<span class="sd">    The other way these types of parts are cool and unique is the</span>
+<span class="sd">    :meth:`^ operator&lt;pcbdl.small_parts.JellyBean.__rxor__&gt;`; it allows us to describe series connections</span>
+<span class="sd">    through Jellybean components. Here&#39;s an example with a resistor divider::</span>
+
+<span class="sd">        some_net ^ R(&quot;1k&quot;) ^ attenuated_net ^ R(&quot;1k&quot;) ^ gnd</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">PINS</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;P1&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;P2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="n">UNITS</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refdes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">part_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">populated</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">reversed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">UNITS</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">UNITS</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span> <span class="c1"># whatever, we don&#39;t even have a value</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">refdes</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">part_number</span><span class="p">,</span> <span class="n">populated</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connect_pins_reversed</span> <span class="o">=</span> <span class="nb">reversed</span>
+
+        <span class="k">if</span> <span class="n">to</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">to</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ConnectDirection</span><span class="o">.</span><span class="n">OUT</span><span class="p">,</span> <span class="n">pin_type</span><span class="o">=</span><span class="n">PinType</span><span class="o">.</span><span class="n">SECONDARY</span><span class="p">)</span>
+
+<div class="viewcode-block" id="JellyBean.get_pin_to_connect"><a class="viewcode-back" href="../../small_parts.html#pcbdl.small_parts.JellyBean.get_pin_to_connect">[docs]</a>    <span class="k">def</span> <span class="nf">get_pin_to_connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pin_type</span><span class="p">,</span> <span class="n">net</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pin_type</span><span class="p">,</span> <span class="n">PinType</span><span class="p">)</span>
+
+        <span class="n">mapping</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connect_pins_reversed</span><span class="p">:</span>
+            <span class="n">mapping</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">pin_type</span> <span class="o">==</span> <span class="n">PinType</span><span class="o">.</span><span class="n">PRIMARY</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pins</span><span class="p">[</span><span class="n">mapping</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="n">pin_type</span> <span class="o">==</span> <span class="n">PinType</span><span class="o">.</span><span class="n">SECONDARY</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pins</span><span class="p">[</span><span class="n">mapping</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># pragma: no cover</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Don&#39;t know how to get </span><span class="si">%s</span><span class="s2"> pin from </span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pin_type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="JellyBean.__rxor__"><a class="viewcode-back" href="../../small_parts.html#pcbdl.small_parts.JellyBean.__rxor__">[docs]</a>    <span class="k">def</span> <span class="nf">__rxor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left_net</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implements ``left_net ^ jellybean``. Connects the left_net to the PRIMARY pin,</span>
+<span class="sd">        then returns the JellyBean part so it can keep chaining.</span>
+
+<span class="sd">        .. note:: This is similar to :meth:`left_net \&lt;\&lt; JellyBean()&lt;pcbdl.Net.__lshift__&gt;`, but</span>
+<span class="sd">                  with the slight difference in how it can chain.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left_net</span><span class="p">,</span> <span class="n">Net</span><span class="p">)</span>
+        <span class="n">left_net</span> <span class="o">&lt;&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pin_to_connect</span><span class="p">(</span><span class="n">PinType</span><span class="o">.</span><span class="n">PRIMARY</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="JellyBean.__xor__"><a class="viewcode-back" href="../../small_parts.html#pcbdl.small_parts.JellyBean.__xor__">[docs]</a>    <span class="k">def</span> <span class="nf">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">right_net</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implements ``jellybean ^ right_net``. Connects the right_net to the SECONDARY pin,</span>
+<span class="sd">        then returns the JellyBean part so it can keep chaining.</span>
+
+<span class="sd">        .. note:: This is similar to ``JellyBean(to=right_net)`` but a little cleaner looking.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right_net</span><span class="p">,</span> <span class="n">Net</span><span class="p">)</span>
+        <span class="n">grouped_right_net</span> <span class="o">=</span> <span class="n">right_net</span> <span class="o">&lt;&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pin_to_connect</span><span class="p">(</span><span class="n">PinType</span><span class="o">.</span><span class="n">SECONDARY</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">grouped_right_net</span></div></div>
+
+
+<div class="viewcode-block" id="OnePinPart"><a class="viewcode-back" href="../../small_parts.html#pcbdl.small_parts.OnePinPart">[docs]</a><span class="k">class</span> <span class="nc">OnePinPart</span><span class="p">(</span><span class="n">Part</span><span class="p">):</span>
+    <span class="n">PINS</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;PIN&quot;</span><span class="p">,</span> <span class="s2">&quot;P&quot;</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refdes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">part_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">populated</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">refdes</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">part_number</span><span class="p">,</span> <span class="n">populated</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">to</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">to</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ConnectDirection</span><span class="o">.</span><span class="n">OUT</span><span class="p">,</span> <span class="n">pin_type</span><span class="o">=</span><span class="n">PinType</span><span class="o">.</span><span class="n">PRIMARY</span><span class="p">)</span>
+
+<div class="viewcode-block" id="OnePinPart.get_pin_to_connect"><a class="viewcode-back" href="../../small_parts.html#pcbdl.small_parts.OnePinPart.get_pin_to_connect">[docs]</a>    <span class="k">def</span> <span class="nf">get_pin_to_connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pin_type</span><span class="p">,</span> <span class="n">net</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">pin_type</span> <span class="o">==</span> <span class="n">PinType</span><span class="o">.</span><span class="n">PRIMARY</span><span class="p">:</span>
+            <span class="c1"># Perhaps we can name ourselves too after the net</span>
+            <span class="k">if</span> <span class="n">net</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">net</span><span class="o">.</span><span class="n">_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">part_number</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">name</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">PIN</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># pragma: no cover</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pin_type</span><span class="p">,</span> <span class="n">PinType</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Don&#39;t know how to get </span><span class="si">%s</span><span class="s2"> pin from </span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pin_type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">net</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">PIN</span><span class="o">.</span><span class="n">net</span> <span class="c1">#defined_at: not here</span>
+    <span class="nd">@net</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">net</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_net</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PIN</span><span class="o">.</span><span class="n">net</span> <span class="o">=</span> <span class="n">new_net</span></div>
+
+<div class="viewcode-block" id="TP"><a class="viewcode-back" href="../../small_parts.html#pcbdl.small_parts.TP">[docs]</a><span class="k">class</span> <span class="nc">TP</span><span class="p">(</span><span class="n">OnePinPart</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test Point&quot;&quot;&quot;</span>
+    <span class="n">REFDES_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;TP&quot;</span>
+    <span class="n">package</span> <span class="o">=</span> <span class="s2">&quot;TP&quot;</span>
+    <span class="n">part_number</span> <span class="o">=</span> <span class="s2">&quot;TP&quot;</span></div>
+
+<span class="n">PINS_PLUS_MINUS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;PLUS&quot;</span><span class="p">,</span> <span class="s2">&quot;P2&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;MINUS&quot;</span><span class="p">,</span> <span class="s2">&quot;P1&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">PINS_BJT</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;BASE&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;EMITTER&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;COLLECTOR&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">PINS_FET</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="s2">&quot;GATE&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;SOURCE&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="s2">&quot;DRAIN&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+
+<div class="viewcode-block" id="R"><a class="viewcode-back" href="../../small_parts.html#pcbdl.small_parts.R">[docs]</a><span class="k">class</span> <span class="nc">R</span><span class="p">(</span><span class="n">JellyBean</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Resistor&quot;&quot;&quot;</span>
+    <span class="n">REFDES_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;R&quot;</span>
+    <span class="n">UNITS</span> <span class="o">=</span> <span class="sa">u</span><span class="s2">&quot;</span><span class="se">\u03A9</span><span class="s2">&quot;</span></div>
+
+<div class="viewcode-block" id="C"><a class="viewcode-back" href="../../small_parts.html#pcbdl.small_parts.C">[docs]</a><span class="k">class</span> <span class="nc">C</span><span class="p">(</span><span class="n">JellyBean</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Capacitor&quot;&quot;&quot;</span>
+    <span class="n">REFDES_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span>
+    <span class="n">UNITS</span> <span class="o">=</span> <span class="s2">&quot;F&quot;</span></div>
+
+<div class="viewcode-block" id="C_POL"><a class="viewcode-back" href="../../small_parts.html#pcbdl.small_parts.C_POL">[docs]</a><span class="k">class</span> <span class="nc">C_POL</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Polarized Capacitor&quot;&quot;&quot;</span>
+    <span class="n">PINS</span> <span class="o">=</span> <span class="n">PINS_PLUS_MINUS</span></div>
+
+<div class="viewcode-block" id="L"><a class="viewcode-back" href="../../small_parts.html#pcbdl.small_parts.L">[docs]</a><span class="k">class</span> <span class="nc">L</span><span class="p">(</span><span class="n">JellyBean</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Inductor&quot;&quot;&quot;</span>
+    <span class="n">REFDES_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;L&quot;</span>
+    <span class="n">UNITS</span> <span class="o">=</span> <span class="s2">&quot;H&quot;</span></div>
+
+<div class="viewcode-block" id="D"><a class="viewcode-back" href="../../small_parts.html#pcbdl.small_parts.D">[docs]</a><span class="k">class</span> <span class="nc">D</span><span class="p">(</span><span class="n">JellyBean</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Diode&quot;&quot;&quot;</span>
+    <span class="n">REFDES_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;D&quot;</span>
+    <span class="n">PINS</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;ANODE&quot;</span><span class="p">,</span> <span class="s2">&quot;P1&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="s2">&quot;CATHODE&quot;</span><span class="p">,</span> <span class="s2">&quot;KATHODE&quot;</span><span class="p">,</span> <span class="s2">&quot;P2&quot;</span><span class="p">),</span>
+    <span class="p">]</span></div>
+
+<div class="viewcode-block" id="LED"><a class="viewcode-back" href="../../small_parts.html#pcbdl.small_parts.LED">[docs]</a><span class="k">class</span> <span class="nc">LED</span><span class="p">(</span><span class="n">D</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Light Emitting Diode&quot;&quot;&quot;</span>
+    <span class="n">REFDES_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;LED&quot;</span>
+    <span class="n">PINS</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">),</span>
+    <span class="p">]</span></div>
+
+<div class="viewcode-block" id="BJT"><a class="viewcode-back" href="../../small_parts.html#pcbdl.small_parts.BJT">[docs]</a><span class="k">class</span> <span class="nc">BJT</span><span class="p">(</span><span class="n">Part</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;BJT Transistor&quot;&quot;&quot;</span>
+    <span class="n">REFDES_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;Q&quot;</span>
+    <span class="n">PINS</span> <span class="o">=</span> <span class="n">PINS_BJT</span></div>
+
+<div class="viewcode-block" id="FET"><a class="viewcode-back" href="../../small_parts.html#pcbdl.small_parts.FET">[docs]</a><span class="k">class</span> <span class="nc">FET</span><span class="p">(</span><span class="n">Part</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;FET Transistor&quot;&quot;&quot;</span>
+    <span class="n">REFDES_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;Q&quot;</span>
+    <span class="n">PINS</span> <span class="o">=</span> <span class="n">PINS_FET</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019, Google
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

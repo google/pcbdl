@@ -1,0 +1,863 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pcbdl.base &mdash; pcbdl  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> pcbdl
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">PCB Design Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Developing PCBDL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../netlistsvg.html">NetlistSVG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">Core Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../small_parts.html">Small Parts</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pcbdl</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pcbdl.base</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pcbdl.base</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2019 Google LLC</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     https://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">enum</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;PinType&quot;</span><span class="p">,</span> <span class="s2">&quot;ConnectDirection&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Net&quot;</span><span class="p">,</span> <span class="s2">&quot;Part&quot;</span><span class="p">,</span> <span class="s2">&quot;Pin&quot;</span>
+<span class="p">]</span>
+
+<span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">instance</span><span class="p">):</span>
+        <span class="bp">self</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Plugin</span><span class="p">,</span><span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="n">instance</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="n">plugin_targets</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plugin_targets</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+            <span class="n">plugin_targets</span> <span class="o">=</span> <span class="p">(</span><span class="n">plugin_targets</span><span class="p">,)</span>
+
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">plugin</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">target_cls</span> <span class="ow">in</span> <span class="n">plugin_targets</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">target_cls</span><span class="o">.</span><span class="n">plugins</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="n">target_cls</span><span class="o">.</span><span class="n">plugins</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+                <span class="n">target_cls</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">plugin</span>
+
+        <span class="k">return</span> <span class="n">wrapper</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">instance</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init plugins associated with this instance&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">factories</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">plugins</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">plugins</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">dict</span>
+        <span class="n">instance</span><span class="o">.</span><span class="n">plugins</span> <span class="o">=</span> <span class="p">{</span><span class="n">plugin</span><span class="p">:</span> <span class="n">plugin</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span> <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">factories</span><span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">ConnectDirection</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">IN</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">OUT</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="k">class</span> <span class="nc">PinType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">PRIMARY</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">SECONDARY</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">POWER_INPUT</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">POWER_OUTPUT</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">GROUND</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">INPUT</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">OUTPUT</span> <span class="o">=</span> <span class="mi">7</span>
+
+<span class="k">def</span> <span class="nf">_maybe_single</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+        <span class="k">yield from</span> <span class="n">o</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">o</span>
+
+<span class="k">class</span> <span class="nc">_PinList</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pin_name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pin_name</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="n">pin_name</span><span class="p">]</span>
+        <span class="n">pin_name</span> <span class="o">=</span> <span class="n">pin_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">pin_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="c1"># try looking slowly through the other names</span>
+            <span class="k">for</span> <span class="n">pin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">pin_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="n">pin</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">pin</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+
+<div class="viewcode-block" id="Net"><a class="viewcode-back" href="../../api.html#pcbdl.Net">[docs]</a><span class="k">class</span> <span class="nc">Net</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">_name</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">has_name</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="Net.__init__"><a class="viewcode-back" href="../../api.html#pcbdl.Net.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connections</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">Plugin</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">others</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">ConnectDirection</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">,</span> <span class="n">pin_type</span><span class="o">=</span><span class="n">PinType</span><span class="o">.</span><span class="n">PRIMARY</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">connection_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">connection_group</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_connections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">connection_group</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">_maybe_single</span><span class="p">(</span><span class="n">others</span><span class="p">):</span>
+            <span class="n">pin</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Part</span><span class="p">):</span>
+                <span class="n">pin</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">get_pin_to_connect</span><span class="p">(</span><span class="n">pin_type</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">PartInstancePin</span><span class="p">):</span>
+                <span class="n">pin</span> <span class="o">=</span> <span class="n">other</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Net</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t connect nets together yet.&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">pin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Don&#39;t know how to get </span><span class="si">%s</span><span class="s2"> pin from </span><span class="si">%r</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pin_type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">other</span><span class="p">))</span>
+
+            <span class="n">connection_group</span><span class="p">[</span><span class="n">pin</span><span class="p">]</span> <span class="o">=</span> <span class="n">direction</span>
+            <span class="n">pin</span><span class="o">.</span><span class="n">net</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_connection_group</span> <span class="o">=</span> <span class="n">connection_group</span>
+
+    <span class="k">def</span> <span class="nf">_shift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">others</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">others</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">PinType</span><span class="o">.</span><span class="n">PRIMARY</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;group&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="c1"># Return a copy that acts just like us, but already knows the group</span>
+        <span class="n">grouped_net</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">grouped_net</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="n">grouped_net</span><span class="o">.</span><span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_connection_group</span>
+        <span class="k">return</span> <span class="n">grouped_net</span>
+
+<div class="viewcode-block" id="Net.__lshift__"><a class="viewcode-back" href="../../api.html#pcbdl.Net.__lshift__">[docs]</a>    <span class="k">def</span> <span class="nf">__lshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">others</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shift</span><span class="p">(</span><span class="n">ConnectDirection</span><span class="o">.</span><span class="n">IN</span><span class="p">,</span> <span class="n">others</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Net.__rshift__"><a class="viewcode-back" href="../../api.html#pcbdl.Net.__rshift__">[docs]</a>    <span class="k">def</span> <span class="nf">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">others</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shift</span><span class="p">(</span><span class="n">ConnectDirection</span><span class="o">.</span><span class="n">OUT</span><span class="p">,</span> <span class="n">others</span><span class="p">)</span></div>
+
+    <span class="n">_MAX_REPR_CONNECTIONS</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">connected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connections</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">connected</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_MAX_REPR_CONNECTIONS</span><span class="p">:</span>
+            <span class="n">inside_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> connections&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">connected</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">connected</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">inside_str</span> <span class="o">=</span> <span class="s2">&quot;unconnected&quot;</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">connected</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">inside_str</span> <span class="o">=</span> <span class="s2">&quot;connected to &quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="n">connected</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">inside_str</span> <span class="o">=</span> <span class="s2">&quot;connected to &quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="n">connected</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">(</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inside_str</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;parent&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_name</span><span class="p">:</span>
+            <span class="c1"># This path should be rare, only if the user really wants trouble</span>
+            <span class="k">return</span> <span class="s2">&quot;ANON_NET?m</span><span class="si">%05x</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">//</span> <span class="mi">32</span> <span class="o">&amp;</span> <span class="mh">0xfffff</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">new_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_name</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">connections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A :class:`tuple` of pins connected to this net.</span>
+
+<span class="sd">        Useful in the interpreter and/or when you want to inspect your schematic::</span>
+
+<span class="sd">            &gt;&gt;&gt; gnd.connections</span>
+<span class="sd">            (U1.GND, VREG1.GND, U2.GND, VREG2.GND)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grouped_connections</span><span class="p">,</span> <span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">grouped_connections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Similar to :attr:`connections`, but this time pins that were connected together stay in groups::</span>
+
+<span class="sd">            &gt;&gt;&gt; pp1800.grouped_connections</span>
+<span class="sd">            ((U1.GND, VREG1.GND), (U2.GND, VREG2.GND))</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connections</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">is_net_of_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keywords</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">keywords</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_power</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_net_of_class</span><span class="p">((</span><span class="s2">&quot;VCC&quot;</span><span class="p">,</span> <span class="s2">&quot;PP&quot;</span><span class="p">,</span> <span class="s2">&quot;VBUS&quot;</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_gnd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_net_of_class</span><span class="p">((</span><span class="s2">&quot;GND&quot;</span><span class="p">,))</span></div>
+
+<div class="viewcode-block" id="PinFragment"><a class="viewcode-back" href="../../api.html#pcbdl.PinFragment">[docs]</a><span class="k">class</span> <span class="nc">PinFragment</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is the fully featured (as opposed to just a tuple of parameters)</span>
+<span class="sd">    element of :attr:`PINS&lt;pcbdl.Part.PINS&gt;` at the time of writing</span>
+<span class="sd">    a :class:`Part&lt;pcbdl.Part&gt;`. Saves all parameters it&#39;s given,</span>
+<span class="sd">    merges later once the Part is fully defined.</span>
+
+<span class="sd">    .. warning:: Just like the name implies this is just a fragment of the</span>
+<span class="sd">        information we need for the pin. It&#39;s possible the Part needs to be</span>
+<span class="sd">        overlayed on top of its parents before we can have a complete picture.</span>
+<span class="sd">        Ex: this could be the pin labeled &quot;PA2&quot; of a microcontroller, but until</span>
+<span class="sd">        the part is told what package it is, we don&#39;t really know the pin</span>
+<span class="sd">        number.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names_or_numbers</span><span class="o">=</span><span class="p">(),</span> <span class="n">names_if_numbers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Check if short form for the positional arguments</span>
+        <span class="k">if</span> <span class="n">names_if_numbers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">names</span><span class="p">,</span> <span class="n">numbers</span> <span class="o">=</span> <span class="n">names_or_numbers</span><span class="p">,</span> <span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">names</span><span class="p">,</span> <span class="n">numbers</span> <span class="o">=</span> <span class="n">names_if_numbers</span><span class="p">,</span> <span class="n">names_or_numbers</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="p">(</span><span class="n">names</span><span class="p">,)</span>
+        <span class="n">names</span> <span class="o">+=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">,</span> <span class="p">())</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">names</span> <span class="o">+=</span> <span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="n">names</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">numbers</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
+            <span class="n">numbers</span> <span class="o">=</span> <span class="p">(</span><span class="n">numbers</span><span class="p">,)</span>
+        <span class="n">numbers</span> <span class="o">+=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;numbers&quot;</span><span class="p">,</span> <span class="p">())</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">numbers</span> <span class="o">+=</span> <span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;number&quot;</span><span class="p">),)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="n">numbers</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">maybe_int</span><span class="p">)</span> <span class="k">for</span> <span class="n">maybe_int</span> <span class="ow">in</span> <span class="n">numbers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numbers</span> <span class="o">=</span> <span class="n">numbers</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+        <span class="n">Plugin</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">arguments</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">numbers</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="s2">&quot;numbers=&quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numbers</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="nb">repr</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">yield</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">=</span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;PinFragment(</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">arguments</span><span class="p">()))</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;If any names match between two fragments, we&#39;re talking about the same pin. This is associative, so it chains through other fragments.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">my_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">my_name</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">part_superclasses</span><span class="p">(</span><span class="n">part</span><span class="p">):</span>
+        <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="nb">type</span><span class="p">(</span><span class="n">part</span><span class="p">)</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="n">Part</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="k">yield</span> <span class="bp">cls</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">gather_fragments</span><span class="p">(</span><span class="n">cls_list</span><span class="p">):</span>
+        <span class="n">all_fragments</span> <span class="o">=</span> <span class="p">[</span><span class="n">pin</span> <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">cls_list</span> <span class="k">for</span> <span class="n">pin</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">PINS</span><span class="p">]</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_fragments</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">same_pin_fragments</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">same_pin_fragments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">all_fragments</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+            <span class="n">pin_index</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">i</span> <span class="o">=</span> <span class="n">all_fragments</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">same_pin_fragments</span><span class="p">[</span><span class="n">pin_index</span><span class="p">])</span>
+                    <span class="n">same_pin_fragments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">all_fragments</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="n">pin_index</span> <span class="o">+=</span> <span class="mi">1</span> <span class="c1"># try following the chain of names, maybe there&#39;s another one we need to search by</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="k">break</span> <span class="c1"># probably no more fragments for this pin</span>
+            <span class="k">yield</span> <span class="n">same_pin_fragments</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">resolve</span><span class="p">(</span><span class="n">fragments</span><span class="p">):</span>
+        <span class="c1"># union the names, keep order</span>
+        <span class="n">name_generator</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fragments</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+        <span class="n">seen_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">deduplicated_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">name_generator</span> <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">n</span> <span class="ow">in</span> <span class="n">seen_names</span> <span class="ow">or</span> <span class="n">seen_names</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">n</span><span class="p">))]</span>
+
+        <span class="n">pin_numbers</span> <span class="o">=</span> <span class="p">[</span><span class="n">number</span> <span class="k">for</span> <span class="n">fragment</span> <span class="ow">in</span> <span class="n">fragments</span> <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="n">fragment</span><span class="o">.</span><span class="n">numbers</span><span class="p">]</span>
+
+        <span class="c1"># union the args and kwargs, stuff near the front has priority to override</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">fragment</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">fragments</span><span class="p">):</span>
+            <span class="n">args</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">fragment</span><span class="o">.</span><span class="n">args</span><span class="p">)]</span> <span class="o">=</span> <span class="n">fragment</span><span class="o">.</span><span class="n">args</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">fragment</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">PartClassPin</span><span class="p">(</span><span class="n">deduplicated_names</span><span class="p">,</span> <span class="n">pin_numbers</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PinFragment.second_name_important"><a class="viewcode-back" href="../../api.html#pcbdl.PinFragment.second_name_important">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">second_name_important</span><span class="p">(</span><span class="n">pin</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Swap the order of the pin names so the functional (second) name is first.</span>
+
+<span class="sd">        Used as a :func:`Part._postprocess_pin filter&lt;pcbdl.Part._postprocess_pin&gt;`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pin</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="n">pin</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="p">(</span><span class="n">pin</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">],)</span></div></div>
+<span class="n">Pin</span> <span class="o">=</span> <span class="n">PinFragment</span>
+
+<div class="viewcode-block" id="PartClassPin"><a class="viewcode-back" href="../../api.html#pcbdl.PartClassPin">[docs]</a><span class="k">class</span> <span class="nc">PartClassPin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pin of a Part, but no particular Part instance.</span>
+<span class="sd">    Contains general information about the pin (but it could be for any</span>
+<span class="sd">    part of that type), nothing related to a specific part instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">well_name</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">numbers</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">PinType</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">,</span> <span class="n">well</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="n">names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numbers</span> <span class="o">=</span> <span class="n">numbers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">well_name</span> <span class="o">=</span> <span class="n">well</span>
+
+        <span class="n">Plugin</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">numbers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;Pin </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="fm">__repr__</span> <span class="o">=</span> <span class="fm">__str__</span></div>
+
+<div class="viewcode-block" id="PartInstancePin"><a class="viewcode-back" href="../../api.html#pcbdl.PartInstancePin">[docs]</a><span class="k">class</span> <span class="nc">PartInstancePin</span><span class="p">(</span><span class="n">PartClassPin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Particular pin of a particular part instance. Can connect to nets. Knows the refdes of its part.&quot;&quot;&quot;</span>
+    <span class="n">_net</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part_instance</span><span class="p">,</span> <span class="n">part_class_pin</span><span class="p">,</span> <span class="n">inject_number</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># copy state of the Pin to be inherited, then continue as if the parent class always existed that way</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">part_class_pin</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="c1"># no need to call PartClassPin.__init__</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_part_class_pin</span> <span class="o">=</span> <span class="n">part_class_pin</span>
+
+        <span class="c1"># save arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">part</span> <span class="o">=</span> <span class="n">part_instance</span>
+
+        <span class="k">if</span> <span class="n">inject_number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">numbers</span> <span class="o">=</span> <span class="p">(</span><span class="n">inject_number</span><span class="p">,)</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">numbers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;this Pin really should have had real pin numbers assigned by now&quot;</span>
+
+        <span class="n">well_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">well_name</span>
+        <span class="k">if</span> <span class="n">well_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">well</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">part</span><span class="o">.</span><span class="n">pins</span><span class="p">[</span><span class="n">well_name</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t find voltage well pin </span><span class="si">%s</span><span class="s2"> on part </span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">well_name</span><span class="p">,</span> <span class="n">part_instance</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">well</span><span class="o">.</span><span class="n">type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">PinType</span><span class="o">.</span><span class="n">POWER_INPUT</span><span class="p">,</span> <span class="n">PinType</span><span class="o">.</span><span class="n">POWER_OUTPUT</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The chosen well pin </span><span class="si">%s</span><span class="s2"> is not a power pin (but is </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">well</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">well</span><span class="o">.</span><span class="n">type</span><span class="p">))</span>
+
+        <span class="n">Plugin</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">net</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The :class:`Net&lt;pcbdl.Net&gt;` that this pin is connected to.</span>
+
+<span class="sd">        If it&#39;s not connected to anything yet, we&#39;ll get a fresh net.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_net</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fresh_net</span> <span class="o">=</span> <span class="n">Net</span><span class="p">()</span> <span class="c1">#defined_at: not here</span>
+            <span class="k">return</span> <span class="n">fresh_net</span> <span class="o">&lt;&lt;</span> <span class="bp">self</span>
+            <span class="c1">#fresh_net.connect(self, direction=ConnectDirection.UNKNOWN) # This indirectly sets self.netf</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_net</span>
+    <span class="nd">@net</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">net</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_net</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_net</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># TODO: Maybe just unify the existing net and the new</span>
+            <span class="c1"># net and allow this.</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> pin is already connected to a net (</span><span class="si">%s</span><span class="s2">). Can&#39;t connect to </span><span class="si">%s</span><span class="s2"> too.&quot;</span> <span class="o">%</span>
+                <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_net</span><span class="p">,</span> <span class="n">new_net</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_net</span> <span class="o">=</span> <span class="n">new_net</span>
+
+    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PartInstancePin.__lshift__"><a class="viewcode-back" href="../../api.html#pcbdl.PartInstancePin.__lshift__">[docs]</a>    <span class="k">def</span> <span class="nf">__lshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">others</span><span class="p">):</span>
+        <span class="n">net</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_net</span>
+        <span class="k">if</span> <span class="n">net</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># don&#39;t let the net property create a new one,</span>
+            <span class="c1"># we want to dictate the direction to that Net</span>
+            <span class="n">net</span> <span class="o">=</span> <span class="n">Net</span><span class="p">()</span> <span class="c1">#defined_at: not here</span>
+            <span class="n">net</span> <span class="o">&gt;&gt;=</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">net</span> <span class="o">&lt;&lt;</span> <span class="n">others</span></div>
+
+<div class="viewcode-block" id="PartInstancePin.__rshift__"><a class="viewcode-back" href="../../api.html#pcbdl.PartInstancePin.__rshift__">[docs]</a>    <span class="k">def</span> <span class="nf">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">others</span><span class="p">):</span>
+        <span class="n">net</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_net</span>
+        <span class="k">if</span> <span class="n">net</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># don&#39;t let the net property create a new one,</span>
+            <span class="c1"># we want to dictate the direction to that Net</span>
+            <span class="n">net</span> <span class="o">=</span> <span class="n">Net</span><span class="p">()</span> <span class="c1">#defined_at: not here</span>
+            <span class="n">net</span> <span class="o">&lt;&lt;=</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">net</span> <span class="o">&gt;&gt;</span> <span class="n">others</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%r</span><span class="s2">.</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">part</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="fm">__repr__</span> <span class="o">=</span> <span class="fm">__str__</span></div>
+
+<span class="k">class</span> <span class="nc">PinFragmentList</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Used as a marker that we have visited Part.PINS and converted all the elements to PinFragment.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part_cls</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">part_cls</span> <span class="o">=</span> <span class="n">part_cls</span>
+        <span class="nb">list</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part_cls</span><span class="o">.</span><span class="n">PINS</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">maybenames</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># syntactic sugar, .PIN list might have only names instead of the long form Pin instances</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maybenames</span><span class="p">,</span> <span class="n">Pin</span><span class="p">):</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">PinFragment</span><span class="p">(</span><span class="n">maybenames</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">part_cls</span><span class="o">.</span><span class="n">_postprocess_pin</span><span class="o">.</span><span class="vm">__code__</span> <span class="o">==</span> <span class="n">Part</span><span class="o">.</span><span class="n">_postprocess_pin</span><span class="o">.</span><span class="vm">__code__</span><span class="p">:</span>
+            <span class="c1"># Let&#39;s not waste our time with a noop</span>
+            <span class="k">return</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># do user&#39;s postprocessing</span>
+            <span class="n">part_cls</span><span class="o">.</span><span class="n">_postprocess_pin</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+<div class="viewcode-block" id="Part"><a class="viewcode-back" href="../../api.html#pcbdl.Part">[docs]</a><span class="k">class</span> <span class="nc">Part</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is the :ref:`base class&lt;python:tut-inheritance&gt;` for any new Part the writer of a schematic or a part librarian has to make. ::</span>
+
+<span class="sd">        class Transistor(Part):</span>
+<span class="sd">            REFDES_PREFIX = &quot;Q&quot;</span>
+<span class="sd">            PINS = [&quot;B&quot;, &quot;C&quot;, &quot;E&quot;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">PINS</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is how the pins of a part are defined, as a :class:`list` of pins.</span>
+
+<span class="sd">    Each pin entry can be one of:</span>
+
+<span class="sd">    * :class:`Pin`</span>
+<span class="sd">    * :class:`tuple` of names which will automatically be turned into a :class:`Pin`</span>
+<span class="sd">    * just one :class:`string&lt;str&gt;`, representing a pin name, if one cares about nothing else.</span>
+
+<span class="sd">    So these are all valid ways to define a pin (in decreasing order of detail), and mean about the same thing::</span>
+
+<span class="sd">        PINS = [</span>
+<span class="sd">            Pin(&quot;1&quot;, (&quot;GND&quot;, &quot;GROUND&quot;), type=PinType.POWER_INPUT),</span>
+<span class="sd">            (&quot;GND&quot;, &quot;GROUND&quot;),</span>
+<span class="sd">            &quot;GND&quot;,</span>
+<span class="sd">        ]</span>
+
+<span class="sd">    See the :class:`Pins Section&lt;Pin&gt;` for the types of properties that can be</span>
+<span class="sd">    defined on each Pin entry.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pins</span> <span class="o">=</span> <span class="n">_PinList</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Once the Part is instanced (aka populated on the schematic), our pins become real too (they turn into :class:`PartInstancePins&lt;pcbdl.base.PartInstancePin&gt;`).</span>
+<span class="sd">    This is a :class:`dict` like object where the pins are stored. One can look up pins by any of its names::</span>
+
+<span class="sd">        somechip.pins[&quot;VCC&quot;]</span>
+
+<span class="sd">    Though most pins are also directly populated as a attributes to the part, so this is equivalent::</span>
+
+<span class="sd">        somechip.VCC</span>
+
+<span class="sd">    The pins list can still be used to view all of the pins at once, like on the console:</span>
+
+<span class="sd">        &gt;&gt;&gt; diode.pins</span>
+<span class="sd">        (D1.VCC, D1.NC, D1.P1, D1.GND, D1.P2)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">REFDES_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;UNK&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The prefix that every reference designator of this part will have.</span>
+
+<span class="sd">    Example: :attr:`&quot;R&quot;&lt;pcbdl.small_parts.R.REFDES_PREFIX&gt;` for resistors,</span>
+<span class="sd">    :attr:`&quot;C&quot;&lt;pcbdl.small_parts.C.REFDES_PREFIX&gt;` for capacitors.</span>
+
+<span class="sd">    The auto namer system will eventually put numbers after the prefix to get the complete :attr:`refdes`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pin_names_match_nets</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sometimes when connecting nets to a part, the pin names become very redundant::</span>
+
+<span class="sd">        Net(&quot;GND&quot;) &gt;&gt; somepart.GND</span>
+<span class="sd">        Net(&quot;VCC&quot;) &gt;&gt; somepart.VCC</span>
+<span class="sd">        Net(&quot;RESET&quot;) &gt;&gt; somepart.RESET</span>
+
+<span class="sd">    We can use this variable tells the part to pick the right pin depending on</span>
+<span class="sd">    the variable name, at that point the part itself can be used in lieu of</span>
+<span class="sd">    the pin::</span>
+
+<span class="sd">        Net(&quot;GND&quot;) &gt;&gt; somepart</span>
+<span class="sd">        Net(&quot;VCC&quot;) &gt;&gt; somepart</span>
+<span class="sd">        Net(&quot;RESET&quot;) &gt;&gt; somepart</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pin_names_match_nets_prefix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    When :attr:`pin_names_match_nets` is active, it strips a</span>
+<span class="sd">    little bit of the net name in case it&#39;s part of a bigger net group::</span>
+
+<span class="sd">        class SPIFlash(Part):</span>
+<span class="sd">            pin_names_match_nets = True</span>
+<span class="sd">            pin_names_match_nets_prefix = &quot;SPI1&quot;</span>
+<span class="sd">            PINS = [&quot;MOSI&quot;, &quot;MISO&quot;, &quot;SCK&quot;, &quot;CS&quot;, ...]</span>
+<span class="sd">        ...</span>
+<span class="sd">        Net(&quot;SPI1_MOSI&quot;) &gt;&gt; spi_flash # autoconnects to the pin called only &quot;MOSI&quot;</span>
+<span class="sd">        Net(&quot;SPI1_MISO&quot;) &lt;&lt; spi_flash # &quot;MISO&quot;</span>
+<span class="sd">        Net(&quot;SPI1_SCK&quot;)  &gt;&gt; spi_flash # &quot;SCK&quot;</span>
+<span class="sd">        Net(&quot;SPI1_CS&quot;)   &gt;&gt; spi_flash # &quot;CS&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refdes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">part_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">populated</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">part_number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">part_number</span> <span class="o">=</span> <span class="n">part_number</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="c1"># if we don&#39;t have a value xor a package, use one of them for both</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;part_number&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">part_number</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;part_number&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">part_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+        <span class="c1"># if we don&#39;t have either, then there&#39;s not much we can do</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;part_number&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">part_number</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refdes</span> <span class="o">=</span> <span class="n">refdes</span>
+        <span class="k">if</span> <span class="n">package</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">package</span> <span class="o">=</span> <span class="n">package</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">populated</span> <span class="o">=</span> <span class="n">populated</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_generate_pin_instances</span><span class="p">()</span>
+
+        <span class="n">Plugin</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_generate_pin_instances</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cls_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">PinFragment</span><span class="o">.</span><span class="n">part_superclasses</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+        <span class="c1"># process the pin lists a little bit</span>
+        <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">cls_list</span><span class="p">:</span>
+            <span class="c1"># but only if we didn&#39;t already do it</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">PINS</span><span class="p">,</span> <span class="n">PinFragmentList</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">PINS</span> <span class="o">=</span> <span class="n">PinFragmentList</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">pins</span> <span class="o">=</span> <span class="p">[</span><span class="n">PinFragment</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">PinFragment</span><span class="o">.</span><span class="n">gather_fragments</span><span class="p">(</span><span class="n">cls_list</span><span class="p">)]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pins</span> <span class="o">=</span> <span class="n">_PinList</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">part_class_pin</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">pins</span><span class="p">):</span>
+            <span class="c1"># if we don&#39;t have an assigned pin number, generate one</span>
+            <span class="n">inject_pin_number</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">part_class_pin</span><span class="o">.</span><span class="n">numbers</span> <span class="k">else</span> <span class="kc">None</span>
+
+            <span class="n">pin</span> <span class="o">=</span> <span class="n">PartInstancePin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part_class_pin</span><span class="p">,</span> <span class="n">inject_pin_number</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pins</span><span class="p">[</span><span class="n">pin</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pin</span>
+
+            <span class="c1"># save the pin as an attr for this part too</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">pin</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pin</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_refdes_from_memory_address</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">?m</span><span class="si">%05x</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">REFDES_PREFIX</span><span class="p">,</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">//</span> <span class="mi">32</span> <span class="o">&amp;</span> <span class="mh">0xfffff</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">refdes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reference designator of the part. Example: R1, R2.</span>
+
+<span class="sd">        It&#39;s essentially the unique id for the part that will be used to</span>
+<span class="sd">        refer to it in most output methods.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_refdes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_refdes</span>
+
+        <span class="c1"># make up a refdes based on memory address</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_refdes_from_memory_address</span>
+
+    <span class="nd">@refdes</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">refdes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refdes</span> <span class="o">=</span> <span class="n">new_value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">refdes</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> - </span><span class="si">%s%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refdes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot; DNS&quot;</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">populated</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_pin_to_connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pin_type</span><span class="p">,</span> <span class="n">net</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> <span class="c1"># pragma: no cover</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pin_type</span><span class="p">,</span> <span class="n">PinType</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pin_names_match_nets</span> <span class="ow">and</span> <span class="n">net</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pin_names_match_nets_prefix</span>
+            <span class="n">net_name</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">name</span>
+            <span class="k">for</span> <span class="n">pin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pins</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">pin_name</span> <span class="ow">in</span> <span class="n">pin</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">pin_name</span> <span class="o">==</span> <span class="n">net_name</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">pin</span>
+                    <span class="k">if</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">pin_name</span> <span class="o">==</span> <span class="n">net_name</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">pin</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t find a matching named pin on </span><span class="si">%r</span><span class="s2"> to connect the net </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">net_name</span><span class="p">))</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Don&#39;t know how to get </span><span class="si">%s</span><span class="s2"> pin from </span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pin_type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Part._postprocess_pin"><a class="viewcode-back" href="../../api.html#pcbdl.Part._postprocess_pin">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_postprocess_pin</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pin</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        It&#39;s sometimes useful to process the pins from the source code before the part gets placed down.</span>
+<span class="sd">        This method will be called for each pin by each subclass of a Part.</span>
+
+<span class="sd">        Good uses for this:</span>
+
+<span class="sd">        *  :func:`Raise the importance of the second name&lt;pcbdl.base.PinFragment.second_name_important&gt;` in a connector, so the more semantic name is the primary name, not the pin number::</span>
+
+<span class="sd">            PINS = [</span>
+<span class="sd">                (&quot;P1&quot;, &quot;Nicer name&quot;),</span>
+<span class="sd">            ]</span>
+<span class="sd">            _postprocess_pin = Pin.second_name_important</span>
+
+<span class="sd">        * Populate alternate functions of a pin if they follow an easy pattern.</span>
+<span class="sd">        * A simple programmatic alias on pin names without subclassing the part itself.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;This particular implementation of _postprocess_pin should be skipped by PinFragmentList()&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019, Google
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,2174 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:s="https://github.com/nturley/netlistsvg" width="1995.02" height="1284">
+  <style>svg {
+    stroke: #000;
+    fill: none;
+  }
+  text {
+    fill: #000;
+    stroke: none;
+    font-size: 10px;
+    font-weight: bold;
+    font-family: "Courier New", monospace;
+  }
+  .nodelabel {
+    text-anchor: middle;
+  }
+  .inputPortLabel {
+    text-anchor: end;
+  }
+  .outputPortLabel {
+  }
+  .insideInputPortLabel {
+    alignment-baseline: middle;
+  }
+  .insideOutputPortLabel {
+    text-anchor: end;
+    alignment-baseline: middle;
+  }
+  .splitjoinBody {
+    fill: #000;
+  }
+  .symbol {
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    stroke-width: 2;
+  }
+  .detail {
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    fill: #000;
+  }</style>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(243,198)" id="cell_power_symbol_0">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_0" s:attribute="name">VBUS_IN</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_0"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(233,337)" id="cell_power_symbol_13">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_13" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_13"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(270,259)" id="cell_CN1">
+    <text x="30" y="-20" class="nodelabel cell_CN1" s:attribute="ref">CN1</text>
+    <text class="nodelabel cell_CN1" x="30" y="-5" s:attribute="value">1981568-1</text>
+    <rect width="60" height="40" x="0" y="0" s:generic="body" class="cell_CN1"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_CN1~VBUS" class="net_VBUS_IN">
+      <text x="-3" y="-4" class="inputPortLabel cell_CN1">1</text>
+      <text x="5" y="0" class="insideInputPortLabel">VBUS</text>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_CN1~GND" class="net_GND">
+      <text x="-3" y="-4" class="inputPortLabel cell_CN1">5</text>
+      <text x="5" y="0" class="insideInputPortLabel">GND</text>
+    </g>
+    <g transform="translate(60,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_CN1~G" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_CN1">G1, G2, G3, G4</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">G</text>
+    </g>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1608.02,398)" id="cell_power_symbol_33">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_33" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_33"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(1527.02,335)" id="cell_Q4">
+    <text x="21" y="-20" class="nodelabel cell_Q4" s:attribute="ref">Q4</text>
+    <text class="nodelabel cell_Q4" x="21" y="-5" s:attribute="value">CSD13381F4</text>
+    <rect width="42" height="40" x="0" y="0" s:generic="body" class="cell_Q4"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_Q4~D" class="net_PD_BOOT0">
+      <text x="-3" y="-4" class="inputPortLabel cell_Q4">D</text>
+      <text x="5" y="0" class="insideInputPortLabel">D</text>
+      <text x="-68" y="0">PD_BOOT0</text>
+      <line x1="-78" x2="0" y1="0" y2="0"/>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_Q4~G" class="net_USB_ID">
+      <text x="-3" y="-4" class="inputPortLabel cell_Q4">G</text>
+      <text x="5" y="0" class="insideInputPortLabel">G</text>
+      <text x="-68" y="0">USB_ID</text>
+      <line x1="-78" x2="0" y1="0" y2="0"/>
+    </g>
+    <g transform="translate(42,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_Q4~S" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_Q4">S</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">S</text>
+    </g>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1422.02,198)" id="cell_power_symbol_4">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_4" s:attribute="name">VBUS_IN</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_4"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="resistor_v" s:width="10" s:height="50" transform="translate(1427.02,233)" id="cell_R23">
+    <s:alias val="r_v"/>
+    <text x="15" y="15" s:attribute="ref" class="cell_R23">R23</text>
+    <text x="15" y="30" s:attribute="value" class="cell_R23">51.1kΩ</text>
+    <path d="M0,10 V40 H10 V10 Z" class="symbol cell_R23"/>
+    <path d="M5,0 V10 M5,40 V50" class="connect cell_R23"/>
+    <g s:x="5" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="5" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(402,1047)" id="cell_power_symbol_166">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_166" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_166"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(495,1087)" id="cell_power_symbol_195">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_195" s:attribute="name">3300_PD_VDDA</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_195"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(272,1047)" id="cell_power_symbol_168">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_168" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_168"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(137,1242)" id="cell_power_symbol_30">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_30" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_30"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(12,1076.5)" id="cell_U6">
+    <text x="15" y="-20" class="nodelabel cell_U6" s:attribute="ref">U6</text>
+    <text class="nodelabel cell_U6" x="15" y="-5" s:attribute="value">STM32F072CBU6TR</text>
+    <rect width="30" height="140" x="0" y="0" s:generic="body" class="cell_U6"/>
+    <g transform="translate(30,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U6~VDD" class="net_PP3300">
+      <text x="5" y="-4" class="outputPortLabel cell_U6">24, 48</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">VDD</text>
+    </g>
+    <g transform="translate(30,30)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U6~VBAT" class="net_PP3300">
+      <text x="5" y="-4" class="outputPortLabel cell_U6">1</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">VBAT</text>
+    </g>
+    <g transform="translate(30,50)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U6~VDDA" class="net_PP3300_PD_VDDA">
+      <text x="5" y="-4" class="outputPortLabel cell_U6">9</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">VDDA</text>
+    </g>
+    <g transform="translate(30,70)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U6~VDDIO2" class="net_PP3300">
+      <text x="5" y="-4" class="outputPortLabel cell_U6">36</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">VDDIO2</text>
+    </g>
+    <g transform="translate(30,90)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U6~VSS" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U6">23, 35, 47</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">VSS</text>
+    </g>
+    <g transform="translate(30,110)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U6~VSSA" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U6">8</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">VSSA</text>
+    </g>
+    <g transform="translate(30,130)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U6~PAD" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U6">49</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">PAD</text>
+    </g>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(108,82)" id="cell_power_symbol_60">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_60" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_60"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="resistor_v" s:width="10" s:height="50" transform="translate(113,12)" id="cell_R96">
+    <s:alias val="r_v"/>
+    <text x="15" y="15" s:attribute="ref" class="cell_R96">R96</text>
+    <text x="15" y="30" s:attribute="value" class="cell_R96">4.7kΩ</text>
+    <path d="M0,10 V40 H10 V10 Z" class="symbol cell_R96"/>
+    <path d="M5,0 V10 M5,40 V50" class="connect cell_R96"/>
+    <g s:x="5" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="5" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(155,82)" id="cell_power_symbol_58">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_58" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_58"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="resistor_v" s:width="10" s:height="50" transform="translate(160,12)" id="cell_R95">
+    <s:alias val="r_v"/>
+    <text x="15" y="15" s:attribute="ref" class="cell_R95">R95</text>
+    <text x="15" y="30" s:attribute="value" class="cell_R95">4.7kΩ</text>
+    <path d="M0,10 V40 H10 V10 Z" class="symbol cell_R95"/>
+    <path d="M5,0 V10 M5,40 V50" class="connect cell_R95"/>
+    <g s:x="5" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="5" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(202,82)" id="cell_power_symbol_68">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_68" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_68"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="resistor_v" s:width="10" s:height="50" transform="translate(207,12)" id="cell_R60">
+    <s:alias val="r_v"/>
+    <text x="15" y="15" s:attribute="ref" class="cell_R60">R60</text>
+    <text x="15" y="30" s:attribute="value" class="cell_R60">4.7kΩ</text>
+    <path d="M0,10 V40 H10 V10 Z" class="symbol cell_R60"/>
+    <path d="M5,0 V10 M5,40 V50" class="connect cell_R60"/>
+    <g s:x="5" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="5" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(249,82)" id="cell_power_symbol_66">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_66" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_66"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="resistor_v" s:width="10" s:height="50" transform="translate(254,12)" id="cell_R61">
+    <s:alias val="r_v"/>
+    <text x="15" y="15" s:attribute="ref" class="cell_R61">R61</text>
+    <text x="15" y="30" s:attribute="value" class="cell_R61">4.7kΩ</text>
+    <path d="M0,10 V40 H10 V10 Z" class="symbol cell_R61"/>
+    <path d="M5,0 V10 M5,40 V50" class="connect cell_R61"/>
+    <g s:x="5" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="5" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(12,22)" id="cell_power_symbol_172">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_172" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_172"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="resistor_v" s:width="10" s:height="50" transform="translate(17,57)" id="cell_R501">
+    <s:alias val="r_v"/>
+    <text x="15" y="15" s:attribute="ref" class="cell_R501">R501</text>
+    <text x="15" y="30" s:attribute="value" class="cell_R501">4.7kΩ</text>
+    <path d="M0,10 V40 H10 V10 Z" class="symbol cell_R501"/>
+    <path d="M5,0 V10 M5,40 V50" class="connect cell_R501"/>
+    <g s:x="5" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="5" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(60,22)" id="cell_power_symbol_171">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_171" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_171"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="resistor_v" s:width="10" s:height="50" transform="translate(65,57)" id="cell_R502">
+    <s:alias val="r_v"/>
+    <text x="15" y="15" s:attribute="ref" class="cell_R502">R502</text>
+    <text x="15" y="30" s:attribute="value" class="cell_R502">4.7kΩ</text>
+    <path d="M0,10 V40 H10 V10 Z" class="symbol cell_R502"/>
+    <path d="M5,0 V10 M5,40 V50" class="connect cell_R502"/>
+    <g s:x="5" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="5" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(402,1217)" id="cell_power_symbol_23">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_23" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_23"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(397,1147)" id="cell_C2">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C2">C2</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C2">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C2"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C2"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(467,1217)" id="cell_power_symbol_24">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_24" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_24"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(462,1147)" id="cell_C5">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C5">C5</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C5">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C5"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C5"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(337,1217)" id="cell_power_symbol_25">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_25" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_25"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(332,1147)" id="cell_C1">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C1">C1</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C1">4.7uF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C1"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C1"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(597,1032)" id="cell_power_symbol_167">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_167" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_167"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="inductor_v" s:width="10" s:height="50" transform="translate(602,1067)" id="cell_FB1">
+    <s:alias val="l_v"/>
+    <text x="15" y="15" s:attribute="ref" class="cell_FB1">FB1</text>
+    <text x="15" y="35" s:attribute="value" class="cell_FB1">600@100MHzH</text>
+    <path d="M5,5 A5,5 0 0 1 5,15 A5,5 0 0 1 5,25 A5,5 0 0 1 5,35 A5,5 0 0 1 5,45" class="cell_FB1"/>
+    <path d="M5,0 V5 M5,45 V50" class="connect cell_FB1"/>
+    <g s:x="5" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="5" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(532,1207)" id="cell_power_symbol_26">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_26" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_26"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(527,1137)" id="cell_C4">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C4">C4</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C4">1uF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C4"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C4"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(597,1207)" id="cell_power_symbol_27">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_27" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_27"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(592,1137)" id="cell_C7">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C7">C7</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C7">100pF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C7"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C7"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(207,1227)" id="cell_power_symbol_28">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_28" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_28"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(202,1157)" id="cell_C6">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C6">C6</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C6">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C6"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C6"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(272,1227)" id="cell_power_symbol_29">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_29" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_29"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(267,1157)" id="cell_C13">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C13">C13</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C13">4.7uF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C13"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C13"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(301,82)" id="cell_power_symbol_32">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_32" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_32"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(296,12)" id="cell_C8">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C8">C8</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C8">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C8"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C8"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1345.02,249.5)" id="cell_power_symbol_3">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_3" s:attribute="name">VBUS_IN</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_3"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="resistor_v" s:width="10" s:height="50" transform="translate(1350.02,284.5)" id="cell_R22">
+    <s:alias val="r_v"/>
+    <text x="15" y="15" s:attribute="ref" class="cell_R22">R22</text>
+    <text x="15" y="30" s:attribute="value" class="cell_R22">51.1kΩ</text>
+    <path d="M0,10 V40 H10 V10 Z" class="symbol cell_R22"/>
+    <path d="M5,0 V10 M5,40 V50" class="connect cell_R22"/>
+    <g s:x="5" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="5" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(460,22)" id="cell_power_symbol_1">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_1" s:attribute="name">VBUS_IN</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_1"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(470,146)" id="cell_power_symbol_14">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_14" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_14"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(497,83)" id="cell_D1">
+    <text x="15" y="-20" class="nodelabel cell_D1" s:attribute="ref">D1</text>
+    <text class="nodelabel cell_D1" x="15" y="-5" s:attribute="value">TPD2E001DRLR</text>
+    <rect width="30" height="40" x="0" y="0" s:generic="body" class="cell_D1"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_D1~VCC" class="net_VBUS_IN">
+      <text x="-3" y="-4" class="inputPortLabel cell_D1">1</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCC</text>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_D1~GND" class="net_GND">
+      <text x="-3" y="-4" class="inputPortLabel cell_D1">4</text>
+      <text x="5" y="0" class="insideInputPortLabel">GND</text>
+    </g>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(389.02,450)" id="cell_power_symbol_2">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_2" s:attribute="name">VBUS_IN</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_2"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(671.02,481.5)" id="cell_power_symbol_164">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_164" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_164"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(530.02,574)" id="cell_power_symbol_16">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_16" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_16"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(416.02,511)" id="cell_U3">
+    <text x="30" y="-20" class="nodelabel cell_U3" s:attribute="ref">U3</text>
+    <text class="nodelabel cell_U3" x="30" y="-5" s:attribute="value">MIC5504-3.3YMT</text>
+    <rect width="60" height="40" x="0" y="0" s:generic="body" class="cell_U3"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U3~IN" class="net_VBUS_IN">
+      <text x="-3" y="-4" class="inputPortLabel cell_U3">4</text>
+      <text x="5" y="0" class="insideInputPortLabel">IN</text>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U3~EN" class="net_VBUS_IN">
+      <text x="-3" y="-4" class="inputPortLabel cell_U3">3</text>
+      <text x="5" y="0" class="insideInputPortLabel">EN</text>
+    </g>
+    <g transform="translate(60,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U3~OUT" class="net_PP3300">
+      <text x="5" y="-4" class="outputPortLabel cell_U3">1</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">OUT</text>
+    </g>
+    <g transform="translate(60,30)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U3~GND" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U3">2, G1</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">GND</text>
+    </g>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(389.02,629)" id="cell_power_symbol_15">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_15" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_15"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(384.02,559)" id="cell_C9">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C9">C9</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C9">2.2uF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C9"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C9"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(736.02,601.5)" id="cell_power_symbol_17">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_17" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_17"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(731.02,531.5)" id="cell_C10">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C10">C10</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C10">10uF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C10"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C10"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(671.02,601.5)" id="cell_power_symbol_18">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_18" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_18"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(666.02,531.5)" id="cell_C12">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C12">C12</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C12">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C12"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C12"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(600.02,601.5)" id="cell_power_symbol_19">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_19" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_19"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(595.02,531.5)" id="cell_C15">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C15">C15</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C15">1000pF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C15"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C15"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(137.01999999999998,450)" id="cell_power_symbol_198">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_198" s:attribute="name">PP1800_VIN</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_198"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(336.02,481.5)" id="cell_power_symbol_199">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_199" s:attribute="name">PP1800</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_199"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(266.02,574)" id="cell_power_symbol_21">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_21" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_21"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(164.01999999999998,511)" id="cell_U7">
+    <text x="30" y="-20" class="nodelabel cell_U7" s:attribute="ref">U7</text>
+    <text class="nodelabel cell_U7" x="30" y="-5" s:attribute="value">TLV70018DSER</text>
+    <rect width="60" height="40" x="0" y="0" s:generic="body" class="cell_U7"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U7~IN" class="net_PP1800_VIN">
+      <text x="-3" y="-4" class="inputPortLabel cell_U7">1</text>
+      <text x="5" y="0" class="insideInputPortLabel">IN</text>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U7~EN" class="net_PP1800_VIN">
+      <text x="-3" y="-4" class="inputPortLabel cell_U7">6</text>
+      <text x="5" y="0" class="insideInputPortLabel">EN</text>
+    </g>
+    <g transform="translate(60,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U7~OUT" class="net_PP1800">
+      <text x="5" y="-4" class="outputPortLabel cell_U7">3</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">OUT</text>
+    </g>
+    <g transform="translate(60,30)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U7~GND" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U7">2</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">GND</text>
+    </g>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(12.019999999999982,450)" id="cell_power_symbol_165">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_165" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_165"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(39.01999999999998,511)" id="cell_D2">
+    <text x="24" y="-20" class="nodelabel cell_D2" s:attribute="ref">D2</text>
+    <text class="nodelabel cell_D2" x="24" y="-5" s:attribute="value">240-800MV</text>
+    <rect width="48" height="40" x="0" y="0" s:generic="body" class="cell_D2"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_D2~A1" class="net_PP3300">
+      <text x="-3" y="-4" class="inputPortLabel cell_D2">1</text>
+      <text x="5" y="0" class="insideInputPortLabel">A1</text>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_D2~A2" class="net_PP3300">
+      <text x="-3" y="-4" class="inputPortLabel cell_D2">2</text>
+      <text x="5" y="0" class="insideInputPortLabel">A2</text>
+    </g>
+    <g transform="translate(48,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_D2~K" class="net_PP1800_VIN">
+      <text x="5" y="-4" class="outputPortLabel cell_D2">3</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">K</text>
+    </g>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(127.01999999999998,631.5)" id="cell_power_symbol_20">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_20" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_20"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(122.01999999999998,561.5)" id="cell_C22">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C22">C22</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C22">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C22"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C22"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(336.02,601.5)" id="cell_power_symbol_22">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_22" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_22"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(331.02,531.5)" id="cell_C19">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C19">C19</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C19">1uF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C19"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C19"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(596,96)" id="cell_power_symbol_31">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_31" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_31"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(623,38)" id="cell_CN2">
+    <text x="27" y="-20" class="nodelabel cell_CN2" s:attribute="ref">CN2</text>
+    <text class="nodelabel cell_CN2" x="27" y="-5" s:attribute="value">FH34SRJ-8S-0.5SH(50)</text>
+    <rect width="54" height="20" x="0" y="0" s:generic="body" class="cell_CN2"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_CN2~GND" class="net_GND">
+      <text x="-3" y="-4" class="inputPortLabel cell_CN2">1</text>
+      <text x="5" y="0" class="insideInputPortLabel">GND</text>
+    </g>
+    <g transform="translate(54,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_CN2~G" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_CN2">G1, G2</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">G</text>
+    </g>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1129,905)" id="cell_power_symbol_34">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_34" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_34"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1452,741)" id="cell_power_symbol_217">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_217" s:attribute="name">DUT_SPI2</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_217"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1119,741)" id="cell_power_symbol_231">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_231" s:attribute="name">DUT_SPI1</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_231"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1535,792.5)" id="cell_power_symbol_241">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_241" s:attribute="name">DUT_UART2</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_241"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(965,812.5)" id="cell_power_symbol_266">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_266" s:attribute="name">DUT_JTAG</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_266"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1624,812.5)" id="cell_power_symbol_276">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_276" s:attribute="name">DUT_UART1</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_276"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1048,812.5)" id="cell_power_symbol_169">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_169" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_169"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(1294,802)" id="cell_J3">
+    <text x="72" y="-20" class="nodelabel cell_J3" s:attribute="ref">J3</text>
+    <text class="nodelabel cell_J3" x="72" y="-5" s:attribute="value">AXK850145WG</text>
+    <rect width="144" height="80" x="0" y="0" s:generic="body" class="cell_J3"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_J3~GND" class="net_GND">
+      <text x="-3" y="-4" class="inputPortLabel cell_J3">1, 8, 15, 20, 31, 36, 42</text>
+      <text x="5" y="0" class="insideInputPortLabel">GND</text>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_J3~SPI1_VREF" class="net_PPDUT_SPI1_VREF">
+      <text x="-3" y="-4" class="inputPortLabel cell_J3">13</text>
+      <text x="5" y="0" class="insideInputPortLabel">SPI1_VREF</text>
+    </g>
+    <g transform="translate(0,50)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_J3~JTAG_VREF" class="net_PPDUT_JTAG_VREF">
+      <text x="-3" y="-4" class="inputPortLabel cell_J3">29</text>
+      <text x="5" y="0" class="insideInputPortLabel">JTAG_VREF</text>
+    </g>
+    <g transform="translate(0,70)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_J3~I2C_3.3V" class="net_PP3300">
+      <text x="-3" y="-4" class="inputPortLabel cell_J3">35</text>
+      <text x="5" y="0" class="insideInputPortLabel">I2C_3.3V</text>
+    </g>
+    <g transform="translate(144,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_J3~SPI2_VREF" class="net_PPDUT_SPI2_VREF">
+      <text x="5" y="-4" class="outputPortLabel cell_J3">6</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">SPI2_VREF</text>
+    </g>
+    <g transform="translate(144,30)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_J3~UART2_VREF" class="net_PPDUT_UART2_VREF">
+      <text x="5" y="-4" class="outputPortLabel cell_J3">18</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">UART2_VREF</text>
+    </g>
+    <g transform="translate(144,50)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_J3~UART1_VREF" class="net_PPDUT_UART1_VREF">
+      <text x="5" y="-4" class="outputPortLabel cell_J3">34</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">UART1_VREF</text>
+    </g>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1125.02,198)" id="cell_power_symbol_170">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_170" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_170"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(995.02,218)" id="cell_power_symbol_200">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_200" s:attribute="name">PP1800</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_200"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1055.02,333)" id="cell_power_symbol_36">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_36" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_36"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1185.02,350.5)" id="cell_power_symbol_37">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_37" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_37"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(1218.02,227.5)" id="cell_U9">
+    <text x="15" y="-20" class="nodelabel cell_U9" s:attribute="ref">U9</text>
+    <text class="nodelabel cell_U9" x="15" y="-5" s:attribute="value">TCA6416ARTWR</text>
+    <rect width="30" height="100" x="0" y="0" s:generic="body" class="cell_U9"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U9~VCCI" class="net_PP3300">
+      <text x="-3" y="-4" class="inputPortLabel cell_U9">23</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCCI</text>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U9~VCCP" class="net_PP1800">
+      <text x="-3" y="-4" class="inputPortLabel cell_U9">21</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCCP</text>
+    </g>
+    <g transform="translate(0,50)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U9~GND" class="net_GND">
+      <text x="-3" y="-4" class="inputPortLabel cell_U9">9</text>
+      <text x="5" y="0" class="insideInputPortLabel">GND</text>
+    </g>
+    <g transform="translate(0,70)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U9~PAD" class="net_GND">
+      <text x="-3" y="-4" class="inputPortLabel cell_U9">25</text>
+      <text x="5" y="0" class="insideInputPortLabel">PAD</text>
+    </g>
+    <g transform="translate(0,90)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U9~A0" class="net_GND">
+      <text x="-3" y="-4" class="inputPortLabel cell_U9">18</text>
+      <text x="5" y="0" class="insideInputPortLabel">A0</text>
+    </g>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1125.02,378)" id="cell_power_symbol_35">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_35" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_35"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(1120.02,308)" id="cell_C25">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C25">C25</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C25">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C25"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C25"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(995.02,338)" id="cell_power_symbol_38">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_38" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_38"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(990.02,268)" id="cell_C20">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C20">C20</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C20">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C20"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C20"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(443.02,198)" id="cell_power_symbol_216">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_216" s:attribute="name">DUT_SPI2</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_216"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(596.02,302)" id="cell_power_symbol_39">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_39" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_39"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(470.02,259)" id="cell_U14">
+    <text x="36" y="-20" class="nodelabel cell_U14" s:attribute="ref">U14</text>
+    <text class="nodelabel cell_U14" x="36" y="-5" s:attribute="value">SN74AVC1T45DRLR</text>
+    <rect width="72" height="20" x="0" y="0" s:generic="body" class="cell_U14"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U14~VCCB" class="net_PPDUT_SPI2_VREF">
+      <text x="-3" y="-4" class="inputPortLabel cell_U14">6</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCCB</text>
+    </g>
+    <g transform="translate(72,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U14~GND" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U14">2</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">GND</text>
+    </g>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(418,102)" id="cell_power_symbol_40">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_40" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_40"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(413,32)" id="cell_C33">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C33">C33</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C33">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C33"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C33"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(343,102)" id="cell_power_symbol_41">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_41" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_41"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="resistor_v" s:width="10" s:height="50" transform="translate(348,32)" id="cell_R48">
+    <s:alias val="r_v"/>
+    <text x="15" y="15" s:attribute="ref" class="cell_R48">R48</text>
+    <text x="15" y="30" s:attribute="value" class="cell_R48">4.7kΩ</text>
+    <path d="M0,10 V40 H10 V10 Z" class="symbol cell_R48"/>
+    <path d="M5,0 V10 M5,40 V50" class="connect cell_R48"/>
+    <g s:x="5" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="5" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(443.02,357)" id="cell_power_symbol_42">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_42" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_42"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(438.02,287)" id="cell_C29">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C29">C29</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C29">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C29"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C29"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(648.02,198)" id="cell_power_symbol_267">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_267" s:attribute="name">DUT_JTAG</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_267"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(638.02,322)" id="cell_power_symbol_43">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_43" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_43"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(693.02,259)" id="cell_J4">
+    <text x="15" y="-20" class="nodelabel cell_J4" s:attribute="ref">J4</text>
+    <text class="nodelabel cell_J4" x="15" y="-5" s:attribute="value">HDR_2X5_50MIL-210-00939-00-SAMTEC_FTSH-105-01</text>
+    <rect width="30" height="40" x="0" y="0" s:generic="body" class="cell_J4"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_J4~VCC" class="net_PPDUT_JTAG_VREF">
+      <text x="-3" y="-4" class="inputPortLabel cell_J4">1</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCC</text>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_J4~GND" class="net_GND">
+      <text x="-3" y="-4" class="inputPortLabel cell_J4">3, 5</text>
+      <text x="5" y="0" class="insideInputPortLabel">GND</text>
+    </g>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1310.02,450)" id="cell_power_symbol_173">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_173" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_173"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1156.02,501.5)" id="cell_power_symbol_268">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_268" s:attribute="name">DUT_JTAG</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_268"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1239.02,501.5)" id="cell_power_symbol_177">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_177" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_177"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1478.02,450)" id="cell_power_symbol_178">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_178" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_178"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1488.02,566.5)" id="cell_power_symbol_46">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_46" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_46"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(1343.02,511)" id="cell_U56">
+    <text x="39" y="-20" class="nodelabel cell_U56" s:attribute="ref">U56</text>
+    <text class="nodelabel cell_U56" x="39" y="-5" s:attribute="value">SN74AVC4T774RSVR</text>
+    <rect width="78" height="60" x="0" y="0" s:generic="body" class="cell_U56"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U56~VCCA" class="net_PP3300">
+      <text x="-3" y="-4" class="inputPortLabel cell_U56">14</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCCA</text>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U56~VCCB" class="net_PPDUT_JTAG_VREF">
+      <text x="-3" y="-4" class="inputPortLabel cell_U56">13</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCCB</text>
+    </g>
+    <g transform="translate(0,50)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U56~A1" class="net_PP3300">
+      <text x="-3" y="-4" class="inputPortLabel cell_U56">1</text>
+      <text x="5" y="0" class="insideInputPortLabel">A1</text>
+    </g>
+    <g transform="translate(78,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U56~DIR1" class="net_PP3300">
+      <text x="5" y="-4" class="outputPortLabel cell_U56">15</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">DIR1</text>
+    </g>
+    <g transform="translate(78,30)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U56~GND" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U56">8</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">GND</text>
+    </g>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1310.02,649)" id="cell_power_symbol_44">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_44" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_44"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(1305.02,579)" id="cell_C109">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C109">C109</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C109">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C109"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C109"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1156.02,621.5)" id="cell_power_symbol_45">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_45" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_45"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(1151.02,551.5)" id="cell_C108">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C108">C108</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C108">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C108"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C108"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(550,741)" id="cell_power_symbol_174">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_174" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_174"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(467,792.5)" id="cell_power_symbol_269">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_269" s:attribute="name">DUT_JTAG</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_269"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(923,837.5)" id="cell_power_symbol_54">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_54" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_54"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(858,857.5)" id="cell_power_symbol_55">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_55" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_55"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(728,917.5)" id="cell_power_symbol_56">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_56" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_56"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(718,741)" id="cell_power_symbol_179">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_179" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_179"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(793,917.5)" id="cell_power_symbol_49">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_49" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_49"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(583,802)" id="cell_U55">
+    <text x="39" y="-20" class="nodelabel cell_U55" s:attribute="ref">U55</text>
+    <text class="nodelabel cell_U55" x="39" y="-5" s:attribute="value">SN74AVC4T774RSVR</text>
+    <rect width="78" height="100" x="0" y="0" s:generic="body" class="cell_U55"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U55~VCCA" class="net_PP3300">
+      <text x="-3" y="-4" class="inputPortLabel cell_U55">14</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCCA</text>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U55~VCCB" class="net_PPDUT_JTAG_VREF">
+      <text x="-3" y="-4" class="inputPortLabel cell_U55">13</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCCB</text>
+    </g>
+    <g transform="translate(78,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U55~DIR1" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U55">15</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">DIR1</text>
+    </g>
+    <g transform="translate(78,30)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U55~DIR2" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U55">16</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">DIR2</text>
+    </g>
+    <g transform="translate(78,50)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U55~DIR3" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U55">5</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">DIR3</text>
+    </g>
+    <g transform="translate(78,70)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U55~DIR4" class="net_PP3300">
+      <text x="5" y="-4" class="outputPortLabel cell_U55">6</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">DIR4</text>
+    </g>
+    <g transform="translate(78,90)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U55~GND" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U55">8</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">GND</text>
+    </g>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(550,980)" id="cell_power_symbol_47">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_47" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_47"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(545,910)" id="cell_C111">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C111">C111</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C111">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C111"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C111"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(467,912.5)" id="cell_power_symbol_48">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_48" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_48"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(462,842.5)" id="cell_C110">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C110">C110</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C110">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C110"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C110"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(976.02,22)" id="cell_power_symbol_175">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_175" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_175"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1036.02,114.5)" id="cell_power_symbol_51">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_51" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_51"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(1063.02,51.5)" id="cell_U1">
+    <text x="15" y="-20" class="nodelabel cell_U1" s:attribute="ref">U1</text>
+    <text class="nodelabel cell_U1" x="15" y="-5" s:attribute="value">313-00929-00</text>
+    <rect width="30" height="40" x="0" y="0" s:generic="body" class="cell_U1"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U1~VCC" class="net_PP3300">
+      <text x="-3" y="-4" class="inputPortLabel cell_U1">5</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCC</text>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U1~GND" class="net_GND">
+      <text x="-3" y="-4" class="inputPortLabel cell_U1">2</text>
+      <text x="5" y="0" class="insideInputPortLabel">GND</text>
+    </g>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(976.02,142)" id="cell_power_symbol_50">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_50" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_50"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(971.02,72)" id="cell_C11">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C11">C11</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C11">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C11"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C11"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(17,198)" id="cell_power_symbol_176">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_176" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_176"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(77,290.5)" id="cell_power_symbol_53">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_53" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_53"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(110,227.5)" id="cell_U10">
+    <text x="15" y="-20" class="nodelabel cell_U10" s:attribute="ref">U10</text>
+    <text class="nodelabel cell_U10" x="15" y="-5" s:attribute="value">SN74LVC1G126YZPR</text>
+    <rect width="30" height="40" x="0" y="0" s:generic="body" class="cell_U10"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U10~VCC" class="net_PP3300">
+      <text x="-3" y="-4" class="inputPortLabel cell_U10">A2</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCC</text>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U10~GND" class="net_GND">
+      <text x="-3" y="-4" class="inputPortLabel cell_U10">C1</text>
+      <text x="5" y="0" class="insideInputPortLabel">GND</text>
+    </g>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(17,318)" id="cell_power_symbol_52">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_52" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_52"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(12,248)" id="cell_C3">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C3">C3</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C3">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C3"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C3"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(100,741)" id="cell_power_symbol_181">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_181" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_181"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(17,792.5)" id="cell_power_symbol_234">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_234" s:attribute="name">DUT_SPI1</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_234"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(420,897.5)" id="cell_power_symbol_64">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_64" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_64"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(268,741)" id="cell_power_symbol_182">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_182" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_182"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(339,772.5)" id="cell_power_symbol_183">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_183" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_183"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(410,772.5)" id="cell_power_symbol_184">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_184" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_184"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(278,917.5)" id="cell_power_symbol_63">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_63" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_63"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(133,802)" id="cell_U57">
+    <text x="39" y="-20" class="nodelabel cell_U57" s:attribute="ref">U57</text>
+    <text class="nodelabel cell_U57" x="39" y="-5" s:attribute="value">SN74AVC4T774RSVR</text>
+    <rect width="78" height="100" x="0" y="0" s:generic="body" class="cell_U57"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U57~VCCA" class="net_PP3300">
+      <text x="-3" y="-4" class="inputPortLabel cell_U57">14</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCCA</text>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U57~VCCB" class="net_PPDUT_SPI1_VREF">
+      <text x="-3" y="-4" class="inputPortLabel cell_U57">13</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCCB</text>
+    </g>
+    <g transform="translate(78,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U57~DIR1" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U57">15</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">DIR1</text>
+    </g>
+    <g transform="translate(78,30)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U57~DIR2" class="net_PP3300">
+      <text x="5" y="-4" class="outputPortLabel cell_U57">16</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">DIR2</text>
+    </g>
+    <g transform="translate(78,50)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U57~DIR3" class="net_PP3300">
+      <text x="5" y="-4" class="outputPortLabel cell_U57">5</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">DIR3</text>
+    </g>
+    <g transform="translate(78,70)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U57~DIR4" class="net_PP3300">
+      <text x="5" y="-4" class="outputPortLabel cell_U57">6</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">DIR4</text>
+    </g>
+    <g transform="translate(78,90)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U57~GND" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U57">8</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">GND</text>
+    </g>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(100,980)" id="cell_power_symbol_61">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_61" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_61"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(95,910)" id="cell_C107">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C107">C107</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C107">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C107"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C107"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(17,912.5)" id="cell_power_symbol_62">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_62" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_62"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(12,842.5)" id="cell_C106">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C106">C106</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C106">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C106"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C106"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1535.02,481.5)" id="cell_power_symbol_186">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_186" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_186"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1606.02,450)" id="cell_power_symbol_220">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_220" s:attribute="name">DUT_SPI2</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_220"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1855.02,606.5)" id="cell_power_symbol_72">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_72" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_72"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1774.02,450)" id="cell_power_symbol_187">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_187" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_187"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1916.02,521.5)" id="cell_power_symbol_188">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_188" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_188"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1845.02,481.5)" id="cell_power_symbol_189">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_189" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_189"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1784.02,626.5)" id="cell_power_symbol_71">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_71" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_71"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(1639.02,511)" id="cell_U59">
+    <text x="39" y="-20" class="nodelabel cell_U59" s:attribute="ref">U59</text>
+    <text class="nodelabel cell_U59" x="39" y="-5" s:attribute="value">SN74AVC4T774RSVR</text>
+    <rect width="78" height="100" x="0" y="0" s:generic="body" class="cell_U59"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U59~VCCA" class="net_PP3300">
+      <text x="-3" y="-4" class="inputPortLabel cell_U59">14</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCCA</text>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U59~VCCB" class="net_PPDUT_SPI2_VREF">
+      <text x="-3" y="-4" class="inputPortLabel cell_U59">13</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCCB</text>
+    </g>
+    <g transform="translate(78,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U59~DIR1" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U59">15</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">DIR1</text>
+    </g>
+    <g transform="translate(78,30)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U59~DIR2" class="net_PP3300">
+      <text x="5" y="-4" class="outputPortLabel cell_U59">16</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">DIR2</text>
+    </g>
+    <g transform="translate(78,50)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U59~DIR3" class="net_PP3300">
+      <text x="5" y="-4" class="outputPortLabel cell_U59">5</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">DIR3</text>
+    </g>
+    <g transform="translate(78,70)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U59~DIR4" class="net_PP3300">
+      <text x="5" y="-4" class="outputPortLabel cell_U59">6</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">DIR4</text>
+    </g>
+    <g transform="translate(78,90)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U59~GND" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U59">8</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">GND</text>
+    </g>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1535.02,601.5)" id="cell_power_symbol_69">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_69" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_69"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(1530.02,531.5)" id="cell_C120">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C120">C120</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C120">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C120"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C120"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1606.02,689)" id="cell_power_symbol_70">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_70" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_70"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(1601.02,619)" id="cell_C119">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C119">C119</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C119">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C119"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C119"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1162.02,22)" id="cell_power_symbol_201">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_201" s:attribute="name">PP1800</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_201"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1303.02,22)" id="cell_power_symbol_232">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_232" s:attribute="name">DUT_SPI1</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_232"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1313.02,138.5)" id="cell_power_symbol_57">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_57" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_57"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(1195.02,83)" id="cell_U43">
+    <text x="30" y="-20" class="nodelabel cell_U43" s:attribute="ref">U43</text>
+    <text class="nodelabel cell_U43" x="30" y="-5" s:attribute="value">ADP194ACBZ-R7</text>
+    <rect width="60" height="40" x="0" y="0" s:generic="body" class="cell_U43"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U43~IN" class="net_PP1800">
+      <text x="-3" y="-4" class="inputPortLabel cell_U43">A1</text>
+      <text x="5" y="0" class="insideInputPortLabel">IN</text>
+    </g>
+    <g transform="translate(60,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U43~OUT" class="net_PPDUT_SPI1_VREF">
+      <text x="5" y="-4" class="outputPortLabel cell_U43">A2</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">OUT</text>
+    </g>
+    <g transform="translate(60,30)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U43~GND" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U43">B2</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">GND</text>
+    </g>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1765.02,22)" id="cell_power_symbol_180">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_180" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_180"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1916.02,53.5)" id="cell_power_symbol_233">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_233" s:attribute="name">DUT_SPI1</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_233"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1906.02,146)" id="cell_power_symbol_59">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_59" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_59"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(1798.02,83)" id="cell_U42">
+    <text x="30" y="-20" class="nodelabel cell_U42" s:attribute="ref">U42</text>
+    <text class="nodelabel cell_U42" x="30" y="-5" s:attribute="value">ADP194ACBZ-R7</text>
+    <rect width="60" height="40" x="0" y="0" s:generic="body" class="cell_U42"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U42~IN" class="net_PP3300">
+      <text x="-3" y="-4" class="inputPortLabel cell_U42">A1</text>
+      <text x="5" y="0" class="insideInputPortLabel">IN</text>
+    </g>
+    <g transform="translate(60,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U42~OUT" class="net_PPDUT_SPI1_VREF">
+      <text x="5" y="-4" class="outputPortLabel cell_U42">A2</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">OUT</text>
+    </g>
+    <g transform="translate(60,30)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U42~GND" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U42">B2</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">GND</text>
+    </g>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1363.02,22)" id="cell_power_symbol_202">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_202" s:attribute="name">PP1800</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_202"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1504.02,22)" id="cell_power_symbol_218">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_218" s:attribute="name">DUT_SPI2</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_218"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1514.02,138.5)" id="cell_power_symbol_65">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_65" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_65"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(1396.02,83)" id="cell_U23">
+    <text x="30" y="-20" class="nodelabel cell_U23" s:attribute="ref">U23</text>
+    <text class="nodelabel cell_U23" x="30" y="-5" s:attribute="value">ADP194ACBZ-R7</text>
+    <rect width="60" height="40" x="0" y="0" s:generic="body" class="cell_U23"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U23~IN" class="net_PP1800">
+      <text x="-3" y="-4" class="inputPortLabel cell_U23">A1</text>
+      <text x="5" y="0" class="insideInputPortLabel">IN</text>
+    </g>
+    <g transform="translate(60,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U23~OUT" class="net_PPDUT_SPI2_VREF">
+      <text x="5" y="-4" class="outputPortLabel cell_U23">A2</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">OUT</text>
+    </g>
+    <g transform="translate(60,30)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U23~GND" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U23">B2</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">GND</text>
+    </g>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1564.02,22)" id="cell_power_symbol_185">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_185" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_185"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1705.02,22)" id="cell_power_symbol_219">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_219" s:attribute="name">DUT_SPI2</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_219"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1715.02,138.5)" id="cell_power_symbol_67">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_67" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_67"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(1597.02,83)" id="cell_U24">
+    <text x="30" y="-20" class="nodelabel cell_U24" s:attribute="ref">U24</text>
+    <text class="nodelabel cell_U24" x="30" y="-5" s:attribute="value">ADP194ACBZ-R7</text>
+    <rect width="60" height="40" x="0" y="0" s:generic="body" class="cell_U24"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U24~IN" class="net_PP3300">
+      <text x="-3" y="-4" class="inputPortLabel cell_U24">A1</text>
+      <text x="5" y="0" class="insideInputPortLabel">IN</text>
+    </g>
+    <g transform="translate(60,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U24~OUT" class="net_PPDUT_SPI2_VREF">
+      <text x="5" y="-4" class="outputPortLabel cell_U24">A2</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">OUT</text>
+    </g>
+    <g transform="translate(60,30)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U24~GND" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U24">B2</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">GND</text>
+    </g>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(797.02,22)" id="cell_power_symbol_190">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_190" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_190"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(857.02,114.5)" id="cell_power_symbol_74">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_74" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_74"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(890.02,51.5)" id="cell_U5">
+    <text x="15" y="-20" class="nodelabel cell_U5" s:attribute="ref">U5</text>
+    <text class="nodelabel cell_U5" x="15" y="-5" s:attribute="value">TS3A24159</text>
+    <rect width="30" height="40" x="0" y="0" s:generic="body" class="cell_U5"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U5~V+" class="net_PP3300">
+      <text x="-3" y="-4" class="inputPortLabel cell_U5">D2</text>
+      <text x="5" y="0" class="insideInputPortLabel">V+</text>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U5~GND" class="net_GND">
+      <text x="-3" y="-4" class="inputPortLabel cell_U5">A2</text>
+      <text x="5" y="0" class="insideInputPortLabel">GND</text>
+    </g>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(797.02,142)" id="cell_power_symbol_73">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_73" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_73"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(792.02,72)" id="cell_C14">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C14">C14</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C14">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C14"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C14"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(872.02,450)" id="cell_power_symbol_191">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_191" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_191"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(783.02,501.5)" id="cell_power_symbol_277">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_277" s:attribute="name">DUT_UART1</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_277"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1034.02,450)" id="cell_power_symbol_192">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_192" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_192"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1044.02,586.5)" id="cell_power_symbol_78">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_78" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_78"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1109.02,586.5)" id="cell_power_symbol_77">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_77" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_77"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(899.02,511)" id="cell_U45">
+    <text x="39" y="-20" class="nodelabel cell_U45" s:attribute="ref">U45</text>
+    <text class="nodelabel cell_U45" x="39" y="-5" s:attribute="value">SN74AVC2T245RSWR</text>
+    <rect width="78" height="60" x="0" y="0" s:generic="body" class="cell_U45"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U45~VCCA" class="net_PP3300">
+      <text x="-3" y="-4" class="inputPortLabel cell_U45">7</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCCA</text>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U45~VCCB" class="net_PPDUT_UART1_VREF">
+      <text x="-3" y="-4" class="inputPortLabel cell_U45">6</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCCB</text>
+    </g>
+    <g transform="translate(78,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U45~DIR1" class="net_PP3300">
+      <text x="5" y="-4" class="outputPortLabel cell_U45">10</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">DIR1</text>
+    </g>
+    <g transform="translate(78,30)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U45~DIR2" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U45">1</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">DIR2</text>
+    </g>
+    <g transform="translate(78,50)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U45~GND" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U45">3</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">GND</text>
+    </g>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(872.02,649)" id="cell_power_symbol_75">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_75" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_75"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(867.02,579)" id="cell_C76">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C76">C76</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C76">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C76"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C76"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(783.02,621.5)" id="cell_power_symbol_76">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_76" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_76"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(778.02,551.5)" id="cell_C77">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C77">C77</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C77">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C77"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C77"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1655.02,229.5)" id="cell_power_symbol_193">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_193" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_193"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1726.02,198)" id="cell_power_symbol_242">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_242" s:attribute="name">DUT_UART2</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_242"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(1898.02,229.5)" id="cell_power_symbol_194">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_194" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_194"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1953.02,314.5)" id="cell_power_symbol_82">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_82" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_82"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1888.02,342)" id="cell_power_symbol_81">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_81" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_81"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(1753.02,259)" id="cell_U4">
+    <text x="39" y="-20" class="nodelabel cell_U4" s:attribute="ref">U4</text>
+    <text class="nodelabel cell_U4" x="39" y="-5" s:attribute="value">SN74AVC2T245RSWR</text>
+    <rect width="78" height="60" x="0" y="0" s:generic="body" class="cell_U4"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U4~VCCA" class="net_PP3300">
+      <text x="-3" y="-4" class="inputPortLabel cell_U4">7</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCCA</text>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U4~VCCB" class="net_PPDUT_UART2_VREF">
+      <text x="-3" y="-4" class="inputPortLabel cell_U4">6</text>
+      <text x="5" y="0" class="insideInputPortLabel">VCCB</text>
+    </g>
+    <g transform="translate(78,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U4~DIR1" class="net_PP3300">
+      <text x="5" y="-4" class="outputPortLabel cell_U4">10</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">DIR1</text>
+    </g>
+    <g transform="translate(78,30)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U4~DIR2" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U4">1</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">DIR2</text>
+    </g>
+    <g transform="translate(78,50)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U4~GND" class="net_GND">
+      <text x="5" y="-4" class="outputPortLabel cell_U4">3</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">GND</text>
+    </g>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1655.02,349.5)" id="cell_power_symbol_79">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_79" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_79"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(1650.02,279.5)" id="cell_C91">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C91">C91</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C91">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C91"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C91"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(1726.02,397)" id="cell_power_symbol_80">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_power_symbol_80" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_power_symbol_80"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <g s:type="capacitor_v" s:width="30" s:height="50" transform="translate(1721.02,327)" id="cell_C90">
+    <s:alias val="c_v"/>
+    <text x="25" y="10" s:attribute="ref" class="cell_C90">C90</text>
+    <text x="25" y="45" s:attribute="value" class="cell_C90">100nF</text>
+    <path d="M0,20 H30 M0,30 H30" class="symbol cell_C90"/>
+    <path d="M15,0 V20 M15,30 V50" class="connect cell_C90"/>
+    <g s:x="15" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="15" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <line x1="270" x2="243" y1="289.5" y2="289.5" class="net_GND"/>
+  <line x1="243" x2="243" y1="289.5" y2="322" class="net_GND"/>
+  <line x1="331" x2="426" y1="269.5" y2="269.5" class="net_GND"/>
+  <line x1="426" x2="426" y1="269.5" y2="312" class="net_GND"/>
+  <line x1="426" x2="243" y1="312" y2="312" class="net_GND"/>
+  <circle cx="243" cy="312" r="2" style="fill:#000" class="net_GND"/>
+  <line x1="243" x2="243" y1="312" y2="322" class="net_GND"/>
+  <line x1="1570.02" x2="1618.02" y1="345.5" y2="345.5" class="net_GND"/>
+  <line x1="1618.02" x2="1618.02" y1="345.5" y2="383" class="net_GND"/>
+  <line x1="1432.02" x2="1432.02" y1="228" y2="233" class="net_VBUS_IN"/>
+  <line x1="43" x2="127" y1="1167" y2="1167" class="net_GND"/>
+  <line x1="127" x2="127" y1="1167" y2="1217" class="net_GND"/>
+  <line x1="127" x2="147" y1="1217" y2="1217" class="net_GND"/>
+  <circle cx="147" cy="1217" r="2" style="fill:#000" class="net_GND"/>
+  <line x1="147" x2="147" y1="1217" y2="1227" class="net_GND"/>
+  <line x1="43" x2="137" y1="1187" y2="1187" class="net_GND"/>
+  <line x1="137" x2="137" y1="1187" y2="1217" class="net_GND"/>
+  <line x1="137" x2="147" y1="1217" y2="1217" class="net_GND"/>
+  <circle cx="137" cy="1217" r="2" style="fill:#000" class="net_GND"/>
+  <line x1="147" x2="147" y1="1217" y2="1227" class="net_GND"/>
+  <line x1="43" x2="147" y1="1207" y2="1207" class="net_GND"/>
+  <line x1="147" x2="147" y1="1207" y2="1227" class="net_GND"/>
+  <line x1="118" x2="118" y1="62" y2="67" class="net_GND"/>
+  <line x1="165" x2="165" y1="62" y2="67" class="net_GND"/>
+  <line x1="212" x2="212" y1="62" y2="67" class="net_GND"/>
+  <line x1="259" x2="259" y1="62" y2="67" class="net_GND"/>
+  <line x1="22" x2="22" y1="52" y2="57" class="net_PP3300"/>
+  <line x1="70" x2="70" y1="52" y2="57" class="net_PP3300"/>
+  <line x1="412" x2="412" y1="1197" y2="1202" class="net_GND"/>
+  <line x1="412" x2="412" y1="1077" y2="1087" class="net_PP3300"/>
+  <line x1="412" x2="402" y1="1087" y2="1087" class="net_PP3300"/>
+  <line x1="402" x2="402" y1="1087" y2="1087" class="net_PP3300"/>
+  <circle cx="412" cy="1087" r="2" style="fill:#000" class="net_PP3300"/>
+  <circle cx="402" cy="1087" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="402" x2="43" y1="1087" y2="1087" class="net_PP3300"/>
+  <line x1="412" x2="412" y1="1077" y2="1107" class="net_PP3300"/>
+  <circle cx="412" cy="1107" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="412" x2="43" y1="1107" y2="1107" class="net_PP3300"/>
+  <line x1="43" x2="402" y1="1087" y2="1087" class="net_PP3300"/>
+  <line x1="402" x2="402" y1="1087" y2="1137" class="net_PP3300"/>
+  <line x1="402" x2="412" y1="1137" y2="1137" class="net_PP3300"/>
+  <circle cx="402" cy="1137" r="2" style="fill:#000" class="net_PP3300"/>
+  <circle cx="412" cy="1137" r="2" style="fill:#000" class="net_PP3300"/>
+  <circle cx="402" cy="1087" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="412" x2="412" y1="1137" y2="1147" class="net_PP3300"/>
+  <line x1="43" x2="402" y1="1087" y2="1087" class="net_PP3300"/>
+  <line x1="402" x2="402" y1="1087" y2="1137" class="net_PP3300"/>
+  <line x1="402" x2="477" y1="1137" y2="1137" class="net_PP3300"/>
+  <circle cx="402" cy="1087" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="477" x2="477" y1="1137" y2="1147" class="net_PP3300"/>
+  <line x1="43" x2="402" y1="1087" y2="1087" class="net_PP3300"/>
+  <line x1="402" x2="402" y1="1087" y2="1137" class="net_PP3300"/>
+  <line x1="402" x2="347" y1="1137" y2="1137" class="net_PP3300"/>
+  <circle cx="402" cy="1087" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="347" x2="347" y1="1137" y2="1147" class="net_PP3300"/>
+  <line x1="43" x2="412" y1="1107" y2="1107" class="net_PP3300"/>
+  <circle cx="412" cy="1107" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="412" x2="412" y1="1107" y2="1147" class="net_PP3300"/>
+  <line x1="43" x2="412" y1="1107" y2="1107" class="net_PP3300"/>
+  <line x1="412" x2="412" y1="1107" y2="1137" class="net_PP3300"/>
+  <line x1="412" x2="477" y1="1137" y2="1137" class="net_PP3300"/>
+  <circle cx="412" cy="1107" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="477" x2="477" y1="1137" y2="1147" class="net_PP3300"/>
+  <line x1="43" x2="412" y1="1107" y2="1107" class="net_PP3300"/>
+  <line x1="412" x2="412" y1="1107" y2="1137" class="net_PP3300"/>
+  <line x1="412" x2="347" y1="1137" y2="1137" class="net_PP3300"/>
+  <circle cx="412" cy="1107" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="347" x2="347" y1="1137" y2="1147" class="net_PP3300"/>
+  <line x1="477" x2="477" y1="1197" y2="1202" class="net_GND"/>
+  <line x1="347" x2="347" y1="1197" y2="1202" class="net_GND"/>
+  <line x1="607" x2="607" y1="1062" y2="1067" class="net_PP3300"/>
+  <line x1="542" x2="542" y1="1187" y2="1192" class="net_GND"/>
+  <line x1="505" x2="505" y1="1117" y2="1127" class="net_PP3300_PD_VDDA"/>
+  <line x1="505" x2="607" y1="1127" y2="1127" class="net_PP3300_PD_VDDA"/>
+  <line x1="607" x2="607" y1="1127" y2="1127" class="net_PP3300_PD_VDDA"/>
+  <circle cx="607" cy="1127" r="2" style="fill:#000" class="net_PP3300_PD_VDDA"/>
+  <circle cx="607" cy="1127" r="2" style="fill:#000" class="net_PP3300_PD_VDDA"/>
+  <line x1="607" x2="43" y1="1127" y2="1127" class="net_PP3300_PD_VDDA"/>
+  <line x1="607" x2="607" y1="1117" y2="1127" class="net_PP3300_PD_VDDA"/>
+  <circle cx="607" cy="1127" r="2" style="fill:#000" class="net_PP3300_PD_VDDA"/>
+  <line x1="607" x2="43" y1="1127" y2="1127" class="net_PP3300_PD_VDDA"/>
+  <line x1="43" x2="607" y1="1127" y2="1127" class="net_PP3300_PD_VDDA"/>
+  <line x1="607" x2="607" y1="1127" y2="1127" class="net_PP3300_PD_VDDA"/>
+  <line x1="607" x2="542" y1="1127" y2="1127" class="net_PP3300_PD_VDDA"/>
+  <circle cx="607" cy="1127" r="2" style="fill:#000" class="net_PP3300_PD_VDDA"/>
+  <circle cx="607" cy="1127" r="2" style="fill:#000" class="net_PP3300_PD_VDDA"/>
+  <line x1="542" x2="542" y1="1127" y2="1137" class="net_PP3300_PD_VDDA"/>
+  <line x1="43" x2="607" y1="1127" y2="1127" class="net_PP3300_PD_VDDA"/>
+  <circle cx="607" cy="1127" r="2" style="fill:#000" class="net_PP3300_PD_VDDA"/>
+  <line x1="607" x2="607" y1="1127" y2="1137" class="net_PP3300_PD_VDDA"/>
+  <line x1="607" x2="607" y1="1187" y2="1192" class="net_GND"/>
+  <line x1="217" x2="217" y1="1207" y2="1212" class="net_GND"/>
+  <line x1="282" x2="282" y1="1077" y2="1147" class="net_PP3300"/>
+  <circle cx="282" cy="1147" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="282" x2="43" y1="1147" y2="1147" class="net_PP3300"/>
+  <line x1="43" x2="282" y1="1147" y2="1147" class="net_PP3300"/>
+  <line x1="282" x2="282" y1="1147" y2="1147" class="net_PP3300"/>
+  <line x1="282" x2="217" y1="1147" y2="1147" class="net_PP3300"/>
+  <circle cx="282" cy="1147" r="2" style="fill:#000" class="net_PP3300"/>
+  <circle cx="282" cy="1147" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="217" x2="217" y1="1147" y2="1157" class="net_PP3300"/>
+  <line x1="43" x2="282" y1="1147" y2="1147" class="net_PP3300"/>
+  <circle cx="282" cy="1147" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="282" x2="282" y1="1147" y2="1157" class="net_PP3300"/>
+  <line x1="282" x2="282" y1="1207" y2="1212" class="net_GND"/>
+  <line x1="311" x2="311" y1="62" y2="67" class="net_GND"/>
+  <line x1="1355.02" x2="1355.02" y1="279.5" y2="284.5" class="net_VBUS_IN"/>
+  <line x1="497" x2="480" y1="113.5" y2="113.5" class="net_GND"/>
+  <line x1="480" x2="480" y1="113.5" y2="131" class="net_GND"/>
+  <line x1="477.02" x2="540.02" y1="541.5" y2="541.5" class="net_GND"/>
+  <line x1="540.02" x2="540.02" y1="541.5" y2="559" class="net_GND"/>
+  <line x1="399.02" x2="399.02" y1="609" y2="614" class="net_GND"/>
+  <line x1="399.02" x2="399.02" y1="480" y2="521.5" class="net_VBUS_IN"/>
+  <circle cx="399.02" cy="521.5" r="2" style="fill:#000" class="net_VBUS_IN"/>
+  <line x1="399.02" x2="416.02" y1="521.5" y2="521.5" class="net_VBUS_IN"/>
+  <line x1="399.02" x2="399.02" y1="480" y2="511.5" class="net_VBUS_IN"/>
+  <line x1="399.02" x2="389.02" y1="511.5" y2="511.5" class="net_VBUS_IN"/>
+  <line x1="389.02" x2="389.02" y1="511.5" y2="541.5" class="net_VBUS_IN"/>
+  <circle cx="399.02" cy="511.5" r="2" style="fill:#000" class="net_VBUS_IN"/>
+  <circle cx="389.02" cy="541.5" r="2" style="fill:#000" class="net_VBUS_IN"/>
+  <line x1="389.02" x2="416.02" y1="541.5" y2="541.5" class="net_VBUS_IN"/>
+  <line x1="416.02" x2="399.02" y1="521.5" y2="521.5" class="net_VBUS_IN"/>
+  <circle cx="399.02" cy="521.5" r="2" style="fill:#000" class="net_VBUS_IN"/>
+  <line x1="399.02" x2="399.02" y1="521.5" y2="559" class="net_VBUS_IN"/>
+  <line x1="416.02" x2="389.02" y1="541.5" y2="541.5" class="net_VBUS_IN"/>
+  <line x1="389.02" x2="389.02" y1="541.5" y2="549" class="net_VBUS_IN"/>
+  <line x1="389.02" x2="399.02" y1="549" y2="549" class="net_VBUS_IN"/>
+  <circle cx="399.02" cy="549" r="2" style="fill:#000" class="net_VBUS_IN"/>
+  <circle cx="389.02" cy="541.5" r="2" style="fill:#000" class="net_VBUS_IN"/>
+  <line x1="399.02" x2="399.02" y1="549" y2="559" class="net_VBUS_IN"/>
+  <line x1="746.02" x2="746.02" y1="581.5" y2="586.5" class="net_GND"/>
+  <line x1="681.02" x2="681.02" y1="511.5" y2="521.5" class="net_PP3300"/>
+  <circle cx="681.02" cy="521.5" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="681.02" x2="477.02" y1="521.5" y2="521.5" class="net_PP3300"/>
+  <line x1="477.02" x2="681.02" y1="521.5" y2="521.5" class="net_PP3300"/>
+  <line x1="681.02" x2="681.02" y1="521.5" y2="521.5" class="net_PP3300"/>
+  <line x1="681.02" x2="746.02" y1="521.5" y2="521.5" class="net_PP3300"/>
+  <circle cx="681.02" cy="521.5" r="2" style="fill:#000" class="net_PP3300"/>
+  <circle cx="681.02" cy="521.5" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="746.02" x2="746.02" y1="521.5" y2="531.5" class="net_PP3300"/>
+  <line x1="477.02" x2="681.02" y1="521.5" y2="521.5" class="net_PP3300"/>
+  <circle cx="681.02" cy="521.5" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="681.02" x2="681.02" y1="521.5" y2="531.5" class="net_PP3300"/>
+  <line x1="477.02" x2="681.02" y1="521.5" y2="521.5" class="net_PP3300"/>
+  <line x1="681.02" x2="681.02" y1="521.5" y2="521.5" class="net_PP3300"/>
+  <line x1="681.02" x2="610.02" y1="521.5" y2="521.5" class="net_PP3300"/>
+  <circle cx="681.02" cy="521.5" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="610.02" x2="610.02" y1="521.5" y2="531.5" class="net_PP3300"/>
+  <line x1="681.02" x2="681.02" y1="581.5" y2="586.5" class="net_GND"/>
+  <line x1="610.02" x2="610.02" y1="581.5" y2="586.5" class="net_GND"/>
+  <line x1="225.01999999999998" x2="276.02" y1="541.5" y2="541.5" class="net_GND"/>
+  <line x1="276.02" x2="276.02" y1="541.5" y2="559" class="net_GND"/>
+  <line x1="137.01999999999998" x2="137.01999999999998" y1="611.5" y2="616.5" class="net_GND"/>
+  <line x1="147.01999999999998" x2="147.01999999999998" y1="480" y2="521.5" class="net_PP1800_VIN"/>
+  <circle cx="147.01999999999998" cy="521.5" r="2" style="fill:#000" class="net_PP1800_VIN"/>
+  <line x1="147.01999999999998" x2="164.01999999999998" y1="521.5" y2="521.5" class="net_PP1800_VIN"/>
+  <line x1="147.01999999999998" x2="147.01999999999998" y1="480" y2="511.5" class="net_PP1800_VIN"/>
+  <line x1="147.01999999999998" x2="137.01999999999998" y1="511.5" y2="511.5" class="net_PP1800_VIN"/>
+  <line x1="137.01999999999998" x2="137.01999999999998" y1="511.5" y2="541.5" class="net_PP1800_VIN"/>
+  <circle cx="147.01999999999998" cy="511.5" r="2" style="fill:#000" class="net_PP1800_VIN"/>
+  <circle cx="137.01999999999998" cy="511.5" r="2" style="fill:#000" class="net_PP1800_VIN"/>
+  <circle cx="137.01999999999998" cy="541.5" r="2" style="fill:#000" class="net_PP1800_VIN"/>
+  <line x1="137.01999999999998" x2="164.01999999999998" y1="541.5" y2="541.5" class="net_PP1800_VIN"/>
+  <line x1="147.01999999999998" x2="147.01999999999998" y1="480" y2="511.5" class="net_PP1800_VIN"/>
+  <line x1="147.01999999999998" x2="127.01999999999998" y1="511.5" y2="511.5" class="net_PP1800_VIN"/>
+  <line x1="127.01999999999998" x2="127.01999999999998" y1="511.5" y2="521.5" class="net_PP1800_VIN"/>
+  <circle cx="127.01999999999998" cy="521.5" r="2" style="fill:#000" class="net_PP1800_VIN"/>
+  <line x1="127.01999999999998" x2="88.01999999999998" y1="521.5" y2="521.5" class="net_PP1800_VIN"/>
+  <line x1="164.01999999999998" x2="147.01999999999998" y1="521.5" y2="521.5" class="net_PP1800_VIN"/>
+  <line x1="147.01999999999998" x2="147.01999999999998" y1="521.5" y2="551.5" class="net_PP1800_VIN"/>
+  <line x1="147.01999999999998" x2="137.01999999999998" y1="551.5" y2="551.5" class="net_PP1800_VIN"/>
+  <circle cx="147.01999999999998" cy="521.5" r="2" style="fill:#000" class="net_PP1800_VIN"/>
+  <line x1="137.01999999999998" x2="137.01999999999998" y1="551.5" y2="561.5" class="net_PP1800_VIN"/>
+  <line x1="164.01999999999998" x2="137.01999999999998" y1="541.5" y2="541.5" class="net_PP1800_VIN"/>
+  <circle cx="137.01999999999998" cy="541.5" r="2" style="fill:#000" class="net_PP1800_VIN"/>
+  <line x1="137.01999999999998" x2="137.01999999999998" y1="541.5" y2="561.5" class="net_PP1800_VIN"/>
+  <line x1="88.01999999999998" x2="127.01999999999998" y1="521.5" y2="521.5" class="net_PP1800_VIN"/>
+  <line x1="127.01999999999998" x2="127.01999999999998" y1="521.5" y2="551.5" class="net_PP1800_VIN"/>
+  <line x1="127.01999999999998" x2="137.01999999999998" y1="551.5" y2="551.5" class="net_PP1800_VIN"/>
+  <circle cx="137.01999999999998" cy="551.5" r="2" style="fill:#000" class="net_PP1800_VIN"/>
+  <circle cx="127.01999999999998" cy="521.5" r="2" style="fill:#000" class="net_PP1800_VIN"/>
+  <line x1="137.01999999999998" x2="137.01999999999998" y1="551.5" y2="561.5" class="net_PP1800_VIN"/>
+  <line x1="346.02" x2="346.02" y1="581.5" y2="586.5" class="net_GND"/>
+  <line x1="346.02" x2="346.02" y1="511.5" y2="521.5" class="net_PP1800"/>
+  <circle cx="346.02" cy="521.5" r="2" style="fill:#000" class="net_PP1800"/>
+  <line x1="346.02" x2="225.01999999999998" y1="521.5" y2="521.5" class="net_PP1800"/>
+  <line x1="225.01999999999998" x2="346.02" y1="521.5" y2="521.5" class="net_PP1800"/>
+  <circle cx="346.02" cy="521.5" r="2" style="fill:#000" class="net_PP1800"/>
+  <line x1="346.02" x2="346.02" y1="521.5" y2="531.5" class="net_PP1800"/>
+  <line x1="623" x2="606" y1="48.5" y2="48.5" class="net_GND"/>
+  <line x1="606" x2="606" y1="48.5" y2="81" class="net_GND"/>
+  <line x1="678" x2="780" y1="48.5" y2="48.5" class="net_GND"/>
+  <line x1="780" x2="780" y1="48.5" y2="71" class="net_GND"/>
+  <line x1="780" x2="606" y1="71" y2="71" class="net_GND"/>
+  <circle cx="606" cy="71" r="2" style="fill:#000" class="net_GND"/>
+  <line x1="606" x2="606" y1="71" y2="81" class="net_GND"/>
+  <line x1="1294" x2="1139" y1="812.5" y2="812.5" class="net_GND"/>
+  <line x1="1139" x2="1139" y1="812.5" y2="890" class="net_GND"/>
+  <line x1="1218.02" x2="1075.02" y1="278" y2="278" class="net_GND"/>
+  <line x1="1075.02" x2="1075.02" y1="278" y2="308" class="net_GND"/>
+  <line x1="1075.02" x2="1065.02" y1="308" y2="308" class="net_GND"/>
+  <circle cx="1065.02" cy="308" r="2" style="fill:#000" class="net_GND"/>
+  <line x1="1065.02" x2="1065.02" y1="308" y2="318" class="net_GND"/>
+  <line x1="1218.02" x2="1065.02" y1="298" y2="298" class="net_GND"/>
+  <line x1="1065.02" x2="1065.02" y1="298" y2="318" class="net_GND"/>
+  <line x1="1218.02" x2="1195.02" y1="318" y2="318" class="net_GND"/>
+  <line x1="1195.02" x2="1195.02" y1="318" y2="335.5" class="net_GND"/>
+  <line x1="1135.02" x2="1135.02" y1="358" y2="363" class="net_GND"/>
+  <line x1="1135.02" x2="1135.02" y1="228" y2="238" class="net_PP3300"/>
+  <circle cx="1135.02" cy="238" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="1135.02" x2="1218.02" y1="238" y2="238" class="net_PP3300"/>
+  <line x1="1218.02" x2="1135.02" y1="238" y2="238" class="net_PP3300"/>
+  <circle cx="1135.02" cy="238" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="1135.02" x2="1135.02" y1="238" y2="308" class="net_PP3300"/>
+  <line x1="1005.02" x2="1005.02" y1="318" y2="323" class="net_GND"/>
+  <line x1="1005.02" x2="1005.02" y1="248" y2="258" class="net_PP1800"/>
+  <circle cx="1005.02" cy="258" r="2" style="fill:#000" class="net_PP1800"/>
+  <line x1="1005.02" x2="1218.02" y1="258" y2="258" class="net_PP1800"/>
+  <line x1="1218.02" x2="1005.02" y1="258" y2="258" class="net_PP1800"/>
+  <circle cx="1005.02" cy="258" r="2" style="fill:#000" class="net_PP1800"/>
+  <line x1="1005.02" x2="1005.02" y1="258" y2="268" class="net_PP1800"/>
+  <line x1="543.02" x2="606.02" y1="269.5" y2="269.5" class="net_GND"/>
+  <line x1="606.02" x2="606.02" y1="269.5" y2="287" class="net_GND"/>
+  <line x1="428" x2="428" y1="82" y2="87" class="net_GND"/>
+  <line x1="353" x2="428" y1="22" y2="22" class="net_FW_WP_EN"/>
+  <line x1="428" x2="428" y1="22" y2="32" class="net_FW_WP_EN"/>
+  <line x1="353" x2="353" y1="22" y2="32" class="net_FW_WP_EN"/>
+  <line x1="353" x2="353" y1="82" y2="87" class="net_GND"/>
+  <line x1="453.02" x2="453.02" y1="337" y2="342" class="net_GND"/>
+  <line x1="453.02" x2="453.02" y1="228" y2="269.5" class="net_PPDUT_SPI2_VREF"/>
+  <circle cx="453.02" cy="269.5" r="2" style="fill:#000" class="net_PPDUT_SPI2_VREF"/>
+  <line x1="453.02" x2="470.02" y1="269.5" y2="269.5" class="net_PPDUT_SPI2_VREF"/>
+  <line x1="470.02" x2="453.02" y1="269.5" y2="269.5" class="net_PPDUT_SPI2_VREF"/>
+  <circle cx="453.02" cy="269.5" r="2" style="fill:#000" class="net_PPDUT_SPI2_VREF"/>
+  <line x1="453.02" x2="453.02" y1="269.5" y2="287" class="net_PPDUT_SPI2_VREF"/>
+  <line x1="693.02" x2="648.02" y1="289.5" y2="289.5" class="net_GND"/>
+  <line x1="648.02" x2="648.02" y1="289.5" y2="307" class="net_GND"/>
+  <line x1="1422.02" x2="1498.02" y1="541.5" y2="541.5" class="net_GND"/>
+  <line x1="1498.02" x2="1498.02" y1="541.5" y2="551.5" class="net_GND"/>
+  <line x1="1320.02" x2="1320.02" y1="629" y2="634" class="net_GND"/>
+  <line x1="1320.02" x2="1320.02" y1="480" y2="521.5" class="net_PP3300"/>
+  <circle cx="1320.02" cy="521.5" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="1320.02" x2="1343.02" y1="521.5" y2="521.5" class="net_PP3300"/>
+  <line x1="1343.02" x2="1320.02" y1="521.5" y2="521.5" class="net_PP3300"/>
+  <circle cx="1320.02" cy="521.5" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="1320.02" x2="1320.02" y1="521.5" y2="579" class="net_PP3300"/>
+  <line x1="1166.02" x2="1166.02" y1="601.5" y2="606.5" class="net_GND"/>
+  <line x1="1166.02" x2="1166.02" y1="531.5" y2="541.5" class="net_PPDUT_JTAG_VREF"/>
+  <circle cx="1166.02" cy="541.5" r="2" style="fill:#000" class="net_PPDUT_JTAG_VREF"/>
+  <line x1="1166.02" x2="1343.02" y1="541.5" y2="541.5" class="net_PPDUT_JTAG_VREF"/>
+  <line x1="1343.02" x2="1166.02" y1="541.5" y2="541.5" class="net_PPDUT_JTAG_VREF"/>
+  <circle cx="1166.02" cy="541.5" r="2" style="fill:#000" class="net_PPDUT_JTAG_VREF"/>
+  <line x1="1166.02" x2="1166.02" y1="541.5" y2="551.5" class="net_PPDUT_JTAG_VREF"/>
+  <line x1="662" x2="933" y1="812.5" y2="812.5" class="net_GND"/>
+  <line x1="933" x2="933" y1="812.5" y2="822.5" class="net_GND"/>
+  <line x1="662" x2="868" y1="832.5" y2="832.5" class="net_GND"/>
+  <line x1="868" x2="868" y1="832.5" y2="842.5" class="net_GND"/>
+  <line x1="662" x2="738" y1="852.5" y2="852.5" class="net_GND"/>
+  <line x1="738" x2="738" y1="852.5" y2="902.5" class="net_GND"/>
+  <line x1="662" x2="803" y1="892.5" y2="892.5" class="net_GND"/>
+  <line x1="803" x2="803" y1="892.5" y2="902.5" class="net_GND"/>
+  <line x1="560" x2="560" y1="960" y2="965" class="net_GND"/>
+  <line x1="560" x2="560" y1="771" y2="812.5" class="net_PP3300"/>
+  <circle cx="560" cy="812.5" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="560" x2="583" y1="812.5" y2="812.5" class="net_PP3300"/>
+  <line x1="583" x2="560" y1="812.5" y2="812.5" class="net_PP3300"/>
+  <circle cx="560" cy="812.5" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="560" x2="560" y1="812.5" y2="910" class="net_PP3300"/>
+  <line x1="477" x2="477" y1="892.5" y2="897.5" class="net_GND"/>
+  <line x1="477" x2="477" y1="822.5" y2="832.5" class="net_PPDUT_JTAG_VREF"/>
+  <circle cx="477" cy="832.5" r="2" style="fill:#000" class="net_PPDUT_JTAG_VREF"/>
+  <line x1="477" x2="583" y1="832.5" y2="832.5" class="net_PPDUT_JTAG_VREF"/>
+  <line x1="583" x2="477" y1="832.5" y2="832.5" class="net_PPDUT_JTAG_VREF"/>
+  <circle cx="477" cy="832.5" r="2" style="fill:#000" class="net_PPDUT_JTAG_VREF"/>
+  <line x1="477" x2="477" y1="832.5" y2="842.5" class="net_PPDUT_JTAG_VREF"/>
+  <line x1="1063.02" x2="1046.02" y1="82" y2="82" class="net_GND"/>
+  <line x1="1046.02" x2="1046.02" y1="82" y2="99.5" class="net_GND"/>
+  <line x1="986.02" x2="986.02" y1="122" y2="127" class="net_GND"/>
+  <line x1="986.02" x2="986.02" y1="52" y2="62" class="net_PP3300"/>
+  <circle cx="986.02" cy="62" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="986.02" x2="1063.02" y1="62" y2="62" class="net_PP3300"/>
+  <line x1="1063.02" x2="986.02" y1="62" y2="62" class="net_PP3300"/>
+  <circle cx="986.02" cy="62" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="986.02" x2="986.02" y1="62" y2="72" class="net_PP3300"/>
+  <line x1="110" x2="87" y1="258" y2="258" class="net_GND"/>
+  <line x1="87" x2="87" y1="258" y2="275.5" class="net_GND"/>
+  <line x1="27" x2="27" y1="298" y2="303" class="net_GND"/>
+  <line x1="27" x2="27" y1="228" y2="238" class="net_PP3300"/>
+  <circle cx="27" cy="238" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="27" x2="110" y1="238" y2="238" class="net_PP3300"/>
+  <line x1="110" x2="27" y1="238" y2="238" class="net_PP3300"/>
+  <circle cx="27" cy="238" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="27" x2="27" y1="238" y2="248" class="net_PP3300"/>
+  <line x1="212" x2="430" y1="812.5" y2="812.5" class="net_GND"/>
+  <line x1="430" x2="430" y1="812.5" y2="882.5" class="net_GND"/>
+  <line x1="212" x2="288" y1="892.5" y2="892.5" class="net_GND"/>
+  <line x1="288" x2="288" y1="892.5" y2="902.5" class="net_GND"/>
+  <line x1="110" x2="110" y1="960" y2="965" class="net_GND"/>
+  <line x1="110" x2="110" y1="771" y2="812.5" class="net_PP3300"/>
+  <circle cx="110" cy="812.5" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="110" x2="133" y1="812.5" y2="812.5" class="net_PP3300"/>
+  <line x1="133" x2="110" y1="812.5" y2="812.5" class="net_PP3300"/>
+  <circle cx="110" cy="812.5" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="110" x2="110" y1="812.5" y2="910" class="net_PP3300"/>
+  <line x1="27" x2="27" y1="892.5" y2="897.5" class="net_GND"/>
+  <line x1="27" x2="27" y1="822.5" y2="832.5" class="net_PPDUT_SPI1_VREF"/>
+  <circle cx="27" cy="832.5" r="2" style="fill:#000" class="net_PPDUT_SPI1_VREF"/>
+  <line x1="27" x2="133" y1="832.5" y2="832.5" class="net_PPDUT_SPI1_VREF"/>
+  <line x1="133" x2="27" y1="832.5" y2="832.5" class="net_PPDUT_SPI1_VREF"/>
+  <circle cx="27" cy="832.5" r="2" style="fill:#000" class="net_PPDUT_SPI1_VREF"/>
+  <line x1="27" x2="27" y1="832.5" y2="842.5" class="net_PPDUT_SPI1_VREF"/>
+  <line x1="1718.02" x2="1865.02" y1="521.5" y2="521.5" class="net_GND"/>
+  <line x1="1865.02" x2="1865.02" y1="521.5" y2="591.5" class="net_GND"/>
+  <line x1="1718.02" x2="1794.02" y1="601.5" y2="601.5" class="net_GND"/>
+  <line x1="1794.02" x2="1794.02" y1="601.5" y2="611.5" class="net_GND"/>
+  <line x1="1545.02" x2="1545.02" y1="581.5" y2="586.5" class="net_GND"/>
+  <line x1="1545.02" x2="1545.02" y1="511.5" y2="521.5" class="net_PP3300"/>
+  <circle cx="1545.02" cy="521.5" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="1545.02" x2="1639.02" y1="521.5" y2="521.5" class="net_PP3300"/>
+  <line x1="1639.02" x2="1545.02" y1="521.5" y2="521.5" class="net_PP3300"/>
+  <circle cx="1545.02" cy="521.5" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="1545.02" x2="1545.02" y1="521.5" y2="531.5" class="net_PP3300"/>
+  <line x1="1616.02" x2="1616.02" y1="669" y2="674" class="net_GND"/>
+  <line x1="1616.02" x2="1616.02" y1="480" y2="541.5" class="net_PPDUT_SPI2_VREF"/>
+  <circle cx="1616.02" cy="541.5" r="2" style="fill:#000" class="net_PPDUT_SPI2_VREF"/>
+  <line x1="1616.02" x2="1639.02" y1="541.5" y2="541.5" class="net_PPDUT_SPI2_VREF"/>
+  <line x1="1639.02" x2="1616.02" y1="541.5" y2="541.5" class="net_PPDUT_SPI2_VREF"/>
+  <circle cx="1616.02" cy="541.5" r="2" style="fill:#000" class="net_PPDUT_SPI2_VREF"/>
+  <line x1="1616.02" x2="1616.02" y1="541.5" y2="619" class="net_PPDUT_SPI2_VREF"/>
+  <line x1="1256.02" x2="1323.02" y1="113.5" y2="113.5" class="net_GND"/>
+  <line x1="1323.02" x2="1323.02" y1="113.5" y2="123.5" class="net_GND"/>
+  <line x1="1859.02" x2="1916.02" y1="113.5" y2="113.5" class="net_GND"/>
+  <line x1="1916.02" x2="1916.02" y1="113.5" y2="131" class="net_GND"/>
+  <line x1="1457.02" x2="1524.02" y1="113.5" y2="113.5" class="net_GND"/>
+  <line x1="1524.02" x2="1524.02" y1="113.5" y2="123.5" class="net_GND"/>
+  <line x1="1658.02" x2="1725.02" y1="113.5" y2="113.5" class="net_GND"/>
+  <line x1="1725.02" x2="1725.02" y1="113.5" y2="123.5" class="net_GND"/>
+  <line x1="890.02" x2="867.02" y1="82" y2="82" class="net_GND"/>
+  <line x1="867.02" x2="867.02" y1="82" y2="99.5" class="net_GND"/>
+  <line x1="807.02" x2="807.02" y1="122" y2="127" class="net_GND"/>
+  <line x1="807.02" x2="807.02" y1="52" y2="62" class="net_PP3300"/>
+  <circle cx="807.02" cy="62" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="807.02" x2="890.02" y1="62" y2="62" class="net_PP3300"/>
+  <line x1="890.02" x2="807.02" y1="62" y2="62" class="net_PP3300"/>
+  <circle cx="807.02" cy="62" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="807.02" x2="807.02" y1="62" y2="72" class="net_PP3300"/>
+  <line x1="978.02" x2="1054.02" y1="541.5" y2="541.5" class="net_GND"/>
+  <line x1="1054.02" x2="1054.02" y1="541.5" y2="571.5" class="net_GND"/>
+  <line x1="978.02" x2="1119.02" y1="561.5" y2="561.5" class="net_GND"/>
+  <line x1="1119.02" x2="1119.02" y1="561.5" y2="571.5" class="net_GND"/>
+  <line x1="882.02" x2="882.02" y1="629" y2="634" class="net_GND"/>
+  <line x1="882.02" x2="882.02" y1="480" y2="521.5" class="net_PP3300"/>
+  <circle cx="882.02" cy="521.5" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="882.02" x2="899.02" y1="521.5" y2="521.5" class="net_PP3300"/>
+  <line x1="899.02" x2="882.02" y1="521.5" y2="521.5" class="net_PP3300"/>
+  <circle cx="882.02" cy="521.5" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="882.02" x2="882.02" y1="521.5" y2="579" class="net_PP3300"/>
+  <line x1="793.02" x2="793.02" y1="601.5" y2="606.5" class="net_GND"/>
+  <line x1="793.02" x2="793.02" y1="531.5" y2="541.5" class="net_PPDUT_UART1_VREF"/>
+  <circle cx="793.02" cy="541.5" r="2" style="fill:#000" class="net_PPDUT_UART1_VREF"/>
+  <line x1="793.02" x2="899.02" y1="541.5" y2="541.5" class="net_PPDUT_UART1_VREF"/>
+  <line x1="899.02" x2="793.02" y1="541.5" y2="541.5" class="net_PPDUT_UART1_VREF"/>
+  <circle cx="793.02" cy="541.5" r="2" style="fill:#000" class="net_PPDUT_UART1_VREF"/>
+  <line x1="793.02" x2="793.02" y1="541.5" y2="551.5" class="net_PPDUT_UART1_VREF"/>
+  <line x1="1832.02" x2="1963.02" y1="289.5" y2="289.5" class="net_GND"/>
+  <line x1="1963.02" x2="1963.02" y1="289.5" y2="299.5" class="net_GND"/>
+  <line x1="1832.02" x2="1898.02" y1="309.5" y2="309.5" class="net_GND"/>
+  <line x1="1898.02" x2="1898.02" y1="309.5" y2="327" class="net_GND"/>
+  <line x1="1665.02" x2="1665.02" y1="329.5" y2="334.5" class="net_GND"/>
+  <line x1="1665.02" x2="1665.02" y1="259.5" y2="269.5" class="net_PP3300"/>
+  <circle cx="1665.02" cy="269.5" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="1665.02" x2="1753.02" y1="269.5" y2="269.5" class="net_PP3300"/>
+  <line x1="1753.02" x2="1665.02" y1="269.5" y2="269.5" class="net_PP3300"/>
+  <circle cx="1665.02" cy="269.5" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="1665.02" x2="1665.02" y1="269.5" y2="279.5" class="net_PP3300"/>
+  <line x1="1736.02" x2="1736.02" y1="377" y2="382" class="net_GND"/>
+  <line x1="1736.02" x2="1736.02" y1="228" y2="289.5" class="net_PPDUT_UART2_VREF"/>
+  <circle cx="1736.02" cy="289.5" r="2" style="fill:#000" class="net_PPDUT_UART2_VREF"/>
+  <line x1="1736.02" x2="1753.02" y1="289.5" y2="289.5" class="net_PPDUT_UART2_VREF"/>
+  <line x1="1753.02" x2="1736.02" y1="289.5" y2="289.5" class="net_PPDUT_UART2_VREF"/>
+  <circle cx="1736.02" cy="289.5" r="2" style="fill:#000" class="net_PPDUT_UART2_VREF"/>
+  <line x1="1736.02" x2="1736.02" y1="289.5" y2="327" class="net_PPDUT_UART2_VREF"/>
+  <line x1="253" x2="253" y1="228" y2="269.5" class="net_VBUS_IN"/>
+  <line x1="253" x2="270" y1="269.5" y2="269.5" class="net_VBUS_IN"/>
+  <line x1="1432.02" x2="1432.02" y1="283" y2="345.5" class="net_PD_BOOT0"/>
+  <line x1="1432.02" x2="1527.02" y1="345.5" y2="345.5" class="net_PD_BOOT0"/>
+  <line x1="1355.02" x2="1355.02" y1="334.5" y2="365.5" class="net_USB_ID"/>
+  <line x1="1355.02" x2="1527.02" y1="365.5" y2="365.5" class="net_USB_ID"/>
+  <line x1="470" x2="470" y1="52" y2="93.5" class="net_VBUS_IN"/>
+  <line x1="470" x2="497" y1="93.5" y2="93.5" class="net_VBUS_IN"/>
+  <line x1="22.019999999999982" x2="22.019999999999982" y1="480" y2="521.5" class="net_PP3300"/>
+  <line x1="22.019999999999982" x2="39.01999999999998" y1="521.5" y2="521.5" class="net_PP3300"/>
+  <line x1="22.019999999999982" x2="22.019999999999982" y1="480" y2="511.5" class="net_PP3300"/>
+  <line x1="22.019999999999982" x2="12.019999999999982" y1="511.5" y2="511.5" class="net_PP3300"/>
+  <line x1="12.019999999999982" x2="12.019999999999982" y1="511.5" y2="541.5" class="net_PP3300"/>
+  <circle cx="22.019999999999982" cy="511.5" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="12.019999999999982" x2="39.01999999999998" y1="541.5" y2="541.5" class="net_PP3300"/>
+  <line x1="1462" x2="1462" y1="771" y2="812.5" class="net_PPDUT_SPI2_VREF"/>
+  <line x1="1462" x2="1439" y1="812.5" y2="812.5" class="net_PPDUT_SPI2_VREF"/>
+  <line x1="1129" x2="1129" y1="771" y2="832.5" class="net_PPDUT_SPI1_VREF"/>
+  <line x1="1129" x2="1294" y1="832.5" y2="832.5" class="net_PPDUT_SPI1_VREF"/>
+  <line x1="1545" x2="1545" y1="822.5" y2="832.5" class="net_PPDUT_UART2_VREF"/>
+  <line x1="1545" x2="1439" y1="832.5" y2="832.5" class="net_PPDUT_UART2_VREF"/>
+  <line x1="975" x2="975" y1="842.5" y2="852.5" class="net_PPDUT_JTAG_VREF"/>
+  <line x1="975" x2="1294" y1="852.5" y2="852.5" class="net_PPDUT_JTAG_VREF"/>
+  <line x1="1634" x2="1634" y1="842.5" y2="852.5" class="net_PPDUT_UART1_VREF"/>
+  <line x1="1634" x2="1439" y1="852.5" y2="852.5" class="net_PPDUT_UART1_VREF"/>
+  <line x1="1058" x2="1058" y1="842.5" y2="872.5" class="net_PP3300"/>
+  <line x1="1058" x2="1294" y1="872.5" y2="872.5" class="net_PP3300"/>
+  <line x1="658.02" x2="658.02" y1="228" y2="269.5" class="net_PPDUT_JTAG_VREF"/>
+  <line x1="658.02" x2="693.02" y1="269.5" y2="269.5" class="net_PPDUT_JTAG_VREF"/>
+  <line x1="1249.02" x2="1249.02" y1="531.5" y2="561.5" class="net_PP3300"/>
+  <line x1="1249.02" x2="1343.02" y1="561.5" y2="561.5" class="net_PP3300"/>
+  <line x1="1488.02" x2="1488.02" y1="480" y2="521.5" class="net_PP3300"/>
+  <line x1="1488.02" x2="1422.02" y1="521.5" y2="521.5" class="net_PP3300"/>
+  <line x1="728" x2="728" y1="771" y2="872.5" class="net_PP3300"/>
+  <line x1="728" x2="662" y1="872.5" y2="872.5" class="net_PP3300"/>
+  <line x1="278" x2="278" y1="771" y2="832.5" class="net_PP3300"/>
+  <line x1="278" x2="212" y1="832.5" y2="832.5" class="net_PP3300"/>
+  <line x1="349" x2="349" y1="802.5" y2="852.5" class="net_PP3300"/>
+  <line x1="349" x2="212" y1="852.5" y2="852.5" class="net_PP3300"/>
+  <line x1="420" x2="420" y1="802.5" y2="872.5" class="net_PP3300"/>
+  <line x1="420" x2="212" y1="872.5" y2="872.5" class="net_PP3300"/>
+  <line x1="1784.02" x2="1784.02" y1="480" y2="541.5" class="net_PP3300"/>
+  <line x1="1784.02" x2="1718.02" y1="541.5" y2="541.5" class="net_PP3300"/>
+  <line x1="1926.02" x2="1926.02" y1="551.5" y2="561.5" class="net_PP3300"/>
+  <line x1="1926.02" x2="1718.02" y1="561.5" y2="561.5" class="net_PP3300"/>
+  <line x1="1855.02" x2="1855.02" y1="511.5" y2="581.5" class="net_PP3300"/>
+  <line x1="1855.02" x2="1718.02" y1="581.5" y2="581.5" class="net_PP3300"/>
+  <line x1="1172.02" x2="1172.02" y1="52" y2="93.5" class="net_PP1800"/>
+  <line x1="1172.02" x2="1195.02" y1="93.5" y2="93.5" class="net_PP1800"/>
+  <line x1="1313.02" x2="1313.02" y1="52" y2="93.5" class="net_PPDUT_SPI1_VREF"/>
+  <line x1="1313.02" x2="1256.02" y1="93.5" y2="93.5" class="net_PPDUT_SPI1_VREF"/>
+  <line x1="1775.02" x2="1775.02" y1="52" y2="93.5" class="net_PP3300"/>
+  <line x1="1775.02" x2="1798.02" y1="93.5" y2="93.5" class="net_PP3300"/>
+  <line x1="1926.02" x2="1926.02" y1="83.5" y2="93.5" class="net_PPDUT_SPI1_VREF"/>
+  <line x1="1926.02" x2="1859.02" y1="93.5" y2="93.5" class="net_PPDUT_SPI1_VREF"/>
+  <line x1="1373.02" x2="1373.02" y1="52" y2="93.5" class="net_PP1800"/>
+  <line x1="1373.02" x2="1396.02" y1="93.5" y2="93.5" class="net_PP1800"/>
+  <line x1="1514.02" x2="1514.02" y1="52" y2="93.5" class="net_PPDUT_SPI2_VREF"/>
+  <line x1="1514.02" x2="1457.02" y1="93.5" y2="93.5" class="net_PPDUT_SPI2_VREF"/>
+  <line x1="1574.02" x2="1574.02" y1="52" y2="93.5" class="net_PP3300"/>
+  <line x1="1574.02" x2="1597.02" y1="93.5" y2="93.5" class="net_PP3300"/>
+  <line x1="1715.02" x2="1715.02" y1="52" y2="93.5" class="net_PPDUT_SPI2_VREF"/>
+  <line x1="1715.02" x2="1658.02" y1="93.5" y2="93.5" class="net_PPDUT_SPI2_VREF"/>
+  <line x1="1044.02" x2="1044.02" y1="480" y2="521.5" class="net_PP3300"/>
+  <line x1="1044.02" x2="978.02" y1="521.5" y2="521.5" class="net_PP3300"/>
+  <line x1="1908.02" x2="1908.02" y1="259.5" y2="269.5" class="net_PP3300"/>
+  <line x1="1908.02" x2="1832.02" y1="269.5" y2="269.5" class="net_PP3300"/>
+  <text x="1435.02" y="288" class="net_PD_BOOT0">PD_BOOT0</text>
+  <text x="1317.02" y="339.5" class="net_USB_ID">USB_ID</text>
+</svg>

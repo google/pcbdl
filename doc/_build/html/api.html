@@ -1,0 +1,522 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Core Language &mdash; pcbdl  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Small Parts" href="small_parts.html" />
+    <link rel="prev" title="NetlistSVG" href="netlistsvg.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> pcbdl
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">PCB Design Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Developing PCBDL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="netlistsvg.html">NetlistSVG</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Core Language</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#nets">Nets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parts">Parts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pins">Pins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#other">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="small_parts.html">Small Parts</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pcbdl</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Core Language</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-pcbdl.base">
+<span id="core-language"></span><h1>Core Language<a class="headerlink" href="#module-pcbdl.base" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="nets">
+<h2>Nets<a class="headerlink" href="#nets" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pcbdl.Net">
+<em class="property">class </em><code class="sig-prename descclassname">pcbdl.</code><code class="sig-name descname">Net</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcbdl/base.html#Net"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcbdl.Net" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="pcbdl.Net.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcbdl/base.html#Net.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcbdl.Net.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Nets can be created by calling <code class="docutils literal notranslate"><span class="pre">Net(&quot;SOME_NAME&quot;)</span></code>.</p>
+<p>If used in more places, you might want to save it in a variable:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gnd</span> <span class="o">=</span> <span class="n">Net</span><span class="p">(</span><span class="s2">&quot;GND&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The name in the “” gets automatically capitalized, but it’s good
+practice to do it anyway. Though the variables should stay lowercase
+to conform to the python style guide.</p>
+<p>Also note that the variable names should not necessarily have to match
+the net name. In some cases it might make more sense to have a shorter
+name locally for a net instead of the full long global name. Example:
+<code class="docutils literal notranslate"><span class="pre">mosi</span> <span class="pre">=</span> <span class="pre">Net(&quot;AP_SPI2_MOSI&quot;)</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pcbdl.Net.__lshift__">
+<code class="sig-name descname">__lshift__</code><span class="sig-paren">(</span><em class="sig-param">pin or pins</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcbdl/base.html#Net.__lshift__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcbdl.Net.__lshift__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pcbdl.Net.__rshift__">
+<code class="sig-name descname">__rshift__</code><span class="sig-paren">(</span><em class="sig-param">pin or pins</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcbdl/base.html#Net.__rshift__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcbdl.Net.__rshift__" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pcbdl.Pin" title="pcbdl.Pin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pins</span></code></a> can be connected to nets using the <code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code> operators:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gnd</span> <span class="o">&lt;&lt;</span> <span class="n">device1</span><span class="o">.</span><span class="n">GND</span>
+</pre></div>
+</div>
+<p>A <a class="reference external" href="https://docs.python.org/3/glossary.html#term-iterable" title="(in Python v3.8)"><span class="xref std std-term">list</span></a> of pins can also be given (and they will be added in the same
+group):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gnd</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">device1</span><span class="o">.</span><span class="n">GND</span><span class="p">,</span> <span class="n">device2</span><span class="o">.</span><span class="n">GND</span><span class="p">)</span>
+<span class="n">gnd</span> <span class="o">&gt;&gt;</span> <span class="p">(</span>
+    <span class="n">device3</span><span class="o">.</span><span class="n">GND</span><span class="p">,</span>
+    <span class="n">device4</span><span class="o">.</span><span class="n">GND</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The direction of the arrows is stored, but it doesn’t really mean
+anything yet. You’re free to use it as a hint on which way the signal
+is flowing (low impedance toward high impedance).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p>A special version of this Net that will actually
+<a class="reference internal" href="#pcbdl.Net.grouped_connections" title="pcbdl.Net.grouped_connections"><code class="xref py py-attr docutils literal notranslate"><span class="pre">remember</span> <span class="pre">the</span> <span class="pre">group</span></code></a> that we’re
+currently attaching to. This way Pins added in the same line,
+even if alternating operators, will remember
+they were grouped:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gnd</span> <span class="o">&lt;&lt;</span> <span class="n">device1</span><span class="o">.</span><span class="n">GND</span> <span class="o">&gt;&gt;</span> <span class="n">regulator1</span><span class="o">.</span><span class="n">GND</span>
+<span class="n">gnd</span> <span class="o">&lt;&lt;</span> <span class="n">device2</span><span class="o">.</span><span class="n">GND</span> <span class="o">&gt;&gt;</span> <span class="n">regulator2</span><span class="o">.</span><span class="n">GND</span>
+</pre></div>
+</div>
+<p>Now device1 and regulator1’s GND pin are remembered that they were
+grouped. The grouping might be significant, maybe as a hint, to the
+reader. This is a little bit of metadata that allows prettier
+exports (eg: SVG output will probably draw a real wire between
+those pins instead of airwires).</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pcbdl.Net.connections">
+<em class="property">property </em><code class="sig-name descname">connections</code><a class="headerlink" href="#pcbdl.Net.connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of pins connected to this net.</p>
+<p>Useful in the interpreter and/or when you want to inspect your schematic:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gnd</span><span class="o">.</span><span class="n">connections</span>
+<span class="go">(U1.GND, VREG1.GND, U2.GND, VREG2.GND)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pcbdl.Net.grouped_connections">
+<em class="property">property </em><code class="sig-name descname">grouped_connections</code><a class="headerlink" href="#pcbdl.Net.grouped_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Similar to <a class="reference internal" href="#pcbdl.Net.connections" title="pcbdl.Net.connections"><code class="xref py py-attr docutils literal notranslate"><span class="pre">connections</span></code></a>, but this time pins that were connected together stay in groups:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pp1800</span><span class="o">.</span><span class="n">grouped_connections</span>
+<span class="go">((U1.GND, VREG1.GND), (U2.GND, VREG2.GND))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="parts">
+<h2>Parts<a class="headerlink" href="#parts" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pcbdl.Part">
+<em class="property">class </em><code class="sig-prename descclassname">pcbdl.</code><code class="sig-name descname">Part</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">refdes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">package</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">part_number</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">populated</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcbdl/base.html#Part"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcbdl.Part" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the <a class="reference external" href="https://docs.python.org/3/tutorial/classes.html#tut-inheritance" title="(in Python v3.8)"><span class="xref std std-ref">base class</span></a> for any new Part the writer of a schematic or a part librarian has to make.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Transistor</span><span class="p">(</span><span class="n">Part</span><span class="p">):</span>
+    <span class="n">REFDES_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;Q&quot;</span>
+    <span class="n">PINS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="pcbdl.Part.refdes">
+<em class="property">property </em><code class="sig-name descname">refdes</code><a class="headerlink" href="#pcbdl.Part.refdes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference designator of the part. Example: R1, R2.</p>
+<p>It’s essentially the unique id for the part that will be used to
+refer to it in most output methods.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pcbdl.Part.PINS">
+<code class="sig-name descname">PINS</code><em class="property"> = []</em><a class="headerlink" href="#pcbdl.Part.PINS" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is how the pins of a part are defined, as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of pins.</p>
+<p>Each pin entry can be one of:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#pcbdl.Pin" title="pcbdl.Pin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pin</span></code></a></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of names which will automatically be turned into a <a class="reference internal" href="#pcbdl.Pin" title="pcbdl.Pin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pin</span></code></a></p></li>
+<li><p>just one <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></a>, representing a pin name, if one cares about nothing else.</p></li>
+</ul>
+<p>So these are all valid ways to define a pin (in decreasing order of detail), and mean about the same thing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PINS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Pin</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;GND&quot;</span><span class="p">,</span> <span class="s2">&quot;GROUND&quot;</span><span class="p">),</span> <span class="nb">type</span><span class="o">=</span><span class="n">PinType</span><span class="o">.</span><span class="n">POWER_INPUT</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;GND&quot;</span><span class="p">,</span> <span class="s2">&quot;GROUND&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;GND&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="#pcbdl.Pin" title="pcbdl.Pin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pins</span> <span class="pre">Section</span></code></a> for the types of properties that can be
+defined on each Pin entry.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pcbdl.Part._postprocess_pin">
+<em class="property">classmethod </em><code class="sig-name descname">_postprocess_pin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pin</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcbdl/base.html#Part._postprocess_pin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcbdl.Part._postprocess_pin" title="Permalink to this definition">¶</a></dt>
+<dd><p>It’s sometimes useful to process the pins from the source code before the part gets placed down.
+This method will be called for each pin by each subclass of a Part.</p>
+<p>Good uses for this:</p>
+<ul>
+<li><p><a class="reference internal" href="#pcbdl.base.PinFragment.second_name_important" title="pcbdl.base.PinFragment.second_name_important"><code class="xref py py-func docutils literal notranslate"><span class="pre">Raise</span> <span class="pre">the</span> <span class="pre">importance</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">second</span> <span class="pre">name</span></code></a> in a connector, so the more semantic name is the primary name, not the pin number:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PINS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;P1&quot;</span><span class="p">,</span> <span class="s2">&quot;Nicer name&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">_postprocess_pin</span> <span class="o">=</span> <span class="n">Pin</span><span class="o">.</span><span class="n">second_name_important</span>
+</pre></div>
+</div>
+</li>
+<li><p>Populate alternate functions of a pin if they follow an easy pattern.</p></li>
+<li><p>A simple programmatic alias on pin names without subclassing the part itself.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pcbdl.Part.pins">
+<code class="sig-name descname">pins</code><em class="property"> = {}</em><a class="headerlink" href="#pcbdl.Part.pins" title="Permalink to this definition">¶</a></dt>
+<dd><p>Once the Part is instanced (aka populated on the schematic), our pins become real too (they turn into <a class="reference internal" href="#pcbdl.base.PartInstancePin" title="pcbdl.base.PartInstancePin"><code class="xref py py-class docutils literal notranslate"><span class="pre">PartInstancePins</span></code></a>).
+This is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> like object where the pins are stored. One can look up pins by any of its names:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">somechip</span><span class="o">.</span><span class="n">pins</span><span class="p">[</span><span class="s2">&quot;VCC&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Though most pins are also directly populated as a attributes to the part, so this is equivalent:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">somechip</span><span class="o">.</span><span class="n">VCC</span>
+</pre></div>
+</div>
+<p>The pins list can still be used to view all of the pins at once, like on the console:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">diode</span><span class="o">.</span><span class="n">pins</span>
+<span class="go">(D1.VCC, D1.NC, D1.P1, D1.GND, D1.P2)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pcbdl.Part.REFDES_PREFIX">
+<code class="sig-name descname">REFDES_PREFIX</code><em class="property"> = 'UNK'</em><a class="headerlink" href="#pcbdl.Part.REFDES_PREFIX" title="Permalink to this definition">¶</a></dt>
+<dd><p>The prefix that every reference designator of this part will have.</p>
+<p>Example: <a class="reference internal" href="small_parts.html#pcbdl.small_parts.R.REFDES_PREFIX" title="pcbdl.small_parts.R.REFDES_PREFIX"><code class="xref py py-attr docutils literal notranslate"><span class="pre">&quot;R&quot;</span></code></a> for resistors,
+<a class="reference internal" href="small_parts.html#pcbdl.small_parts.C.REFDES_PREFIX" title="pcbdl.small_parts.C.REFDES_PREFIX"><code class="xref py py-attr docutils literal notranslate"><span class="pre">&quot;C&quot;</span></code></a> for capacitors.</p>
+<p>The auto namer system will eventually put numbers after the prefix to get the complete <a class="reference internal" href="#pcbdl.Part.refdes" title="pcbdl.Part.refdes"><code class="xref py py-attr docutils literal notranslate"><span class="pre">refdes</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pcbdl.Part.pin_names_match_nets">
+<code class="sig-name descname">pin_names_match_nets</code><em class="property"> = False</em><a class="headerlink" href="#pcbdl.Part.pin_names_match_nets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sometimes when connecting nets to a part, the pin names become very redundant:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Net</span><span class="p">(</span><span class="s2">&quot;GND&quot;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">somepart</span><span class="o">.</span><span class="n">GND</span>
+<span class="n">Net</span><span class="p">(</span><span class="s2">&quot;VCC&quot;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">somepart</span><span class="o">.</span><span class="n">VCC</span>
+<span class="n">Net</span><span class="p">(</span><span class="s2">&quot;RESET&quot;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">somepart</span><span class="o">.</span><span class="n">RESET</span>
+</pre></div>
+</div>
+<p>We can use this variable tells the part to pick the right pin depending on
+the variable name, at that point the part itself can be used in lieu of
+the pin:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Net</span><span class="p">(</span><span class="s2">&quot;GND&quot;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">somepart</span>
+<span class="n">Net</span><span class="p">(</span><span class="s2">&quot;VCC&quot;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">somepart</span>
+<span class="n">Net</span><span class="p">(</span><span class="s2">&quot;RESET&quot;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">somepart</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pcbdl.Part.pin_names_match_nets_prefix">
+<code class="sig-name descname">pin_names_match_nets_prefix</code><em class="property"> = ''</em><a class="headerlink" href="#pcbdl.Part.pin_names_match_nets_prefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>When <a class="reference internal" href="#pcbdl.Part.pin_names_match_nets" title="pcbdl.Part.pin_names_match_nets"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pin_names_match_nets</span></code></a> is active, it strips a
+little bit of the net name in case it’s part of a bigger net group:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SPIFlash</span><span class="p">(</span><span class="n">Part</span><span class="p">):</span>
+    <span class="n">pin_names_match_nets</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">pin_names_match_nets_prefix</span> <span class="o">=</span> <span class="s2">&quot;SPI1&quot;</span>
+    <span class="n">PINS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;MOSI&quot;</span><span class="p">,</span> <span class="s2">&quot;MISO&quot;</span><span class="p">,</span> <span class="s2">&quot;SCK&quot;</span><span class="p">,</span> <span class="s2">&quot;CS&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+<span class="o">...</span>
+<span class="n">Net</span><span class="p">(</span><span class="s2">&quot;SPI1_MOSI&quot;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">spi_flash</span> <span class="c1"># autoconnects to the pin called only &quot;MOSI&quot;</span>
+<span class="n">Net</span><span class="p">(</span><span class="s2">&quot;SPI1_MISO&quot;</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">spi_flash</span> <span class="c1"># &quot;MISO&quot;</span>
+<span class="n">Net</span><span class="p">(</span><span class="s2">&quot;SPI1_SCK&quot;</span><span class="p">)</span>  <span class="o">&gt;&gt;</span> <span class="n">spi_flash</span> <span class="c1"># &quot;SCK&quot;</span>
+<span class="n">Net</span><span class="p">(</span><span class="s2">&quot;SPI1_CS&quot;</span><span class="p">)</span>   <span class="o">&gt;&gt;</span> <span class="n">spi_flash</span> <span class="c1"># &quot;CS&quot;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="pins">
+<h2>Pins<a class="headerlink" href="#pins" title="Permalink to this headline">¶</a></h2>
+<dl class="py attribute">
+<dt id="pcbdl.Pin">
+<code class="sig-prename descclassname">pcbdl.</code><code class="sig-name descname">Pin</code><a class="headerlink" href="#pcbdl.Pin" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#pcbdl.base.PinFragment" title="pcbdl.base.PinFragment"><code class="xref py py-class docutils literal notranslate"><span class="pre">pcbdl.base.PinFragment</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="pcbdl.base.PinFragment">
+<em class="property">class </em><code class="sig-prename descclassname">pcbdl.base.</code><code class="sig-name descname">PinFragment</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">names_or_numbers</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">names_if_numbers</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcbdl/base.html#PinFragment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcbdl.base.PinFragment" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the fully featured (as opposed to just a tuple of parameters)
+element of <a class="reference internal" href="#pcbdl.Part.PINS" title="pcbdl.Part.PINS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PINS</span></code></a> at the time of writing
+a <a class="reference internal" href="#pcbdl.Part" title="pcbdl.Part"><code class="xref py py-class docutils literal notranslate"><span class="pre">Part</span></code></a>. Saves all parameters it’s given,
+merges later once the Part is fully defined.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Just like the name implies this is just a fragment of the
+information we need for the pin. It’s possible the Part needs to be
+overlayed on top of its parents before we can have a complete picture.
+Ex: this could be the pin labeled “PA2” of a microcontroller, but until
+the part is told what package it is, we don’t really know the pin
+number.</p>
+</div>
+<dl class="py method">
+<dt id="pcbdl.base.PinFragment.second_name_important">
+<em class="property">static </em><code class="sig-name descname">second_name_important</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pin</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcbdl/base.html#PinFragment.second_name_important"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcbdl.base.PinFragment.second_name_important" title="Permalink to this definition">¶</a></dt>
+<dd><p>Swap the order of the pin names so the functional (second) name is first.</p>
+<p>Used as a <a class="reference internal" href="#pcbdl.Part._postprocess_pin" title="pcbdl.Part._postprocess_pin"><code class="xref py py-func docutils literal notranslate"><span class="pre">Part._postprocess_pin</span> <span class="pre">filter</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pcbdl.base.PartClassPin">
+<em class="property">class </em><code class="sig-prename descclassname">pcbdl.base.</code><code class="sig-name descname">PartClassPin</code><span class="sig-paren">(</span><em class="sig-param">names</em>, <em class="sig-param">numbers</em>, <em class="sig-param">type=&lt;PinType.UNKNOWN: 0&gt;</em>, <em class="sig-param">well=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcbdl/base.html#PartClassPin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcbdl.base.PartClassPin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pin of a Part, but no particular Part instance.
+Contains general information about the pin (but it could be for any
+part of that type), nothing related to a specific part instance.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="pcbdl.base.PartInstancePin">
+<em class="property">class </em><code class="sig-prename descclassname">pcbdl.base.</code><code class="sig-name descname">PartInstancePin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">part_instance</span></em>, <em class="sig-param"><span class="n">part_class_pin</span></em>, <em class="sig-param"><span class="n">inject_number</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcbdl/base.html#PartInstancePin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcbdl.base.PartInstancePin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Particular pin of a particular part instance. Can connect to nets. Knows the refdes of its part.</p>
+<dl class="py method">
+<dt id="pcbdl.base.PartInstancePin.net">
+<em class="property">property </em><code class="sig-name descname">net</code><a class="headerlink" href="#pcbdl.base.PartInstancePin.net" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="#pcbdl.Net" title="pcbdl.Net"><code class="xref py py-class docutils literal notranslate"><span class="pre">Net</span></code></a> that this pin is connected to.</p>
+<p>If it’s not connected to anything yet, we’ll get a fresh net.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pcbdl.base.PartInstancePin.__lshift__">
+<code class="sig-name descname">__lshift__</code><span class="sig-paren">(</span><em class="sig-param">another pin or pins</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcbdl/base.html#PartInstancePin.__lshift__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcbdl.base.PartInstancePin.__lshift__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pcbdl.base.PartInstancePin.__rshift__">
+<code class="sig-name descname">__rshift__</code><span class="sig-paren">(</span><em class="sig-param">another pin or pins</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcbdl/base.html#PartInstancePin.__rshift__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcbdl.base.PartInstancePin.__rshift__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Syntactic sugar for <code class="docutils literal notranslate"><span class="pre">pin.net</span> <span class="pre">&lt;&lt;</span> <span class="pre">another_pin</span></code> or <code class="docutils literal notranslate"><span class="pre">pin.net</span> <span class="pre">&gt;&gt;</span> <span class="pre">another_pin</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Instead of</span>
+<span class="n">Net</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">somepart</span><span class="o">.</span><span class="n">BUTTON</span> <span class="o">&lt;&lt;</span> <span class="n">somebutton</span><span class="o">.</span><span class="n">OUTPUT</span>
+
+<span class="c1"># Or</span>
+<span class="n">Somepart</span><span class="o">.</span><span class="n">BUTTON</span><span class="o">.</span><span class="n">net</span> <span class="o">&lt;&lt;</span> <span class="n">somebutton</span><span class="o">.</span><span class="n">OUTPUT</span>
+
+<span class="c1"># One can just write</span>
+<span class="n">somepart</span><span class="o">.</span><span class="n">BUTTON</span> <span class="o">&lt;&lt;</span> <span class="n">somebutton</span><span class="o">.</span><span class="n">OUTPUT</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="other">
+<h2>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="small_parts.html" class="btn btn-neutral float-right" title="Small Parts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="netlistsvg.html" class="btn btn-neutral float-left" title="NetlistSVG" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019, Google
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

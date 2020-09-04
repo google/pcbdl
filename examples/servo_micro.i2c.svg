@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:s="https://github.com/nturley/netlistsvg" width="1274" height="254">
+  <style>svg {
+    stroke: #000;
+    fill: none;
+  }
+  text {
+    fill: #000;
+    stroke: none;
+    font-size: 10px;
+    font-weight: bold;
+    font-family: "Courier New", monospace;
+  }
+  .nodelabel {
+    text-anchor: middle;
+  }
+  .inputPortLabel {
+    text-anchor: end;
+  }
+  .outputPortLabel {
+  }
+  .insideInputPortLabel {
+    alignment-baseline: middle;
+  }
+  .insideOutputPortLabel {
+    text-anchor: end;
+    alignment-baseline: middle;
+  }
+  .splitjoinBody {
+    fill: #000;
+  }
+  .symbol {
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    stroke-width: 2;
+  }
+  .detail {
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    fill: #000;
+  }</style>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(948,199)" id="cell_U6">
+    <text x="15" y="-20" class="nodelabel cell_U6" s:attribute="ref">U6</text>
+    <text class="nodelabel cell_U6" x="15" y="-5" s:attribute="value">STM32F072CBU6TR</text>
+    <rect width="30" height="40" x="0" y="0" s:generic="body" class="cell_U6"/>
+    <g transform="translate(30,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U6~MASTER_I2C_SCL" class="net_I2C_REMOTE_ADC_SCL">
+      <text x="5" y="-4" class="outputPortLabel cell_U6">45</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">MASTER_I2C_SCL</text>
+      <text x="30" y="0">I2C_REMOTE_ADC_SCL</text>
+      <line x1="0" x2="138" y1="0" y2="0"/>
+    </g>
+    <g transform="translate(30,30)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_U6~MASTER_I2C_SDA" class="net_I2C_REMOTE_ADC_SDA">
+      <text x="5" y="-4" class="outputPortLabel cell_U6">46</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">MASTER_I2C_SDA</text>
+      <text x="30" y="0">I2C_REMOTE_ADC_SDA</text>
+      <line x1="0" x2="138" y1="0" y2="0"/>
+    </g>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(112,22)" id="cell_power_symbol_78">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_power_symbol_78" s:attribute="name">PP3300</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_power_symbol_78"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="resistor_v" s:width="10" s:height="50" transform="translate(238,72)" id="cell_R501">
+    <s:alias val="r_v"/>
+    <text x="15" y="15" s:attribute="ref" class="cell_R501">R501</text>
+    <text x="15" y="30" s:attribute="value" class="cell_R501">4.7kΩ</text>
+    <path d="M0,10 V40 H10 V10 Z" class="symbol cell_R501"/>
+    <path d="M5,0 V10 M5,40 V50" class="connect cell_R501"/>
+    <g s:x="5" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="5" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(404,199)" id="cell_U9">
+    <text x="15" y="-20" class="nodelabel cell_U9" s:attribute="ref">U9</text>
+    <text class="nodelabel cell_U9" x="15" y="-5" s:attribute="value">TCA6416ARTWR</text>
+    <rect width="30" height="40" x="0" y="0" s:generic="body" class="cell_U9"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U9~SCL" class="net_I2C_REMOTE_ADC_SCL">
+      <text x="-3" y="-4" class="inputPortLabel cell_U9">19</text>
+      <text x="5" y="0" class="insideInputPortLabel">SCL</text>
+      <text x="-128" y="0">I2C_REMOTE_ADC_SCL</text>
+      <line x1="-138" x2="0" y1="0" y2="0"/>
+    </g>
+    <g transform="translate(0,30)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_U9~SDA" class="net_I2C_REMOTE_ADC_SDA">
+      <text x="-3" y="-4" class="inputPortLabel cell_U9">20</text>
+      <text x="5" y="0" class="insideInputPortLabel">SDA</text>
+      <text x="-128" y="0">I2C_REMOTE_ADC_SDA</text>
+      <line x1="-138" x2="0" y1="0" y2="0"/>
+    </g>
+  </g>
+  <g s:type="generic" s:width="200" s:height="40" transform="translate(662,199)" id="cell_J3">
+    <text x="57" y="-20" class="nodelabel cell_J3" s:attribute="ref">J3</text>
+    <text class="nodelabel cell_J3" x="57" y="-5" s:attribute="value">AXK850145WG</text>
+    <rect width="114" height="20" x="0" y="0" s:generic="body" class="cell_J3"/>
+    <g transform="translate(0,10)" s:x="0" s:y="10" s:pid="in0" s:position="left" id="port_J3~I2C_SDA" class="net_I2C_REMOTE_ADC_SDA">
+      <text x="-3" y="-4" class="inputPortLabel cell_J3">37</text>
+      <text x="5" y="0" class="insideInputPortLabel">I2C_SDA</text>
+      <text x="-128" y="0">I2C_REMOTE_ADC_SDA</text>
+      <line x1="-138" x2="0" y1="0" y2="0"/>
+    </g>
+    <g transform="translate(114,10)" s:x="200" s:y="10" s:pid="out0" s:position="right" id="port_J3~I2C_SCL" class="net_I2C_REMOTE_ADC_SCL">
+      <text x="5" y="-4" class="outputPortLabel cell_J3">38</text>
+      <text x="-3" y="0" class="insideOutputPortLabel">I2C_SCL</text>
+      <text x="30" y="0">I2C_REMOTE_ADC_SCL</text>
+      <line x1="0" x2="138" y1="0" y2="0"/>
+    </g>
+  </g>
+  <g s:type="resistor_v" s:width="10" s:height="50" transform="translate(117,72)" id="cell_R502">
+    <s:alias val="r_v"/>
+    <text x="15" y="15" s:attribute="ref" class="cell_R502">R502</text>
+    <text x="15" y="30" s:attribute="value" class="cell_R502">4.7kΩ</text>
+    <path d="M0,10 V40 H10 V10 Z" class="symbol cell_R502"/>
+    <path d="M5,0 V10 M5,40 V50" class="connect cell_R502"/>
+    <g s:x="5" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="5" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <line x1="122" x2="122" y1="52" y2="62" class="net_PP3300"/>
+  <line x1="122" x2="243" y1="62" y2="62" class="net_PP3300"/>
+  <circle cx="122" cy="62" r="2" style="fill:#000" class="net_PP3300"/>
+  <line x1="243" x2="243" y1="62" y2="72" class="net_PP3300"/>
+  <line x1="122" x2="122" y1="52" y2="72" class="net_PP3300"/>
+  <line x1="243" x2="243" y1="122" y2="142" class="net_I2C_REMOTE_ADC_SCL"/>
+  <line x1="243" x2="1140" y1="142" y2="142" class="net_I2C_REMOTE_ADC_SCL"/>
+  <line x1="1140" x2="1140" y1="142" y2="209.5" class="net_I2C_REMOTE_ADC_SCL"/>
+  <circle cx="243" cy="142" r="2" style="fill:#000" class="net_I2C_REMOTE_ADC_SCL"/>
+  <line x1="1140" x2="979" y1="209.5" y2="209.5" class="net_I2C_REMOTE_ADC_SCL"/>
+  <line x1="243" x2="243" y1="122" y2="209.5" class="net_I2C_REMOTE_ADC_SCL"/>
+  <line x1="243" x2="404" y1="209.5" y2="209.5" class="net_I2C_REMOTE_ADC_SCL"/>
+  <line x1="243" x2="243" y1="122" y2="142" class="net_I2C_REMOTE_ADC_SCL"/>
+  <line x1="243" x2="938" y1="142" y2="142" class="net_I2C_REMOTE_ADC_SCL"/>
+  <line x1="938" x2="938" y1="142" y2="209.5" class="net_I2C_REMOTE_ADC_SCL"/>
+  <circle cx="938" cy="142" r="2" style="fill:#000" class="net_I2C_REMOTE_ADC_SCL"/>
+  <line x1="938" x2="777" y1="209.5" y2="209.5" class="net_I2C_REMOTE_ADC_SCL"/>
+  <line x1="122" x2="122" y1="122" y2="132" class="net_I2C_REMOTE_ADC_SDA"/>
+  <line x1="122" x2="1261" y1="132" y2="132" class="net_I2C_REMOTE_ADC_SDA"/>
+  <line x1="1261" x2="1261" y1="132" y2="229.5" class="net_I2C_REMOTE_ADC_SDA"/>
+  <circle cx="122" cy="132" r="2" style="fill:#000" class="net_I2C_REMOTE_ADC_SDA"/>
+  <line x1="1261" x2="979" y1="229.5" y2="229.5" class="net_I2C_REMOTE_ADC_SDA"/>
+  <line x1="122" x2="122" y1="122" y2="229.5" class="net_I2C_REMOTE_ADC_SDA"/>
+  <line x1="122" x2="404" y1="229.5" y2="229.5" class="net_I2C_REMOTE_ADC_SDA"/>
+  <line x1="122" x2="122" y1="122" y2="132" class="net_I2C_REMOTE_ADC_SDA"/>
+  <line x1="122" x2="501" y1="132" y2="132" class="net_I2C_REMOTE_ADC_SDA"/>
+  <line x1="501" x2="501" y1="132" y2="209.5" class="net_I2C_REMOTE_ADC_SDA"/>
+  <circle cx="501" cy="132" r="2" style="fill:#000" class="net_I2C_REMOTE_ADC_SDA"/>
+  <line x1="501" x2="662" y1="209.5" y2="209.5" class="net_I2C_REMOTE_ADC_SDA"/>
+  <text x="1030" y="152" class="net_I2C_REMOTE_ADC_SCL">I2C_REMOTE_ADC_SCL</text>
+  <text x="133" y="183.5" class="net_I2C_REMOTE_ADC_SCL">I2C_REMOTE_ADC_SCL</text>
+  <text x="828" y="152" class="net_I2C_REMOTE_ADC_SCL">I2C_REMOTE_ADC_SCL</text>
+  <text x="1151" y="203.5" class="net_I2C_REMOTE_ADC_SDA">I2C_REMOTE_ADC_SDA</text>
+  <text x="12" y="203.5" class="net_I2C_REMOTE_ADC_SDA">I2C_REMOTE_ADC_SDA</text>
+  <text x="391" y="152" class="net_I2C_REMOTE_ADC_SDA">I2C_REMOTE_ADC_SDA</text>
+</svg>

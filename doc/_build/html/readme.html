@@ -1,0 +1,423 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PCB Design Language &mdash; pcbdl  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Developing PCBDL" href="contributing.html" />
+    <link rel="prev" title="PCBDL Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> pcbdl
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PCB Design Language</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installing">Installing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#interactive-terminal">Interactive terminal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#language">Language</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exporting">Exporting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#netlists">Netlists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#html">HTML</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#schematics-graphical-representation-of-the-circuit">Schematics / Graphical representation of the circuit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bom">BOM</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#erc">ERC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#importing-from-traditional-eda-schematics">Importing from traditional EDA schematics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#support">Support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#credits-thanks">Credits / Thanks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Developing PCBDL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="netlistsvg.html">NetlistSVG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Core Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_parts.html">Small Parts</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pcbdl</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>PCB Design Language</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/readme.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pcb-design-language">
+<h1>PCB Design Language<a class="headerlink" href="#pcb-design-language" title="Permalink to this headline">¶</a></h1>
+<p>A programming way to design schematics.</p>
+<p><a class="reference external" href="https://google.github.io/pcbdl/doc/_build/html/">Sphinx Documentation</a></p>
+<div class="section" id="installing">
+<h2>Installing<a class="headerlink" href="#installing" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://pypi.org/project/pcbdl/"><img alt="PyPI version" src="https://badge.fury.io/py/pcbdl.svg" /></a></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt-get install python3 python3-pip python3-pygments
+
+sudo pip3 install pcbdl
+</pre></div>
+</div>
+</div>
+<div class="section" id="interactive-terminal">
+<h2>Interactive terminal<a class="headerlink" href="#interactive-terminal" title="Permalink to this headline">¶</a></h2>
+<p>A good way to try various features without having to write a file separately.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -i -c <span class="s2">&quot;from pcbdl import *&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="language">
+<h2>Language<a class="headerlink" href="#language" title="Permalink to this headline">¶</a></h2>
+<p>PCBDL’s goal is to allow designing schematics via Code. Similar to how VHDL or Verilog are ways to represent Logic Diagrams in code form, PCBDL the analogous of that but for EDA schematics.</p>
+<p>To start one should define a couple of nets:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">vcc</span><span class="p">,</span> <span class="n">gnd</span> <span class="o">=</span> <span class="n">Net</span><span class="p">(</span><span class="s2">&quot;vcc&quot;</span><span class="p">),</span> <span class="n">Net</span><span class="p">(</span><span class="s2">&quot;gnd&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vin</span> <span class="o">=</span> <span class="n">Net</span><span class="p">(</span><span class="s2">&quot;vin&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base</span> <span class="o">=</span> <span class="n">Net</span><span class="p">(</span><span class="s2">&quot;base&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We then can connect various components between those nets with the <code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code> operator and the <code class="docutils literal notranslate"><span class="pre">to=</span></code> argument (for the other side):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">base</span> <span class="o">&lt;&lt;</span> <span class="n">C</span><span class="p">(</span><span class="s2">&quot;1000u&quot;</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="n">vin</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base</span> <span class="o">&lt;&lt;</span> <span class="p">(</span>
+<span class="go">    R(&quot;1k&quot;, to=vcc),</span>
+<span class="go">    R(&quot;1k&quot;, to=gnd),</span>
+<span class="go">)</span>
+</pre></div>
+</div>
+<p>2 pin devices (aka JellyBean in pcbdl) like capacitors and resistors are one of the easiest things to connect. Internally they have a primary (connected with <code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code>) and secondary, other side, pin (connected with <code class="docutils literal notranslate"><span class="pre">to=</span></code>).</p>
+<p>Let’s try to get more complicated by defining a transistor and connect some of its pins.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Transistor</span><span class="p">(</span><span class="n">Part</span><span class="p">):</span>
+<span class="go">    REFDES_PREFIX = &quot;Q&quot;</span>
+<span class="go">    PINS = [&quot;B&quot;, &quot;C&quot;, &quot;E&quot;]</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">Transistor</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base</span> <span class="o">&lt;&lt;</span> <span class="n">q</span><span class="o">.</span><span class="n">B</span>
+</pre></div>
+</div>
+<p>Nets can also be created anonymously if started from a part’s pins:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">.</span><span class="n">E</span> <span class="o">&lt;&lt;</span> <span class="p">(</span>
+<span class="go">    R(&quot;100&quot;, to=gnd),</span>
+<span class="go">    C(&quot;1u&quot;, to=gnd),</span>
+<span class="go">)</span>
+</pre></div>
+</div>
+<p>Let’s finish our class A amplifier (note how we created the “vout” net in place, and how we gave a name (“Rc”) to one of our resistors):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">.</span><span class="n">C</span> <span class="o">&lt;&lt;</span> <span class="p">(</span>
+<span class="go">    C(&quot;100u&quot;, to=Net(&quot;vout&quot;)),</span>
+<span class="go">    R(&quot;100&quot;, &quot;Rc&quot;, to=vcc),</span>
+<span class="go">)</span>
+</pre></div>
+</div>
+<p>Note: One can find a completed version of this amplifier in <code class="docutils literal notranslate"><span class="pre">examples/class_a.py</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -i examples/class_a.py
+</pre></div>
+</div>
+<p>One can now give automatic consecutive reference designators to components that haven’t been named manually already:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">global_context</span><span class="o">.</span><span class="n">autoname</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Then one can explore the circuit:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">global_context</span><span class="o">.</span><span class="n">parts_list</span>
+<span class="go">[R1, R2, R3, Rc, C10, C11, Q1, C12]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">global_context</span><span class="o">.</span><span class="n">parts_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">refdes</span>
+<span class="go">&#39;R1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">global_context</span><span class="o">.</span><span class="n">parts_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+<span class="go">&#39;1kΩ&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">global_context</span><span class="o">.</span><span class="n">parts_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pins</span>
+<span class="go">(R1.P1, R1.P2)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">global_context</span><span class="o">.</span><span class="n">parts_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pins</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">net</span>
+<span class="go">VCC(connected to R1.P2, R2.P2)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nets</span>
+<span class="go">OrderedDict([(&#39;VCC&#39;, VCC(connected to R1.P2, R2.P2)), (&#39;GND&#39;, GND(connected to R3.P2, Rc.P2, C10.-)), (&#39;VIN&#39;, VIN(connected to C11.-)), (&#39;VOUT&#39;, VOUT(connected to C12.-))])</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nets</span><span class="p">[</span><span class="s2">&quot;GND&quot;</span><span class="p">]</span>
+<span class="go">GND(connected to R3.P2, Rc.P2, C10.-)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>Found in the <code class="docutils literal notranslate"><span class="pre">examples/</span></code> folder. Another way to make sure the environment is sane.
+One can just “run” any example schematic with python, add -i to do more analysis operations on the schematic.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">voltage_divider.py</span></code>: Very simple voltage divider</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">class_a.py</span></code>: Class A transistor amplifier, a good example to how a complicatedish analog circuit would look like.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">servo_micro.py</span></code>: <strong>Servo micro schematics</strong>, reimplementation in pcbdl, <a class="reference external" href="https://chromium.googlesource.com/chromiumos/third_party/hdctools/+/refs/heads/master/docs/servo_micro.md#overview">originally an 8 page pdf schematic</a>.</p></li>
+</ul>
+</div>
+<div class="section" id="exporting">
+<h2>Exporting<a class="headerlink" href="#exporting" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="netlists">
+<h3>Netlists<a class="headerlink" href="#netlists" title="Permalink to this headline">¶</a></h3>
+<p>The main goal of this language is to aid in creating PCBs. The intermediate file format that layout programs (where one designs physical boards) is called a netlist. We must support outputting to that (or several of such formats).</p>
+<p>We have a an exporter for the Cadence Allegro Third Party netlists (found in <code class="docutils literal notranslate"><span class="pre">netlist.py</span></code>):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">generate_netlist</span><span class="p">(</span><span class="s2">&quot;/tmp/some_export_location&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="html">
+<h3>HTML<a class="headerlink" href="#html" title="Permalink to this headline">¶</a></h3>
+<p>This produces a standalone html page with everything cross-linked:</p>
+<ul class="simple">
+<li><p>List of nets with links to the parts and pins on each</p></li>
+<li><p>List of parts with the part properties and a list of pins linking to the nets connected</p></li>
+<li><p>Highlighted source code, with every variable and object linked to the previous 2 lists</p></li>
+</ul>
+<p>Here’s an example of such a <a class="reference external" href="https://google.github.io/pcbdl/examples/servo_micro.html">html output for servo micro</a>.</p>
+</div>
+<div class="section" id="schematics-graphical-representation-of-the-circuit">
+<h3>Schematics / Graphical representation of the circuit<a class="headerlink" href="#schematics-graphical-representation-of-the-circuit" title="Permalink to this headline">¶</a></h3>
+<p>In order for schematics to be more easily parsable, we want to graphically display them.
+The <a class="reference external" href="https://github.com/nturley/netlistsvg">netlistsvg</a> project has been proven to be an excellent tool to solve the hard problems of this. See <code class="docutils literal notranslate"><span class="pre">pcbdl/netlistsvg.py</span></code> for the implementation.
+To use the following commands you’ll have to <a class="reference external" href="https://google.github.io/pcbdl/doc/_build/html/netlistsvg.html#installation">install netlistsvg</a>.</p>
+<ol>
+<li><p>Convert a pcbdl schematic back into a traditional schematic</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">generate_svg</span><span class="p">(</span><span class="s1">&#39;svg_filename&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here’s the <a class="reference external" href="https://google.github.io/pcbdl/examples/servo_micro.svg">svg output for the servo_micro example</a>.</p>
+</li>
+<li><p>Isolated schematics for how a particular thing is hooked up:</p>
+<ul class="simple">
+<li><p>I2C map, (<a class="reference external" href="https://google.github.io/pcbdl/examples/servo_micro.i2c.svg">servo_micro’s</a>)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">generate_svg</span><span class="p">(</span><span class="s1">&#39;svg_filename&#39;</span><span class="p">,</span> <span class="n">net_regex</span><span class="o">=</span><span class="s1">&#39;.*(SDA|SCL).*&#39;</span><span class="p">,</span> <span class="n">airwires</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Power connections (<a class="reference external" href="https://google.github.io/pcbdl/examples/servo_micro.power.svg">servo_micro’s</a>)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">generate_svg</span><span class="p">(</span><span class="s1">&#39;svg_filename&#39;</span><span class="p">,</span> <span class="n">net_regex</span><span class="o">=</span><span class="s1">&#39;.*(PP|GND|VIN|VBUS).*&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Block diagrams of the overall system</p>
+<ul class="simple">
+<li><p>This depends on how the schematics is declared, if it’s not hierarchical enough, it won’t have many “blocks” to display</p></li>
+<li><p>This task is dependent on allowing hierarchies in pcbdl</p></li>
+</ul>
+</li>
+</ol>
+</div>
+<div class="section" id="bom">
+<h3>BOM<a class="headerlink" href="#bom" title="Permalink to this headline">¶</a></h3>
+<p>Bill of Materials would be a trivial thing to implement in pcbdl.</p>
+</div>
+</div>
+<div class="section" id="erc">
+<h2>ERC<a class="headerlink" href="#erc" title="Permalink to this headline">¶</a></h2>
+<p>Electrical Rule Checking. How to unit test a schematic?</p>
+<p>This is a big <strong>TODO</strong> item. The basic idea is that the pins will get annotated more heavily than normal EDA software.</p>
+<p>Pins will have beyond just simple input/output/open drain/power properties, but will go into detail with things like:</p>
+<ul class="simple">
+<li><p>Power well for both inputs and outputs</p></li>
+<li><p>ViH, ViL</p></li>
+<li><p>Output voltages</p></li>
+</ul>
+<p>With this information it should be possible to make isolated spice circuits to check for current leaks.
+For every net, for every combination of output pins on that net, are all the input pins receiving proper voltages?</p>
+</div>
+<div class="section" id="importing-from-traditional-eda-schematics">
+<h2>Importing from traditional EDA schematics<a class="headerlink" href="#importing-from-traditional-eda-schematics" title="Permalink to this headline">¶</a></h2>
+<p>Given that graphical exporting might be impossible, and in lieu of the language being slightly more unreadable than normal schematics, perhaps we should just use pcbdl as an intermediate data format or a library.</p>
+<p>The way one would use it would be to import a kicad schematic, annotate it with a few more classes (for BOM and ERC purposes, unless we can find a way to put all metadata in the kicad schematics). Then all exporting and analysis features of pcbdl can still be used.</p>
+<p>A kicad importer should be pretty trivial to implement. <strong>TODO</strong></p>
+</div>
+<div class="section" id="support">
+<h2>Support<a class="headerlink" href="#support" title="Permalink to this headline">¶</a></h2>
+<p>This is not an officially supported Google product.</p>
+<p>The language itself is still in flux, things might change. A lot of the syntax was added as a demo of what could be possible, might still need polishing. Please don’t use this language without expecting some tinkering to keep your schematics up to date to the language.</p>
+</div>
+<div class="section" id="credits-thanks">
+<h2>Credits / Thanks<a class="headerlink" href="#credits-thanks" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="http://cbold.com/">CBOLD</a> for the idea</p></li>
+<li><p><a class="reference external" href="https://github.com/nturley/netlistsvg">netlistsvg</a> for svg output support</p></li>
+<li><p>Chrome OS Hardware Design Team for feedback</p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="contributing.html" class="btn btn-neutral float-right" title="Developing PCBDL" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="PCBDL Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019, Google
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

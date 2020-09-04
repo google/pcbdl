@@ -1,0 +1,8 @@
+(PCBDL generated stub device file)
+PACKAGE TP075
+PINCOUNT 1
+
+PINORDER 'MAIN' PIN
+FUNCTION G1 'MAIN' 1
+
+END
