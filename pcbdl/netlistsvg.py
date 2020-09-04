@@ -14,7 +14,8 @@
 
 from .base import Part, PartInstancePin, Net
 from .context import *
-from .small_parts import C, R, JellyBean
+import pcbdl.small_parts as small_parts
+
 import collections
 import json
 import os
@@ -95,9 +96,31 @@ class SVGNet(object):
         return self.node_numbers[group_idx]
 
 class SVGPart(object):
+    SKIN_MAPPING = { # pcbdl_class: (skin_alias_name, pin_names, is_symmetric, is_rotatable)
+        # more specific comes first
+        small_parts.R:   ("r_", "AB", True, True),
+        small_parts.C:   ("c_", "AB", True, True),
+        small_parts.L:   ("l_", "AB", True, True),
+        small_parts.LED: ("d_led_", "+-", False, True),
+        small_parts.D:   ("d_", "+-", False, True),
+    }
+    SKIN_MAPPING_INSTANCES = tuple(SKIN_MAPPING.keys())
+
     def __init__(self, part, schematic_page):
         self.part = part
         self.schematic_page = schematic_page
+
+        self.svg_type = part.refdes
+        self.is_skinned = False
+        self.skin_pin_names = ()
+        self.is_symmetric = False
+        self.is_rotatable = False
+
+        for possible_class, skin_properties in self.SKIN_MAPPING.items():
+            if isinstance(part, possible_class):
+                self.is_skinned = True
+                self.svg_type, self.skin_pin_names, self.is_symmetric, self.is_rotatable = skin_properties
+                break
 
     def attach_net_name_port(self, net, net_node_number, direction):
         self.schematic_page.ports_dict["%s_node%s" % (net.name, str(net_node_number))] = {
@@ -144,9 +167,9 @@ class SVGPart(object):
         pin_count = len(part.pins)
         for i, pin in enumerate(part.pins):
             name = "%s (%s)" % (pin.name, ", ".join(pin.numbers))
-            if isinstance(part, JellyBean):
-                # we need to match pin names for the skin file in netlistsvg
-                name = "AB"[i]
+            if self.skin_pin_names:
+                # if possible we need to match pin names with the skin file in netlistsvg
+                name = self.skin_pin_names[i]
 
             DIRECTIONS = ["output", "input"] # aka right, left
             port_directions[name] = DIRECTIONS[i < pin_count/2]
@@ -190,7 +213,7 @@ class SVGPart(object):
             if not self.schematic_page.net_regex.match(str(pin.net.name)):
                 skip_drawing_pin = True
 
-            if isinstance(part, (R, C)) or part.refdes.startswith("Q"):
+            if self.is_skinned or part.refdes.startswith("Q"):
                 # we might not want to skip drawing this pin, are any other pins good?
                 for other_pin in set(part.pins) - set((pin,)):
                     if self.schematic_page.net_regex.match(str(other_pin.net.name)):
@@ -217,15 +240,8 @@ class SVGPart(object):
         if not connections:
             return
 
-        svg_type = "%s" % (part.refdes)
-        # apply particular skins
-        if isinstance(part, C):
-            svg_type = "c_"
-        if isinstance(part, R):
-            svg_type = "r_"
-        if isinstance(part, (R, C)):
+        if self.is_rotatable:
             suffix = "h"
-
             swap_pins = False
             for i, pin in enumerate(part.pins):
                 if pin.net.is_power:
@@ -236,19 +252,21 @@ class SVGPart(object):
                     suffix = "v"
                     if i != 1:
                         swap_pins = True
+                #TODO maybe keep it horizontal if both sides .is_power
 
-            if swap_pins:
+            if swap_pins and self.is_symmetric:
                 mapping = {"A": "B", "B": "A"}
                 connections = {mapping[name]:v
                     for name, v in connections.items()}
 
-            svg_type += suffix
+            if self.is_rotatable:
+                self.svg_type += suffix
 
         self.schematic_page.cells_dict[self.part.refdes] = {
             "connections": connections,
             "port_directions": port_directions,
             "attributes": {"value": part.value},
-            "type": svg_type
+            "type": self.svg_type
         }
 
         print(indent_depth + str(part))
