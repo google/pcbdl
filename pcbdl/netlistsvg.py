@@ -29,6 +29,8 @@ __all__ = ["generate_svg", "SVGPage"]
 NETLISTSVG_LOCATION = os.path.expanduser(
     os.environ.get("NETLISTSVG_LOCATION", "~/netlistsvg"))
 
+NET_REGEX_ALL = ".*"
+
 class SVGNet(object):
     def __init__(self, instance, schematic_page):
         self.instance = instance
@@ -154,6 +156,13 @@ class SVGPart(object):
         cell_name = "power_symbol_%d" % (net_node_number)
         self.schematic_page.cells_dict[cell_name] = power_symbol
 
+    def should_draw_pin(self, pin):
+        if not pin._net:
+            # if we don't have a pin name, do it conditionally based on if a regex is set
+            return self.schematic_page.net_regex.pattern == NET_REGEX_ALL
+        else:
+            return self.schematic_page.net_regex.match(str(pin.net.name))
+
     def add_parts(self, indent_depth=""):
         # Every real part might yield multiple smaller parts (eg: airwires, gnd/vcc connections)
         part = self.part
@@ -208,16 +217,12 @@ class SVGPart(object):
                 # Make up a new disposable connection
                 connections[name] = [SVGNet.get_next_node_number()]
 
-
-            skip_drawing_pin = False
-            if not self.schematic_page.net_regex.match(str(pin.net.name)):
-                skip_drawing_pin = True
+            skip_drawing_pin = not self.should_draw_pin(pin)
 
             if self.is_skinned or part.refdes.startswith("Q"):
-                # we might not want to skip drawing this pin, are any other pins good?
+                # if any other pins good on a small part, we should draw the whole part (all pins)
                 for other_pin in set(part.pins) - set((pin,)):
-                    if self.schematic_page.net_regex.match(str(other_pin.net.name)):
-                        # at least one pin of this part is good, so make sure we draw all its other pins
+                    if self.should_draw_pin(other_pin):
                         skip_drawing_pin = False
 
             if pin in self.schematic_page.pins_to_skip:
@@ -282,7 +287,7 @@ class SVGPart(object):
 class SVGPage(object):
     """Represents single .svg page"""
 
-    def __init__(self, net_regex=".*", airwires=2, pins_to_skip=[], max_pin_count=None, context=global_context):
+    def __init__(self, net_regex=NET_REGEX_ALL, airwires=2, pins_to_skip=[], max_pin_count=None, context=global_context):
         self.net_regex = re.compile(net_regex)
         self.airwires = airwires
         self.context = context
