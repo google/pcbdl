@@ -32,6 +32,8 @@ import pygments.formatters
 """HTML output format"""
 __all__ = ["generate_html"]
 
+_PCBDL_BUILTINS_PATH = os.path.dirname(pcbdl.__file__)
+
 @Plugin.register((Net, Part))
 class HTMLDefinedAt(Plugin):
     def register(self):
@@ -271,8 +273,8 @@ def html_generator(context=global_context, include_svg=False):
         l = l[:l.index(Part) + 1]
         for cls in l:
             filename = inspect.getsourcefile(cls)
-            filename = os.path.relpath(filename, pcbdl.defined_at.cwd)
-            if filename in code_manager.file_database:
+            if _PCBDL_BUILTINS_PATH not in filename: # we don't want pcbdl builtin files in the list
+                filename = os.path.relpath(filename, pcbdl.defined_at.cwd)
                 _, line = inspect.getsourcelines(cls)
                 code_manager.instanced_here(part, filename, line)
 
