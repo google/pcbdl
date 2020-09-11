@@ -323,7 +323,9 @@ class PinFragment(object):
             args[:len(fragment.args)] = fragment.args
             kwargs.update(fragment.kwargs)
 
-        return PartClassPin(deduplicated_names, pin_numbers, *args, **kwargs)
+        part_class_pin = PartClassPin(deduplicated_names, pin_numbers, *args, **kwargs)
+        part_class_pin._fragments = fragments
+        return part_class_pin
 
     @staticmethod
     def second_name_important(pin):
