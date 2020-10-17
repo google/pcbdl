@@ -20,6 +20,7 @@ from pcbdl.small_parts import *
 from pcbdl.defined_at import *
 from pcbdl.context import *
 
+from pcbdl.kicad import *
 from pcbdl.allegro import *
 from pcbdl.html import *
 
