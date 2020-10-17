@@ -91,7 +91,7 @@ class HTMLPart(Plugin):
             pass
 
         if part.__doc__:
-            yield "<pre>%s</pre>" % textwrap.dedent(part.__doc__.rstrip())
+            yield "<pre>%s</pre>" % textwrap.dedent(html.escape(part.__doc__.rstrip()))
 
         yield "<p><a href=\"#cell_%s\">See in SVG</a></p>" % part.refdes
 
