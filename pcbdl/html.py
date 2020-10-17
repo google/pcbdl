@@ -39,14 +39,21 @@ class HTMLDefinedAt(Plugin):
     def register(self):
         self.defined_at = self.instance.defined_at
 
-        self.filename, self.line = self.defined_at.rsplit(":", 1)
-        self.line = int(self.line)
+        self.filename, *maybeline = self.defined_at.rsplit(":", 1)
+        try:
+            self.line = int(maybeline[0])
+        except Exception:
+            self.line = 0
 
         self.code_manager.instanced_here(self.instance, self.filename, self.line)
 
     @property
     def href_line(self):
-        return "<p>Defined at: <a href=\"#%s-%d\">%s</a></p>" % (self.filename, self.line, self.defined_at)
+        if self.line:
+            line = f"-{self.line}"
+        else:
+            line = ""
+        return "<p>Defined at: <a href=\"#%s%s\">%s</a></p>" % (self.filename, line, self.defined_at)
 
 @Plugin.register(Part)
 class HTMLPart(Plugin):
