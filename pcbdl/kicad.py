@@ -117,10 +117,8 @@ def read_kicad_netlist(filename):
         else:
             raise PartNotFoundException(f"Can't find part {libsource[1:]} in the libparts loaded from the netlist.")
 
-        part_instance = part_class(
-            refdes=component["ref"][1],
-            value=component["value"][1]
-        )
+        part_instance = part_class(refdes=component["ref"][1])
+        part_instance.value = component["value"][1]
 
         try:
             part_instance.package = component["footprint"][1]
@@ -183,6 +181,7 @@ def _read_kicad_netlist_partcls(libpart):
 
     class_dict = {
         "REFDES_PREFIX": refdes_prefix,
+        "part_number": part_name,
         "value": fields.pop("Value", ""),
         "package": fields.pop("Footprint", ""),
         "PINS": pcbdl_pins,
