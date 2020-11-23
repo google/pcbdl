@@ -17,6 +17,7 @@ from .context import *
 import pcbdl.small_parts as small_parts
 
 import collections
+import logging
 import json
 import os
 import re
@@ -274,7 +275,7 @@ class SVGPart(object):
             "type": self.svg_type
         }
 
-        print(indent_depth + str(part))
+        logging.debug(f"Added part to SVG: {indent_depth + str(part)}")
 
         # Make sure the other related parts are squeezed on this page
         for other_part in parts_to_bring_on_page:
@@ -355,7 +356,7 @@ class SVGPage(object):
                 "-o",
                 netlistsvg_output.name
             ]
-            print(netlistsvg_command)
+            logging.debug(f"Called SVG with command: {netlistsvg_command}")
             subprocess.call(netlistsvg_command)
 
             svg_contents = netlistsvg_output.read()
@@ -368,7 +369,24 @@ class SVGPage(object):
         return svg_contents
 
 
-def generate_svg(*args, **kwargs):
+def generate_svg(filename: str, *args, multi_filename_ending: str="_{0}", **kwargs):
+    """Generates an SVG or a series of SVG files to a given file. If multiple
+    SVG pages are created, then each SVG is named according to the scheme
+    'filename'+'multi_filename_ending'.format(i) where i is the page number.
+
+    Args:
+        filename: The file name to write the SVG to. If multiple SVGs are written
+            then the multi_filename_ending will be concatenated.
+        multi_filename_ending: The ending to concatenate to filename in order to
+            name multiple generated SVG files sequentially. The ending is
+            evaluated like 'multi_filename_ending'.format(i) where i is the page
+            number. Defaults to "_{0}".
+    """
+    # Force SVG file
+    if not filename.lower().endswith(('.svg')):
+        filename += ".svg"
+
+    svg_arr = []
     pins_to_skip = []
     while True:
         n = SVGPage(*args, **kwargs, pins_to_skip=pins_to_skip)
@@ -378,4 +396,17 @@ def generate_svg(*args, **kwargs):
             break
         pins_to_skip += n.pins_drawn
 
-        yield svg_contents
+        svg_arr.append(svg_contents)
+
+    # Write a single file with the SVG name
+    assert len(svg_arr) > 0, "No SVG generated, check inputs."
+    if len(svg_arr) == 1:
+        with open(filename, "w") as svg_file:
+            svg_file.write(svg_arr[0])
+        logging.info(f"Wrote SVG file: {filename}")
+    if len(svg_arr) > 1:
+        for i, svg in enumerate(svg_arr):
+            svg_filename = filename + multi_filename_ending.format(i)
+            with open(svg_filename, "w") as svg_file:
+                svg_file.write(svg)
+            logging.info(f"Wrote SVG file: {svg_filename}")
